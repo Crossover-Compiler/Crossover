@@ -1,2 +1,2 @@
 # Crossover
-An expirimental BabyCobol Compiler with C++ Interoperability
+An experimental BabyCobol Compiler with C++ Interoperability
