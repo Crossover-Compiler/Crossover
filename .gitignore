@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+build/
+cmake-build-debug/
+/build/antlr4_runtime/src/antlr4_runtime/
+.idea/
