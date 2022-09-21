@@ -1,21 +1,274 @@
 
-// Generated from BabyCobol.g4 by ANTLR 4.7.2
+// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 
-#include "include/antlr/BabyCobolListener.h"
+#include "BabyCobolListener.h"
+#include "BabyCobolVisitor.h"
 
-#include "include/antlr/BabyCobolParser.h"
+#include "BabyCobolParser.h"
 
 
 using namespace antlrcpp;
+
 using namespace antlr4;
 
-BabyCobolParser::BabyCobolParser(TokenStream *input) : Parser(input) {
-  _interpreter = new atn::ParserATNSimulator(this, _atn, _decisionToDFA, _sharedContextCache);
+namespace {
+
+struct BabyCobolParserStaticData final {
+  BabyCobolParserStaticData(std::vector<std::string> ruleNames,
+                        std::vector<std::string> literalNames,
+                        std::vector<std::string> symbolicNames)
+      : ruleNames(std::move(ruleNames)), literalNames(std::move(literalNames)),
+        symbolicNames(std::move(symbolicNames)),
+        vocabulary(this->literalNames, this->symbolicNames) {}
+
+  BabyCobolParserStaticData(const BabyCobolParserStaticData&) = delete;
+  BabyCobolParserStaticData(BabyCobolParserStaticData&&) = delete;
+  BabyCobolParserStaticData& operator=(const BabyCobolParserStaticData&) = delete;
+  BabyCobolParserStaticData& operator=(BabyCobolParserStaticData&&) = delete;
+
+  std::vector<antlr4::dfa::DFA> decisionToDFA;
+  antlr4::atn::PredictionContextCache sharedContextCache;
+  const std::vector<std::string> ruleNames;
+  const std::vector<std::string> literalNames;
+  const std::vector<std::string> symbolicNames;
+  const antlr4::dfa::Vocabulary vocabulary;
+  antlr4::atn::SerializedATNView serializedATN;
+  std::unique_ptr<antlr4::atn::ATN> atn;
+};
+
+std::once_flag babycobolParserOnceFlag;
+BabyCobolParserStaticData *babycobolParserStaticData = nullptr;
+
+void babycobolParserInitialize() {
+  assert(babycobolParserStaticData == nullptr);
+  auto staticData = std::make_unique<BabyCobolParserStaticData>(
+    std::vector<std::string>{
+      "program", "identification", "name", "value", "data", "variable", 
+      "level", "representation", "procedure", "paragraph", "sentence", "statement", 
+      "label", "display", "stop", "move", "subtract", "multiply", "perform", 
+      "ifStatement", "accept", "add", "divide", "evaluate", "nextSentence", 
+      "loop", "gotoStatement", "signal", "alter", "anyExpression", "arithmeticExpression", 
+      "stringExpression", "booleanExpression", "loopExpression", "contractedBooleanPart", 
+      "comparisonOp", "booleanOp", "arithmeticOp", "whenBlock", "atomic", 
+      "identifiers"
+    },
+    std::vector<std::string>{
+      "", "'*'", "'-'", "'+'", "'='", "'>'", "'<'", "'>='", "'<='", "'!='", 
+      "'/'", "'**'", "'('", "')'", "'IDENTIFICATION'", "'DIVISION'", "'PROCEDURE'", 
+      "'DATA'", "'DISPLAY'", "'WITH'", "'NO'", "'ADVANCING'", "'STOP'", 
+      "'MOVE'", "'TO'", "'SUBTRACT'", "'FROM'", "'GIVING'", "'MULTIPLY'", 
+      "'BY'", "'PERFORM'", "'TIMES'", "'IF'", "'THEN'", "'ELSE'", "'END'", 
+      "'ACCEPT'", "'ADD'", "'DIVIDE'", "'INTO'", "'EVALUATE'", "'WHEN'", 
+      "'OTHER'", "'TRUE'", "'FALSE'", "'NOT'", "'OR'", "'AND'", "'XOR'", 
+      "'NEXT'", "'SENTENCE'", "'REMAINDER'", "'LOOP'", "'VARYING'", "'WHILE'", 
+      "'UNTIL'", "'OF'", "'THROUGH'", "'PICTURE'", "'IS'", "'LIKE'", "'OCCURS'", 
+      "'GO'", "'SPACES'", "'HIGH-VALUES'", "'LOW-VALUES'", "'SIGNAL'", "'ON ERROR'", 
+      "'OFF'", "'ALTER'", "'PROCEED'", "", "", "", "", "", "", "'.'"
+    },
+    std::vector<std::string>{
+      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "IDENTIFICATION", 
+      "DIVISION", "PROCEDURE", "DATA", "DISPLAY", "WITH", "NO", "ADVANCING", 
+      "STOP", "MOVE", "TO", "SUBTRACT", "FROM", "GIVING", "MULTIPLY", "BY", 
+      "PERFORM", "TIMES", "IF", "THEN", "ELSE", "END", "ACCEPT", "ADD", 
+      "DIVIDE", "INTO", "EVALUATE", "WHEN", "OTHER", "TRUE", "FALSE", "NOT", 
+      "OR", "AND", "XOR", "NEXT", "SENTENCE", "REMAINDER", "LOOP", "VARYING", 
+      "WHILE", "UNTIL", "OF", "THROUGH", "PICTURE", "IS", "LIKE", "OCCURS", 
+      "GO", "SPACES", "HIGH", "LOW", "SIGNAL", "ONERROR", "OFF", "ALTER", 
+      "PROCEED", "NINE", "X", "COMMENTLINE", "IDENTIFIER", "INT", "LITERAL", 
+      "DOT", "VAR", "WS"
+    }
+  );
+  static const int32_t serializedATNSegment[] = {
+  	4,1,79,468,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
+  	14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,
+  	21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,
+  	28,2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,
+  	35,2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,2,40,7,40,1,0,1,0,3,0,85,8,
+  	0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,98,8,1,10,1,12,1,101,
+  	9,1,1,2,1,2,1,3,1,3,1,4,1,4,1,4,5,4,110,8,4,10,4,12,4,113,9,4,1,5,1,5,
+  	1,5,1,5,1,5,1,5,1,5,3,5,122,8,5,1,5,1,5,1,5,3,5,127,8,5,1,5,1,5,1,6,1,
+  	6,1,7,1,7,1,8,1,8,1,8,1,8,5,8,139,8,8,10,8,12,8,142,9,8,1,8,4,8,145,8,
+  	8,11,8,12,8,146,1,9,1,9,1,9,4,9,152,8,9,11,9,12,9,153,1,10,4,10,157,8,
+  	10,11,10,12,10,158,1,10,1,10,1,11,3,11,164,8,11,1,11,1,11,1,11,1,11,1,
+  	11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,3,11,182,8,
+  	11,1,12,1,12,1,13,1,13,4,13,188,8,13,11,13,12,13,189,1,13,1,13,1,13,3,
+  	13,195,8,13,1,14,1,14,1,15,1,15,1,15,1,15,1,15,3,15,204,8,15,1,15,1,15,
+  	4,15,208,8,15,11,15,12,15,209,1,16,1,16,4,16,214,8,16,11,16,12,16,215,
+  	1,16,1,16,1,16,1,16,3,16,222,8,16,1,17,1,17,1,17,1,17,4,17,228,8,17,11,
+  	17,12,17,229,1,17,1,17,3,17,234,8,17,1,18,1,18,1,18,1,18,3,18,240,8,18,
+  	1,18,1,18,1,18,3,18,245,8,18,1,19,1,19,1,19,1,19,4,19,251,8,19,11,19,
+  	12,19,252,1,19,1,19,4,19,257,8,19,11,19,12,19,258,3,19,261,8,19,1,19,
+  	1,19,1,20,1,20,4,20,267,8,20,11,20,12,20,268,1,21,1,21,4,21,273,8,21,
+  	11,21,12,21,274,1,21,1,21,1,21,1,21,3,21,281,8,21,1,22,1,22,1,22,1,22,
+  	4,22,287,8,22,11,22,12,22,288,1,22,1,22,3,22,293,8,22,1,22,1,22,3,22,
+  	297,8,22,1,23,1,23,1,23,5,23,302,8,23,10,23,12,23,305,9,23,1,23,1,23,
+  	1,24,1,24,1,24,1,25,1,25,5,25,314,8,25,10,25,12,25,317,9,25,1,25,1,25,
+  	1,26,1,26,1,26,1,26,1,27,1,27,1,27,3,27,328,8,27,1,27,1,27,1,28,1,28,
+  	1,28,1,28,1,28,1,28,1,28,1,29,1,29,1,29,3,29,342,8,29,1,30,1,30,1,30,
+  	1,30,1,30,1,30,1,30,5,30,351,8,30,10,30,12,30,354,9,30,1,31,1,31,1,31,
+  	1,31,1,31,1,31,5,31,362,8,31,10,31,12,31,365,9,31,1,32,1,32,1,32,1,32,
+  	1,32,1,32,1,32,4,32,374,8,32,11,32,12,32,375,1,32,1,32,1,32,1,32,1,32,
+  	1,32,3,32,384,8,32,1,32,1,32,1,32,1,32,5,32,390,8,32,10,32,12,32,393,
+  	9,32,1,33,1,33,3,33,397,8,33,1,33,1,33,3,33,401,8,33,1,33,1,33,3,33,405,
+  	8,33,1,33,1,33,3,33,409,8,33,1,33,1,33,1,33,1,33,1,33,3,33,416,8,33,1,
+  	34,1,34,3,34,420,8,34,1,34,1,34,1,35,1,35,1,36,1,36,1,37,1,37,1,38,1,
+  	38,4,38,432,8,38,11,38,12,38,433,1,38,4,38,437,8,38,11,38,12,38,438,1,
+  	38,1,38,1,38,4,38,444,8,38,11,38,12,38,445,3,38,448,8,38,1,39,1,39,1,
+  	39,3,39,453,8,39,1,40,1,40,1,40,5,40,458,8,40,10,40,12,40,461,9,40,1,
+  	40,1,40,1,40,3,40,466,8,40,1,40,0,3,60,62,64,41,0,2,4,6,8,10,12,14,16,
+  	18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,
+  	64,66,68,70,72,74,76,78,80,0,6,1,0,71,72,1,0,1,2,2,0,35,35,77,77,1,0,
+  	4,9,1,0,46,48,2,0,1,3,10,11,502,0,82,1,0,0,0,2,89,1,0,0,0,4,102,1,0,0,
+  	0,6,104,1,0,0,0,8,106,1,0,0,0,10,114,1,0,0,0,12,130,1,0,0,0,14,132,1,
+  	0,0,0,16,134,1,0,0,0,18,148,1,0,0,0,20,156,1,0,0,0,22,163,1,0,0,0,24,
+  	183,1,0,0,0,26,185,1,0,0,0,28,196,1,0,0,0,30,198,1,0,0,0,32,211,1,0,0,
+  	0,34,223,1,0,0,0,36,235,1,0,0,0,38,246,1,0,0,0,40,264,1,0,0,0,42,270,
+  	1,0,0,0,44,282,1,0,0,0,46,298,1,0,0,0,48,308,1,0,0,0,50,311,1,0,0,0,52,
+  	320,1,0,0,0,54,324,1,0,0,0,56,331,1,0,0,0,58,341,1,0,0,0,60,343,1,0,0,
+  	0,62,355,1,0,0,0,64,383,1,0,0,0,66,415,1,0,0,0,68,417,1,0,0,0,70,423,
+  	1,0,0,0,72,425,1,0,0,0,74,427,1,0,0,0,76,447,1,0,0,0,78,452,1,0,0,0,80,
+  	454,1,0,0,0,82,84,3,2,1,0,83,85,3,8,4,0,84,83,1,0,0,0,84,85,1,0,0,0,85,
+  	86,1,0,0,0,86,87,3,16,8,0,87,88,5,0,0,1,88,1,1,0,0,0,89,90,5,14,0,0,90,
+  	91,5,15,0,0,91,99,5,77,0,0,92,93,3,4,2,0,93,94,5,77,0,0,94,95,3,6,3,0,
+  	95,96,5,77,0,0,96,98,1,0,0,0,97,92,1,0,0,0,98,101,1,0,0,0,99,97,1,0,0,
+  	0,99,100,1,0,0,0,100,3,1,0,0,0,101,99,1,0,0,0,102,103,5,74,0,0,103,5,
+  	1,0,0,0,104,105,5,76,0,0,105,7,1,0,0,0,106,107,5,17,0,0,107,111,5,15,
+  	0,0,108,110,3,10,5,0,109,108,1,0,0,0,110,113,1,0,0,0,111,109,1,0,0,0,
+  	111,112,1,0,0,0,112,9,1,0,0,0,113,111,1,0,0,0,114,115,3,12,6,0,115,121,
+  	5,74,0,0,116,117,5,58,0,0,117,118,5,59,0,0,118,122,3,14,7,0,119,120,5,
+  	60,0,0,120,122,3,80,40,0,121,116,1,0,0,0,121,119,1,0,0,0,121,122,1,0,
+  	0,0,122,126,1,0,0,0,123,124,5,61,0,0,124,125,5,75,0,0,125,127,5,31,0,
+  	0,126,123,1,0,0,0,126,127,1,0,0,0,127,128,1,0,0,0,128,129,5,77,0,0,129,
+  	11,1,0,0,0,130,131,5,75,0,0,131,13,1,0,0,0,132,133,7,0,0,0,133,15,1,0,
+  	0,0,134,135,5,16,0,0,135,136,5,15,0,0,136,140,5,77,0,0,137,139,3,20,10,
+  	0,138,137,1,0,0,0,139,142,1,0,0,0,140,138,1,0,0,0,140,141,1,0,0,0,141,
+  	144,1,0,0,0,142,140,1,0,0,0,143,145,3,18,9,0,144,143,1,0,0,0,145,146,
+  	1,0,0,0,146,144,1,0,0,0,146,147,1,0,0,0,147,17,1,0,0,0,148,149,3,24,12,
+  	0,149,151,5,77,0,0,150,152,3,20,10,0,151,150,1,0,0,0,152,153,1,0,0,0,
+  	153,151,1,0,0,0,153,154,1,0,0,0,154,19,1,0,0,0,155,157,3,22,11,0,156,
+  	155,1,0,0,0,157,158,1,0,0,0,158,156,1,0,0,0,158,159,1,0,0,0,159,160,1,
+  	0,0,0,160,161,5,77,0,0,161,21,1,0,0,0,162,164,7,1,0,0,163,162,1,0,0,0,
+  	163,164,1,0,0,0,164,181,1,0,0,0,165,182,3,26,13,0,166,182,3,28,14,0,167,
+  	182,3,30,15,0,168,182,3,32,16,0,169,182,3,34,17,0,170,182,3,36,18,0,171,
+  	182,3,38,19,0,172,182,3,40,20,0,173,182,3,42,21,0,174,182,3,44,22,0,175,
+  	182,3,46,23,0,176,182,3,48,24,0,177,182,3,50,25,0,178,182,3,52,26,0,179,
+  	182,3,54,27,0,180,182,3,56,28,0,181,165,1,0,0,0,181,166,1,0,0,0,181,167,
+  	1,0,0,0,181,168,1,0,0,0,181,169,1,0,0,0,181,170,1,0,0,0,181,171,1,0,0,
+  	0,181,172,1,0,0,0,181,173,1,0,0,0,181,174,1,0,0,0,181,175,1,0,0,0,181,
+  	176,1,0,0,0,181,177,1,0,0,0,181,178,1,0,0,0,181,179,1,0,0,0,181,180,1,
+  	0,0,0,182,23,1,0,0,0,183,184,5,74,0,0,184,25,1,0,0,0,185,187,5,18,0,0,
+  	186,188,3,78,39,0,187,186,1,0,0,0,188,189,1,0,0,0,189,187,1,0,0,0,189,
+  	190,1,0,0,0,190,194,1,0,0,0,191,192,5,19,0,0,192,193,5,20,0,0,193,195,
+  	5,21,0,0,194,191,1,0,0,0,194,195,1,0,0,0,195,27,1,0,0,0,196,197,5,22,
+  	0,0,197,29,1,0,0,0,198,203,5,23,0,0,199,204,5,63,0,0,200,204,5,64,0,0,
+  	201,204,5,65,0,0,202,204,3,78,39,0,203,199,1,0,0,0,203,200,1,0,0,0,203,
+  	201,1,0,0,0,203,202,1,0,0,0,204,205,1,0,0,0,205,207,5,24,0,0,206,208,
+  	3,80,40,0,207,206,1,0,0,0,208,209,1,0,0,0,209,207,1,0,0,0,209,210,1,0,
+  	0,0,210,31,1,0,0,0,211,213,5,25,0,0,212,214,3,78,39,0,213,212,1,0,0,0,
+  	214,215,1,0,0,0,215,213,1,0,0,0,215,216,1,0,0,0,216,217,1,0,0,0,217,218,
+  	5,26,0,0,218,221,3,78,39,0,219,220,5,27,0,0,220,222,3,80,40,0,221,219,
+  	1,0,0,0,221,222,1,0,0,0,222,33,1,0,0,0,223,224,5,28,0,0,224,225,3,78,
+  	39,0,225,227,5,29,0,0,226,228,3,78,39,0,227,226,1,0,0,0,228,229,1,0,0,
+  	0,229,227,1,0,0,0,229,230,1,0,0,0,230,233,1,0,0,0,231,232,5,27,0,0,232,
+  	234,3,80,40,0,233,231,1,0,0,0,233,234,1,0,0,0,234,35,1,0,0,0,235,236,
+  	5,30,0,0,236,239,3,24,12,0,237,238,5,57,0,0,238,240,3,24,12,0,239,237,
+  	1,0,0,0,239,240,1,0,0,0,240,244,1,0,0,0,241,242,3,78,39,0,242,243,5,31,
+  	0,0,243,245,1,0,0,0,244,241,1,0,0,0,244,245,1,0,0,0,245,37,1,0,0,0,246,
+  	247,5,32,0,0,247,248,3,64,32,0,248,250,5,33,0,0,249,251,3,22,11,0,250,
+  	249,1,0,0,0,251,252,1,0,0,0,252,250,1,0,0,0,252,253,1,0,0,0,253,260,1,
+  	0,0,0,254,256,5,34,0,0,255,257,3,22,11,0,256,255,1,0,0,0,257,258,1,0,
+  	0,0,258,256,1,0,0,0,258,259,1,0,0,0,259,261,1,0,0,0,260,254,1,0,0,0,260,
+  	261,1,0,0,0,261,262,1,0,0,0,262,263,7,2,0,0,263,39,1,0,0,0,264,266,5,
+  	36,0,0,265,267,3,80,40,0,266,265,1,0,0,0,267,268,1,0,0,0,268,266,1,0,
+  	0,0,268,269,1,0,0,0,269,41,1,0,0,0,270,272,5,37,0,0,271,273,3,78,39,0,
+  	272,271,1,0,0,0,273,274,1,0,0,0,274,272,1,0,0,0,274,275,1,0,0,0,275,276,
+  	1,0,0,0,276,277,5,24,0,0,277,280,3,78,39,0,278,279,5,27,0,0,279,281,3,
+  	80,40,0,280,278,1,0,0,0,280,281,1,0,0,0,281,43,1,0,0,0,282,283,5,38,0,
+  	0,283,284,3,78,39,0,284,286,5,39,0,0,285,287,3,78,39,0,286,285,1,0,0,
+  	0,287,288,1,0,0,0,288,286,1,0,0,0,288,289,1,0,0,0,289,292,1,0,0,0,290,
+  	291,5,27,0,0,291,293,3,80,40,0,292,290,1,0,0,0,292,293,1,0,0,0,293,296,
+  	1,0,0,0,294,295,5,51,0,0,295,297,3,80,40,0,296,294,1,0,0,0,296,297,1,
+  	0,0,0,297,45,1,0,0,0,298,299,5,40,0,0,299,303,3,58,29,0,300,302,3,76,
+  	38,0,301,300,1,0,0,0,302,305,1,0,0,0,303,301,1,0,0,0,303,304,1,0,0,0,
+  	304,306,1,0,0,0,305,303,1,0,0,0,306,307,5,35,0,0,307,47,1,0,0,0,308,309,
+  	5,49,0,0,309,310,5,50,0,0,310,49,1,0,0,0,311,315,5,52,0,0,312,314,3,66,
+  	33,0,313,312,1,0,0,0,314,317,1,0,0,0,315,313,1,0,0,0,315,316,1,0,0,0,
+  	316,318,1,0,0,0,317,315,1,0,0,0,318,319,5,35,0,0,319,51,1,0,0,0,320,321,
+  	5,62,0,0,321,322,5,24,0,0,322,323,3,4,2,0,323,53,1,0,0,0,324,327,5,66,
+  	0,0,325,328,3,24,12,0,326,328,5,68,0,0,327,325,1,0,0,0,327,326,1,0,0,
+  	0,328,329,1,0,0,0,329,330,5,67,0,0,330,55,1,0,0,0,331,332,5,69,0,0,332,
+  	333,3,24,12,0,333,334,5,24,0,0,334,335,5,70,0,0,335,336,5,24,0,0,336,
+  	337,3,24,12,0,337,57,1,0,0,0,338,342,3,60,30,0,339,342,3,62,31,0,340,
+  	342,3,64,32,0,341,338,1,0,0,0,341,339,1,0,0,0,341,340,1,0,0,0,342,59,
+  	1,0,0,0,343,344,6,30,-1,0,344,345,3,78,39,0,345,352,1,0,0,0,346,347,10,
+  	1,0,0,347,348,3,74,37,0,348,349,3,60,30,2,349,351,1,0,0,0,350,346,1,0,
+  	0,0,351,354,1,0,0,0,352,350,1,0,0,0,352,353,1,0,0,0,353,61,1,0,0,0,354,
+  	352,1,0,0,0,355,356,6,31,-1,0,356,357,3,78,39,0,357,363,1,0,0,0,358,359,
+  	10,1,0,0,359,360,5,3,0,0,360,362,3,62,31,2,361,358,1,0,0,0,362,365,1,
+  	0,0,0,363,361,1,0,0,0,363,364,1,0,0,0,364,63,1,0,0,0,365,363,1,0,0,0,
+  	366,367,6,32,-1,0,367,384,5,43,0,0,368,384,5,44,0,0,369,370,3,78,39,0,
+  	370,371,3,70,35,0,371,373,3,60,30,0,372,374,3,68,34,0,373,372,1,0,0,0,
+  	374,375,1,0,0,0,375,373,1,0,0,0,375,376,1,0,0,0,376,384,1,0,0,0,377,378,
+  	3,60,30,0,378,379,3,70,35,0,379,380,3,60,30,0,380,384,1,0,0,0,381,382,
+  	5,45,0,0,382,384,3,64,32,2,383,366,1,0,0,0,383,368,1,0,0,0,383,369,1,
+  	0,0,0,383,377,1,0,0,0,383,381,1,0,0,0,384,391,1,0,0,0,385,386,10,1,0,
+  	0,386,387,3,72,36,0,387,388,3,64,32,2,388,390,1,0,0,0,389,385,1,0,0,0,
+  	390,393,1,0,0,0,391,389,1,0,0,0,391,392,1,0,0,0,392,65,1,0,0,0,393,391,
+  	1,0,0,0,394,396,5,53,0,0,395,397,3,80,40,0,396,395,1,0,0,0,396,397,1,
+  	0,0,0,397,400,1,0,0,0,398,399,5,26,0,0,399,401,3,78,39,0,400,398,1,0,
+  	0,0,400,401,1,0,0,0,401,404,1,0,0,0,402,403,5,24,0,0,403,405,3,78,39,
+  	0,404,402,1,0,0,0,404,405,1,0,0,0,405,408,1,0,0,0,406,407,5,29,0,0,407,
+  	409,3,78,39,0,408,406,1,0,0,0,408,409,1,0,0,0,409,416,1,0,0,0,410,411,
+  	5,54,0,0,411,416,3,64,32,0,412,413,5,55,0,0,413,416,3,64,32,0,414,416,
+  	3,22,11,0,415,394,1,0,0,0,415,410,1,0,0,0,415,412,1,0,0,0,415,414,1,0,
+  	0,0,416,67,1,0,0,0,417,419,3,72,36,0,418,420,3,70,35,0,419,418,1,0,0,
+  	0,419,420,1,0,0,0,420,421,1,0,0,0,421,422,3,60,30,0,422,69,1,0,0,0,423,
+  	424,7,3,0,0,424,71,1,0,0,0,425,426,7,4,0,0,426,73,1,0,0,0,427,428,7,5,
+  	0,0,428,75,1,0,0,0,429,431,5,41,0,0,430,432,3,58,29,0,431,430,1,0,0,0,
+  	432,433,1,0,0,0,433,431,1,0,0,0,433,434,1,0,0,0,434,436,1,0,0,0,435,437,
+  	3,22,11,0,436,435,1,0,0,0,437,438,1,0,0,0,438,436,1,0,0,0,438,439,1,0,
+  	0,0,439,448,1,0,0,0,440,441,5,41,0,0,441,443,5,42,0,0,442,444,3,22,11,
+  	0,443,442,1,0,0,0,444,445,1,0,0,0,445,443,1,0,0,0,445,446,1,0,0,0,446,
+  	448,1,0,0,0,447,429,1,0,0,0,447,440,1,0,0,0,448,77,1,0,0,0,449,453,5,
+  	75,0,0,450,453,5,76,0,0,451,453,3,80,40,0,452,449,1,0,0,0,452,450,1,0,
+  	0,0,452,451,1,0,0,0,453,79,1,0,0,0,454,459,5,74,0,0,455,456,5,56,0,0,
+  	456,458,5,74,0,0,457,455,1,0,0,0,458,461,1,0,0,0,459,457,1,0,0,0,459,
+  	460,1,0,0,0,460,465,1,0,0,0,461,459,1,0,0,0,462,463,5,12,0,0,463,464,
+  	5,75,0,0,464,466,5,13,0,0,465,462,1,0,0,0,465,466,1,0,0,0,466,81,1,0,
+  	0,0,52,84,99,111,121,126,140,146,153,158,163,181,189,194,203,209,215,
+  	221,229,233,239,244,252,258,260,268,274,280,288,292,296,303,315,327,341,
+  	352,363,375,383,391,396,400,404,408,415,419,433,438,445,447,452,459,465
+  };
+  staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
+
+  antlr4::atn::ATNDeserializer deserializer;
+  staticData->atn = deserializer.deserialize(staticData->serializedATN);
+
+  const size_t count = staticData->atn->getNumberOfDecisions();
+  staticData->decisionToDFA.reserve(count);
+  for (size_t i = 0; i < count; i++) { 
+    staticData->decisionToDFA.emplace_back(staticData->atn->getDecisionState(i), i);
+  }
+  babycobolParserStaticData = staticData.release();
+}
+
+}
+
+BabyCobolParser::BabyCobolParser(TokenStream *input) : BabyCobolParser(input, antlr4::atn::ParserATNSimulatorOptions()) {}
+
+BabyCobolParser::BabyCobolParser(TokenStream *input, const antlr4::atn::ParserATNSimulatorOptions &options) : Parser(input) {
+  BabyCobolParser::initialize();
+  _interpreter = new atn::ParserATNSimulator(this, *babycobolParserStaticData->atn, babycobolParserStaticData->decisionToDFA, babycobolParserStaticData->sharedContextCache, options);
 }
 
 BabyCobolParser::~BabyCobolParser() {
   delete _interpreter;
+}
+
+const atn::ATN& BabyCobolParser::getATN() const {
+  return *babycobolParserStaticData->atn;
 }
 
 std::string BabyCobolParser::getGrammarFileName() const {
@@ -23,11 +276,15 @@ std::string BabyCobolParser::getGrammarFileName() const {
 }
 
 const std::vector<std::string>& BabyCobolParser::getRuleNames() const {
-  return _ruleNames;
+  return babycobolParserStaticData->ruleNames;
 }
 
-dfa::Vocabulary& BabyCobolParser::getVocabulary() const {
-  return _vocabulary;
+const dfa::Vocabulary& BabyCobolParser::getVocabulary() const {
+  return babycobolParserStaticData->vocabulary;
+}
+
+antlr4::atn::SerializedATNView BabyCobolParser::getSerializedATN() const {
+  return babycobolParserStaticData->serializedATN;
 }
 
 
@@ -70,12 +327,24 @@ void BabyCobolParser::ProgramContext::exitRule(tree::ParseTreeListener *listener
     parserListener->exitProgram(this);
 }
 
+
+std::any BabyCobolParser::ProgramContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitProgram(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ProgramContext* BabyCobolParser::program() {
   ProgramContext *_localctx = _tracker.createInstance<ProgramContext>(_ctx, getState());
   enterRule(_localctx, 0, BabyCobolParser::RuleProgram);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -160,12 +429,24 @@ void BabyCobolParser::IdentificationContext::exitRule(tree::ParseTreeListener *l
     parserListener->exitIdentification(this);
 }
 
+
+std::any BabyCobolParser::IdentificationContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitIdentification(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::IdentificationContext* BabyCobolParser::identification() {
   IdentificationContext *_localctx = _tracker.createInstance<IdentificationContext>(_ctx, getState());
   enterRule(_localctx, 2, BabyCobolParser::RuleIdentification);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -230,11 +511,23 @@ void BabyCobolParser::NameContext::exitRule(tree::ParseTreeListener *listener) {
     parserListener->exitName(this);
 }
 
+
+std::any BabyCobolParser::NameContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitName(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::NameContext* BabyCobolParser::name() {
   NameContext *_localctx = _tracker.createInstance<NameContext>(_ctx, getState());
   enterRule(_localctx, 4, BabyCobolParser::RuleName);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -279,11 +572,23 @@ void BabyCobolParser::ValueContext::exitRule(tree::ParseTreeListener *listener) 
     parserListener->exitValue(this);
 }
 
+
+std::any BabyCobolParser::ValueContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitValue(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ValueContext* BabyCobolParser::value() {
   ValueContext *_localctx = _tracker.createInstance<ValueContext>(_ctx, getState());
   enterRule(_localctx, 6, BabyCobolParser::RuleValue);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -340,12 +645,24 @@ void BabyCobolParser::DataContext::exitRule(tree::ParseTreeListener *listener) {
     parserListener->exitData(this);
 }
 
+
+std::any BabyCobolParser::DataContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitData(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::DataContext* BabyCobolParser::data() {
   DataContext *_localctx = _tracker.createInstance<DataContext>(_ctx, getState());
   enterRule(_localctx, 8, BabyCobolParser::RuleData);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -442,12 +759,24 @@ void BabyCobolParser::VariableContext::exitRule(tree::ParseTreeListener *listene
     parserListener->exitVariable(this);
 }
 
+
+std::any BabyCobolParser::VariableContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitVariable(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::VariableContext* BabyCobolParser::variable() {
   VariableContext *_localctx = _tracker.createInstance<VariableContext>(_ctx, getState());
   enterRule(_localctx, 10, BabyCobolParser::RuleVariable);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -537,11 +866,23 @@ void BabyCobolParser::LevelContext::exitRule(tree::ParseTreeListener *listener) 
     parserListener->exitLevel(this);
 }
 
+
+std::any BabyCobolParser::LevelContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitLevel(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::LevelContext* BabyCobolParser::level() {
   LevelContext *_localctx = _tracker.createInstance<LevelContext>(_ctx, getState());
   enterRule(_localctx, 12, BabyCobolParser::RuleLevel);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -590,12 +931,24 @@ void BabyCobolParser::RepresentationContext::exitRule(tree::ParseTreeListener *l
     parserListener->exitRepresentation(this);
 }
 
+
+std::any BabyCobolParser::RepresentationContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitRepresentation(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::RepresentationContext* BabyCobolParser::representation() {
   RepresentationContext *_localctx = _tracker.createInstance<RepresentationContext>(_ctx, getState());
   enterRule(_localctx, 14, BabyCobolParser::RuleRepresentation);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -673,12 +1026,24 @@ void BabyCobolParser::ProcedureContext::exitRule(tree::ParseTreeListener *listen
     parserListener->exitProcedure(this);
 }
 
+
+std::any BabyCobolParser::ProcedureContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitProcedure(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ProcedureContext* BabyCobolParser::procedure() {
   ProcedureContext *_localctx = _tracker.createInstance<ProcedureContext>(_ctx, getState());
   enterRule(_localctx, 16, BabyCobolParser::RuleProcedure);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -777,12 +1142,24 @@ void BabyCobolParser::ParagraphContext::exitRule(tree::ParseTreeListener *listen
     parserListener->exitParagraph(this);
 }
 
+
+std::any BabyCobolParser::ParagraphContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitParagraph(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ParagraphContext* BabyCobolParser::paragraph() {
   ParagraphContext *_localctx = _tracker.createInstance<ParagraphContext>(_ctx, getState());
   enterRule(_localctx, 18, BabyCobolParser::RuleParagraph);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -865,12 +1242,24 @@ void BabyCobolParser::SentenceContext::exitRule(tree::ParseTreeListener *listene
     parserListener->exitSentence(this);
 }
 
+
+std::any BabyCobolParser::SentenceContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitSentence(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::SentenceContext* BabyCobolParser::sentence() {
   SentenceContext *_localctx = _tracker.createInstance<SentenceContext>(_ctx, getState());
   enterRule(_localctx, 20, BabyCobolParser::RuleSentence);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1003,12 +1392,24 @@ void BabyCobolParser::StatementContext::exitRule(tree::ParseTreeListener *listen
     parserListener->exitStatement(this);
 }
 
+
+std::any BabyCobolParser::StatementContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitStatement(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::StatementContext* BabyCobolParser::statement() {
   StatementContext *_localctx = _tracker.createInstance<StatementContext>(_ctx, getState());
   enterRule(_localctx, 22, BabyCobolParser::RuleStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1172,11 +1573,23 @@ void BabyCobolParser::LabelContext::exitRule(tree::ParseTreeListener *listener) 
     parserListener->exitLabel(this);
 }
 
+
+std::any BabyCobolParser::LabelContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitLabel(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::LabelContext* BabyCobolParser::label() {
   LabelContext *_localctx = _tracker.createInstance<LabelContext>(_ctx, getState());
   enterRule(_localctx, 24, BabyCobolParser::RuleLabel);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1241,12 +1654,24 @@ void BabyCobolParser::DisplayContext::exitRule(tree::ParseTreeListener *listener
     parserListener->exitDisplay(this);
 }
 
+
+std::any BabyCobolParser::DisplayContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitDisplay(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::DisplayContext* BabyCobolParser::display() {
   DisplayContext *_localctx = _tracker.createInstance<DisplayContext>(_ctx, getState());
   enterRule(_localctx, 26, BabyCobolParser::RuleDisplay);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1316,11 +1741,23 @@ void BabyCobolParser::StopContext::exitRule(tree::ParseTreeListener *listener) {
     parserListener->exitStop(this);
 }
 
+
+std::any BabyCobolParser::StopContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitStop(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::StopContext* BabyCobolParser::stop() {
   StopContext *_localctx = _tracker.createInstance<StopContext>(_ctx, getState());
   enterRule(_localctx, 28, BabyCobolParser::RuleStop);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1393,12 +1830,24 @@ void BabyCobolParser::MoveContext::exitRule(tree::ParseTreeListener *listener) {
     parserListener->exitMove(this);
 }
 
+
+std::any BabyCobolParser::MoveContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitMove(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::MoveContext* BabyCobolParser::move() {
   MoveContext *_localctx = _tracker.createInstance<MoveContext>(_ctx, getState());
   enterRule(_localctx, 30, BabyCobolParser::RuleMove);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1507,12 +1956,24 @@ void BabyCobolParser::SubtractContext::exitRule(tree::ParseTreeListener *listene
     parserListener->exitSubtract(this);
 }
 
+
+std::any BabyCobolParser::SubtractContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitSubtract(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::SubtractContext* BabyCobolParser::subtract() {
   SubtractContext *_localctx = _tracker.createInstance<SubtractContext>(_ctx, getState());
   enterRule(_localctx, 32, BabyCobolParser::RuleSubtract);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1524,8 +1985,8 @@ BabyCobolParser::SubtractContext* BabyCobolParser::subtract() {
     _la = _input->LA(1);
     do {
       setState(212);
-      dynamic_cast<SubtractContext *>(_localctx)->atomicContext = atomic();
-      dynamic_cast<SubtractContext *>(_localctx)->as.push_back(dynamic_cast<SubtractContext *>(_localctx)->atomicContext);
+      antlrcpp::downCast<SubtractContext *>(_localctx)->atomicContext = atomic();
+      antlrcpp::downCast<SubtractContext *>(_localctx)->as.push_back(antlrcpp::downCast<SubtractContext *>(_localctx)->atomicContext);
       setState(215); 
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -1536,7 +1997,7 @@ BabyCobolParser::SubtractContext* BabyCobolParser::subtract() {
     setState(217);
     match(BabyCobolParser::FROM);
     setState(218);
-    dynamic_cast<SubtractContext *>(_localctx)->from = atomic();
+    antlrcpp::downCast<SubtractContext *>(_localctx)->from = atomic();
     setState(221);
     _errHandler->sync(this);
 
@@ -1545,7 +2006,7 @@ BabyCobolParser::SubtractContext* BabyCobolParser::subtract() {
       setState(219);
       match(BabyCobolParser::GIVING);
       setState(220);
-      dynamic_cast<SubtractContext *>(_localctx)->giving = identifiers();
+      antlrcpp::downCast<SubtractContext *>(_localctx)->giving = identifiers();
     }
    
   }
@@ -1605,12 +2066,24 @@ void BabyCobolParser::MultiplyContext::exitRule(tree::ParseTreeListener *listene
     parserListener->exitMultiply(this);
 }
 
+
+std::any BabyCobolParser::MultiplyContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitMultiply(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::MultiplyContext* BabyCobolParser::multiply() {
   MultiplyContext *_localctx = _tracker.createInstance<MultiplyContext>(_ctx, getState());
   enterRule(_localctx, 34, BabyCobolParser::RuleMultiply);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1618,7 +2091,7 @@ BabyCobolParser::MultiplyContext* BabyCobolParser::multiply() {
     setState(223);
     match(BabyCobolParser::MULTIPLY);
     setState(224);
-    dynamic_cast<MultiplyContext *>(_localctx)->a = atomic();
+    antlrcpp::downCast<MultiplyContext *>(_localctx)->a = atomic();
     setState(225);
     match(BabyCobolParser::BY);
     setState(227); 
@@ -1626,8 +2099,8 @@ BabyCobolParser::MultiplyContext* BabyCobolParser::multiply() {
     _la = _input->LA(1);
     do {
       setState(226);
-      dynamic_cast<MultiplyContext *>(_localctx)->atomicContext = atomic();
-      dynamic_cast<MultiplyContext *>(_localctx)->as.push_back(dynamic_cast<MultiplyContext *>(_localctx)->atomicContext);
+      antlrcpp::downCast<MultiplyContext *>(_localctx)->atomicContext = atomic();
+      antlrcpp::downCast<MultiplyContext *>(_localctx)->as.push_back(antlrcpp::downCast<MultiplyContext *>(_localctx)->atomicContext);
       setState(229); 
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -1643,7 +2116,7 @@ BabyCobolParser::MultiplyContext* BabyCobolParser::multiply() {
       setState(231);
       match(BabyCobolParser::GIVING);
       setState(232);
-      dynamic_cast<MultiplyContext *>(_localctx)->giving = identifiers();
+      antlrcpp::downCast<MultiplyContext *>(_localctx)->giving = identifiers();
     }
    
   }
@@ -1703,12 +2176,24 @@ void BabyCobolParser::PerformContext::exitRule(tree::ParseTreeListener *listener
     parserListener->exitPerform(this);
 }
 
+
+std::any BabyCobolParser::PerformContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitPerform(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::PerformContext* BabyCobolParser::perform() {
   PerformContext *_localctx = _tracker.createInstance<PerformContext>(_ctx, getState());
   enterRule(_localctx, 36, BabyCobolParser::RulePerform);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1716,7 +2201,7 @@ BabyCobolParser::PerformContext* BabyCobolParser::perform() {
     setState(235);
     match(BabyCobolParser::PERFORM);
     setState(236);
-    dynamic_cast<PerformContext *>(_localctx)->procedureName = label();
+    antlrcpp::downCast<PerformContext *>(_localctx)->procedureName = label();
     setState(239);
     _errHandler->sync(this);
 
@@ -1725,7 +2210,7 @@ BabyCobolParser::PerformContext* BabyCobolParser::perform() {
       setState(237);
       match(BabyCobolParser::THROUGH);
       setState(238);
-      dynamic_cast<PerformContext *>(_localctx)->through = label();
+      antlrcpp::downCast<PerformContext *>(_localctx)->through = label();
     }
     setState(244);
     _errHandler->sync(this);
@@ -1736,7 +2221,7 @@ BabyCobolParser::PerformContext* BabyCobolParser::perform() {
       | (1ULL << (BabyCobolParser::INT - 74))
       | (1ULL << (BabyCobolParser::LITERAL - 74)))) != 0)) {
       setState(241);
-      dynamic_cast<PerformContext *>(_localctx)->times = atomic();
+      antlrcpp::downCast<PerformContext *>(_localctx)->times = atomic();
       setState(242);
       match(BabyCobolParser::TIMES);
     }
@@ -1806,12 +2291,24 @@ void BabyCobolParser::IfStatementContext::exitRule(tree::ParseTreeListener *list
     parserListener->exitIfStatement(this);
 }
 
+
+std::any BabyCobolParser::IfStatementContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitIfStatement(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::IfStatementContext* BabyCobolParser::ifStatement() {
   IfStatementContext *_localctx = _tracker.createInstance<IfStatementContext>(_ctx, getState());
   enterRule(_localctx, 38, BabyCobolParser::RuleIfStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1827,8 +2324,8 @@ BabyCobolParser::IfStatementContext* BabyCobolParser::ifStatement() {
     _la = _input->LA(1);
     do {
       setState(249);
-      dynamic_cast<IfStatementContext *>(_localctx)->statementContext = statement();
-      dynamic_cast<IfStatementContext *>(_localctx)->t.push_back(dynamic_cast<IfStatementContext *>(_localctx)->statementContext);
+      antlrcpp::downCast<IfStatementContext *>(_localctx)->statementContext = statement();
+      antlrcpp::downCast<IfStatementContext *>(_localctx)->t.push_back(antlrcpp::downCast<IfStatementContext *>(_localctx)->statementContext);
       setState(252); 
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -1863,8 +2360,8 @@ BabyCobolParser::IfStatementContext* BabyCobolParser::ifStatement() {
       _la = _input->LA(1);
       do {
         setState(255);
-        dynamic_cast<IfStatementContext *>(_localctx)->statementContext = statement();
-        dynamic_cast<IfStatementContext *>(_localctx)->f.push_back(dynamic_cast<IfStatementContext *>(_localctx)->statementContext);
+        antlrcpp::downCast<IfStatementContext *>(_localctx)->statementContext = statement();
+        antlrcpp::downCast<IfStatementContext *>(_localctx)->f.push_back(antlrcpp::downCast<IfStatementContext *>(_localctx)->statementContext);
         setState(258); 
         _errHandler->sync(this);
         _la = _input->LA(1);
@@ -1945,12 +2442,24 @@ void BabyCobolParser::AcceptContext::exitRule(tree::ParseTreeListener *listener)
     parserListener->exitAccept(this);
 }
 
+
+std::any BabyCobolParser::AcceptContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitAccept(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::AcceptContext* BabyCobolParser::accept() {
   AcceptContext *_localctx = _tracker.createInstance<AcceptContext>(_ctx, getState());
   enterRule(_localctx, 40, BabyCobolParser::RuleAccept);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1962,8 +2471,8 @@ BabyCobolParser::AcceptContext* BabyCobolParser::accept() {
     _la = _input->LA(1);
     do {
       setState(265);
-      dynamic_cast<AcceptContext *>(_localctx)->identifiersContext = identifiers();
-      dynamic_cast<AcceptContext *>(_localctx)->id.push_back(dynamic_cast<AcceptContext *>(_localctx)->identifiersContext);
+      antlrcpp::downCast<AcceptContext *>(_localctx)->identifiersContext = identifiers();
+      antlrcpp::downCast<AcceptContext *>(_localctx)->id.push_back(antlrcpp::downCast<AcceptContext *>(_localctx)->identifiersContext);
       setState(268); 
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -2026,12 +2535,24 @@ void BabyCobolParser::AddContext::exitRule(tree::ParseTreeListener *listener) {
     parserListener->exitAdd(this);
 }
 
+
+std::any BabyCobolParser::AddContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitAdd(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::AddContext* BabyCobolParser::add() {
   AddContext *_localctx = _tracker.createInstance<AddContext>(_ctx, getState());
   enterRule(_localctx, 42, BabyCobolParser::RuleAdd);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2054,7 +2575,7 @@ BabyCobolParser::AddContext* BabyCobolParser::add() {
     setState(276);
     match(BabyCobolParser::TO);
     setState(277);
-    dynamic_cast<AddContext *>(_localctx)->to = atomic();
+    antlrcpp::downCast<AddContext *>(_localctx)->to = atomic();
     setState(280);
     _errHandler->sync(this);
 
@@ -2063,7 +2584,7 @@ BabyCobolParser::AddContext* BabyCobolParser::add() {
       setState(278);
       match(BabyCobolParser::GIVING);
       setState(279);
-      dynamic_cast<AddContext *>(_localctx)->id = identifiers();
+      antlrcpp::downCast<AddContext *>(_localctx)->id = identifiers();
     }
    
   }
@@ -2131,12 +2652,24 @@ void BabyCobolParser::DivideContext::exitRule(tree::ParseTreeListener *listener)
     parserListener->exitDivide(this);
 }
 
+
+std::any BabyCobolParser::DivideContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitDivide(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::DivideContext* BabyCobolParser::divide() {
   DivideContext *_localctx = _tracker.createInstance<DivideContext>(_ctx, getState());
   enterRule(_localctx, 44, BabyCobolParser::RuleDivide);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2144,7 +2677,7 @@ BabyCobolParser::DivideContext* BabyCobolParser::divide() {
     setState(282);
     match(BabyCobolParser::DIVIDE);
     setState(283);
-    dynamic_cast<DivideContext *>(_localctx)->a = atomic();
+    antlrcpp::downCast<DivideContext *>(_localctx)->a = atomic();
     setState(284);
     match(BabyCobolParser::INTO);
     setState(286); 
@@ -2152,8 +2685,8 @@ BabyCobolParser::DivideContext* BabyCobolParser::divide() {
     _la = _input->LA(1);
     do {
       setState(285);
-      dynamic_cast<DivideContext *>(_localctx)->atomicContext = atomic();
-      dynamic_cast<DivideContext *>(_localctx)->as.push_back(dynamic_cast<DivideContext *>(_localctx)->atomicContext);
+      antlrcpp::downCast<DivideContext *>(_localctx)->atomicContext = atomic();
+      antlrcpp::downCast<DivideContext *>(_localctx)->as.push_back(antlrcpp::downCast<DivideContext *>(_localctx)->atomicContext);
       setState(288); 
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -2169,7 +2702,7 @@ BabyCobolParser::DivideContext* BabyCobolParser::divide() {
       setState(290);
       match(BabyCobolParser::GIVING);
       setState(291);
-      dynamic_cast<DivideContext *>(_localctx)->id = identifiers();
+      antlrcpp::downCast<DivideContext *>(_localctx)->id = identifiers();
     }
     setState(296);
     _errHandler->sync(this);
@@ -2179,7 +2712,7 @@ BabyCobolParser::DivideContext* BabyCobolParser::divide() {
       setState(294);
       match(BabyCobolParser::REMAINDER);
       setState(295);
-      dynamic_cast<DivideContext *>(_localctx)->rem = identifiers();
+      antlrcpp::downCast<DivideContext *>(_localctx)->rem = identifiers();
     }
    
   }
@@ -2235,12 +2768,24 @@ void BabyCobolParser::EvaluateContext::exitRule(tree::ParseTreeListener *listene
     parserListener->exitEvaluate(this);
 }
 
+
+std::any BabyCobolParser::EvaluateContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitEvaluate(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::EvaluateContext* BabyCobolParser::evaluate() {
   EvaluateContext *_localctx = _tracker.createInstance<EvaluateContext>(_ctx, getState());
   enterRule(_localctx, 46, BabyCobolParser::RuleEvaluate);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2303,11 +2848,23 @@ void BabyCobolParser::NextSentenceContext::exitRule(tree::ParseTreeListener *lis
     parserListener->exitNextSentence(this);
 }
 
+
+std::any BabyCobolParser::NextSentenceContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitNextSentence(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::NextSentenceContext* BabyCobolParser::nextSentence() {
   NextSentenceContext *_localctx = _tracker.createInstance<NextSentenceContext>(_ctx, getState());
   enterRule(_localctx, 48, BabyCobolParser::RuleNextSentence);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2366,12 +2923,24 @@ void BabyCobolParser::LoopContext::exitRule(tree::ParseTreeListener *listener) {
     parserListener->exitLoop(this);
 }
 
+
+std::any BabyCobolParser::LoopContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitLoop(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::LoopContext* BabyCobolParser::loop() {
   LoopContext *_localctx = _tracker.createInstance<LoopContext>(_ctx, getState());
   enterRule(_localctx, 50, BabyCobolParser::RuleLoop);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2457,11 +3026,23 @@ void BabyCobolParser::GotoStatementContext::exitRule(tree::ParseTreeListener *li
     parserListener->exitGotoStatement(this);
 }
 
+
+std::any BabyCobolParser::GotoStatementContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitGotoStatement(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::GotoStatementContext* BabyCobolParser::gotoStatement() {
   GotoStatementContext *_localctx = _tracker.createInstance<GotoStatementContext>(_ctx, getState());
   enterRule(_localctx, 52, BabyCobolParser::RuleGotoStatement);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2522,11 +3103,23 @@ void BabyCobolParser::SignalContext::exitRule(tree::ParseTreeListener *listener)
     parserListener->exitSignal(this);
 }
 
+
+std::any BabyCobolParser::SignalContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitSignal(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::SignalContext* BabyCobolParser::signal() {
   SignalContext *_localctx = _tracker.createInstance<SignalContext>(_ctx, getState());
   enterRule(_localctx, 54, BabyCobolParser::RuleSignal);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2611,11 +3204,23 @@ void BabyCobolParser::AlterContext::exitRule(tree::ParseTreeListener *listener) 
     parserListener->exitAlter(this);
 }
 
+
+std::any BabyCobolParser::AlterContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitAlter(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::AlterContext* BabyCobolParser::alter() {
   AlterContext *_localctx = _tracker.createInstance<AlterContext>(_ctx, getState());
   enterRule(_localctx, 56, BabyCobolParser::RuleAlter);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2623,7 +3228,7 @@ BabyCobolParser::AlterContext* BabyCobolParser::alter() {
     setState(331);
     match(BabyCobolParser::ALTER);
     setState(332);
-    dynamic_cast<AlterContext *>(_localctx)->l1 = label();
+    antlrcpp::downCast<AlterContext *>(_localctx)->l1 = label();
     setState(333);
     match(BabyCobolParser::TO);
     setState(334);
@@ -2631,7 +3236,7 @@ BabyCobolParser::AlterContext* BabyCobolParser::alter() {
     setState(335);
     match(BabyCobolParser::TO);
     setState(336);
-    dynamic_cast<AlterContext *>(_localctx)->l2 = label();
+    antlrcpp::downCast<AlterContext *>(_localctx)->l2 = label();
    
   }
   catch (RecognitionException &e) {
@@ -2678,11 +3283,23 @@ void BabyCobolParser::AnyExpressionContext::exitRule(tree::ParseTreeListener *li
     parserListener->exitAnyExpression(this);
 }
 
+
+std::any BabyCobolParser::AnyExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitAnyExpression(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::AnyExpressionContext* BabyCobolParser::anyExpression() {
   AnyExpressionContext *_localctx = _tracker.createInstance<AnyExpressionContext>(_ctx, getState());
   enterRule(_localctx, 58, BabyCobolParser::RuleAnyExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2710,6 +3327,8 @@ BabyCobolParser::AnyExpressionContext* BabyCobolParser::anyExpression() {
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -2755,6 +3374,13 @@ void BabyCobolParser::AtomicArithmeticExpContext::exitRule(tree::ParseTreeListen
   if (parserListener != nullptr)
     parserListener->exitAtomicArithmeticExp(this);
 }
+
+std::any BabyCobolParser::AtomicArithmeticExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitAtomicArithmeticExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- ArithOpArithmeticExpContext ------------------------------------------------------------------
 
 BabyCobolParser::ArithmeticOpContext* BabyCobolParser::ArithOpArithmeticExpContext::arithmeticOp() {
@@ -2782,6 +3408,13 @@ void BabyCobolParser::ArithOpArithmeticExpContext::exitRule(tree::ParseTreeListe
     parserListener->exitArithOpArithmeticExp(this);
 }
 
+std::any BabyCobolParser::ArithOpArithmeticExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitArithOpArithmeticExp(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ArithmeticExpressionContext* BabyCobolParser::arithmeticExpression() {
    return arithmeticExpression(0);
 }
@@ -2797,7 +3430,11 @@ BabyCobolParser::ArithmeticExpressionContext* BabyCobolParser::arithmeticExpress
 
     
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
@@ -2828,7 +3465,7 @@ BabyCobolParser::ArithmeticExpressionContext* BabyCobolParser::arithmeticExpress
         setState(347);
         arithmeticOp();
         setState(348);
-        dynamic_cast<ArithOpArithmeticExpContext *>(_localctx)->right = arithmeticExpression(2); 
+        antlrcpp::downCast<ArithOpArithmeticExpContext *>(_localctx)->right = arithmeticExpression(2); 
       }
       setState(354);
       _errHandler->sync(this);
@@ -2876,6 +3513,13 @@ void BabyCobolParser::AtomicStringExpContext::exitRule(tree::ParseTreeListener *
   if (parserListener != nullptr)
     parserListener->exitAtomicStringExp(this);
 }
+
+std::any BabyCobolParser::AtomicStringExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitAtomicStringExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- AdditionStringExpContext ------------------------------------------------------------------
 
 std::vector<BabyCobolParser::StringExpressionContext *> BabyCobolParser::AdditionStringExpContext::stringExpression() {
@@ -2899,6 +3543,13 @@ void BabyCobolParser::AdditionStringExpContext::exitRule(tree::ParseTreeListener
     parserListener->exitAdditionStringExp(this);
 }
 
+std::any BabyCobolParser::AdditionStringExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitAdditionStringExp(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::StringExpressionContext* BabyCobolParser::stringExpression() {
    return stringExpression(0);
 }
@@ -2914,7 +3565,11 @@ BabyCobolParser::StringExpressionContext* BabyCobolParser::stringExpression(int 
 
     
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
@@ -2945,7 +3600,7 @@ BabyCobolParser::StringExpressionContext* BabyCobolParser::stringExpression(int 
         setState(359);
         match(BabyCobolParser::T__2);
         setState(360);
-        dynamic_cast<AdditionStringExpContext *>(_localctx)->right = stringExpression(2); 
+        antlrcpp::downCast<AdditionStringExpContext *>(_localctx)->right = stringExpression(2); 
       }
       setState(365);
       _errHandler->sync(this);
@@ -2993,6 +3648,13 @@ void BabyCobolParser::TrueBooleanExpContext::exitRule(tree::ParseTreeListener *l
   if (parserListener != nullptr)
     parserListener->exitTrueBooleanExp(this);
 }
+
+std::any BabyCobolParser::TrueBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitTrueBooleanExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- BoolOpBooleanExpContext ------------------------------------------------------------------
 
 BabyCobolParser::BooleanOpContext* BabyCobolParser::BoolOpBooleanExpContext::booleanOp() {
@@ -3019,6 +3681,13 @@ void BabyCobolParser::BoolOpBooleanExpContext::exitRule(tree::ParseTreeListener 
   if (parserListener != nullptr)
     parserListener->exitBoolOpBooleanExp(this);
 }
+
+std::any BabyCobolParser::BoolOpBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitBoolOpBooleanExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- FalseBooleanExpContext ------------------------------------------------------------------
 
 tree::TerminalNode* BabyCobolParser::FalseBooleanExpContext::FALSE() {
@@ -3036,6 +3705,13 @@ void BabyCobolParser::FalseBooleanExpContext::exitRule(tree::ParseTreeListener *
   auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
   if (parserListener != nullptr)
     parserListener->exitFalseBooleanExp(this);
+}
+
+std::any BabyCobolParser::FalseBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitFalseBooleanExp(this);
+  else
+    return visitor->visitChildren(this);
 }
 //----------------- ContractedBooleanExpContext ------------------------------------------------------------------
 
@@ -3071,6 +3747,13 @@ void BabyCobolParser::ContractedBooleanExpContext::exitRule(tree::ParseTreeListe
   if (parserListener != nullptr)
     parserListener->exitContractedBooleanExp(this);
 }
+
+std::any BabyCobolParser::ContractedBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitContractedBooleanExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- NotBooleanExpContext ------------------------------------------------------------------
 
 tree::TerminalNode* BabyCobolParser::NotBooleanExpContext::NOT() {
@@ -3092,6 +3775,13 @@ void BabyCobolParser::NotBooleanExpContext::exitRule(tree::ParseTreeListener *li
   auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
   if (parserListener != nullptr)
     parserListener->exitNotBooleanExp(this);
+}
+
+std::any BabyCobolParser::NotBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitNotBooleanExp(this);
+  else
+    return visitor->visitChildren(this);
 }
 //----------------- CompareOpBooleanExpContext ------------------------------------------------------------------
 
@@ -3120,6 +3810,13 @@ void BabyCobolParser::CompareOpBooleanExpContext::exitRule(tree::ParseTreeListen
     parserListener->exitCompareOpBooleanExp(this);
 }
 
+std::any BabyCobolParser::CompareOpBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitCompareOpBooleanExp(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression() {
    return booleanExpression(0);
 }
@@ -3135,7 +3832,11 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
 
     
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
@@ -3168,11 +3869,11 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       _ctx = _localctx;
       previousContext = _localctx;
       setState(369);
-      dynamic_cast<ContractedBooleanExpContext *>(_localctx)->left = atomic();
+      antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->left = atomic();
       setState(370);
       comparisonOp();
       setState(371);
-      dynamic_cast<ContractedBooleanExpContext *>(_localctx)->right = arithmeticExpression(0);
+      antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->right = arithmeticExpression(0);
       setState(373); 
       _errHandler->sync(this);
       alt = 1;
@@ -3180,8 +3881,8 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
         switch (alt) {
           case 1: {
                 setState(372);
-                dynamic_cast<ContractedBooleanExpContext *>(_localctx)->contractedBooleanPartContext = contractedBooleanPart();
-                dynamic_cast<ContractedBooleanExpContext *>(_localctx)->contract.push_back(dynamic_cast<ContractedBooleanExpContext *>(_localctx)->contractedBooleanPartContext);
+                antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->contractedBooleanPartContext = contractedBooleanPart();
+                antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->contract.push_back(antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->contractedBooleanPartContext);
                 break;
               }
 
@@ -3200,11 +3901,11 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       _ctx = _localctx;
       previousContext = _localctx;
       setState(377);
-      dynamic_cast<CompareOpBooleanExpContext *>(_localctx)->left = arithmeticExpression(0);
+      antlrcpp::downCast<CompareOpBooleanExpContext *>(_localctx)->left = arithmeticExpression(0);
       setState(378);
       comparisonOp();
       setState(379);
-      dynamic_cast<CompareOpBooleanExpContext *>(_localctx)->right = arithmeticExpression(0);
+      antlrcpp::downCast<CompareOpBooleanExpContext *>(_localctx)->right = arithmeticExpression(0);
       break;
     }
 
@@ -3219,6 +3920,8 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       break;
     }
 
+    default:
+      break;
     }
     _ctx->stop = _input->LT(-1);
     setState(391);
@@ -3239,7 +3942,7 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
         setState(386);
         booleanOp();
         setState(387);
-        dynamic_cast<BoolOpBooleanExpContext *>(_localctx)->right = booleanExpression(2); 
+        antlrcpp::downCast<BoolOpBooleanExpContext *>(_localctx)->right = booleanExpression(2); 
       }
       setState(393);
       _errHandler->sync(this);
@@ -3311,6 +4014,13 @@ void BabyCobolParser::VaryingLoopExpContext::exitRule(tree::ParseTreeListener *l
   if (parserListener != nullptr)
     parserListener->exitVaryingLoopExp(this);
 }
+
+std::any BabyCobolParser::VaryingLoopExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitVaryingLoopExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- LoopStatementContext ------------------------------------------------------------------
 
 BabyCobolParser::StatementContext* BabyCobolParser::LoopStatementContext::statement() {
@@ -3328,6 +4038,13 @@ void BabyCobolParser::LoopStatementContext::exitRule(tree::ParseTreeListener *li
   auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
   if (parserListener != nullptr)
     parserListener->exitLoopStatement(this);
+}
+
+std::any BabyCobolParser::LoopStatementContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitLoopStatement(this);
+  else
+    return visitor->visitChildren(this);
 }
 //----------------- UntilLoopExpContext ------------------------------------------------------------------
 
@@ -3351,6 +4068,13 @@ void BabyCobolParser::UntilLoopExpContext::exitRule(tree::ParseTreeListener *lis
   if (parserListener != nullptr)
     parserListener->exitUntilLoopExp(this);
 }
+
+std::any BabyCobolParser::UntilLoopExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitUntilLoopExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- WhileLoopExpContext ------------------------------------------------------------------
 
 tree::TerminalNode* BabyCobolParser::WhileLoopExpContext::WHILE() {
@@ -3373,12 +4097,23 @@ void BabyCobolParser::WhileLoopExpContext::exitRule(tree::ParseTreeListener *lis
   if (parserListener != nullptr)
     parserListener->exitWhileLoopExp(this);
 }
+
+std::any BabyCobolParser::WhileLoopExpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitWhileLoopExp(this);
+  else
+    return visitor->visitChildren(this);
+}
 BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
   LoopExpressionContext *_localctx = _tracker.createInstance<LoopExpressionContext>(_ctx, getState());
   enterRule(_localctx, 66, BabyCobolParser::RuleLoopExpression);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3386,7 +4121,7 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case BabyCobolParser::VARYING: {
-        _localctx = dynamic_cast<LoopExpressionContext *>(_tracker.createInstance<BabyCobolParser::VaryingLoopExpContext>(_localctx));
+        _localctx = _tracker.createInstance<BabyCobolParser::VaryingLoopExpContext>(_localctx);
         enterOuterAlt(_localctx, 1);
         setState(394);
         match(BabyCobolParser::VARYING);
@@ -3396,7 +4131,7 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
         _la = _input->LA(1);
         if (_la == BabyCobolParser::IDENTIFIER) {
           setState(395);
-          dynamic_cast<VaryingLoopExpContext *>(_localctx)->id = identifiers();
+          antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->id = identifiers();
         }
         setState(400);
         _errHandler->sync(this);
@@ -3406,7 +4141,7 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
           setState(398);
           match(BabyCobolParser::FROM);
           setState(399);
-          dynamic_cast<VaryingLoopExpContext *>(_localctx)->from = atomic();
+          antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->from = atomic();
         }
         setState(404);
         _errHandler->sync(this);
@@ -3416,7 +4151,7 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
           setState(402);
           match(BabyCobolParser::TO);
           setState(403);
-          dynamic_cast<VaryingLoopExpContext *>(_localctx)->to = atomic();
+          antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->to = atomic();
         }
         setState(408);
         _errHandler->sync(this);
@@ -3426,13 +4161,13 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
           setState(406);
           match(BabyCobolParser::BY);
           setState(407);
-          dynamic_cast<VaryingLoopExpContext *>(_localctx)->by = atomic();
+          antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->by = atomic();
         }
         break;
       }
 
       case BabyCobolParser::WHILE: {
-        _localctx = dynamic_cast<LoopExpressionContext *>(_tracker.createInstance<BabyCobolParser::WhileLoopExpContext>(_localctx));
+        _localctx = _tracker.createInstance<BabyCobolParser::WhileLoopExpContext>(_localctx);
         enterOuterAlt(_localctx, 2);
         setState(410);
         match(BabyCobolParser::WHILE);
@@ -3442,7 +4177,7 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
       }
 
       case BabyCobolParser::UNTIL: {
-        _localctx = dynamic_cast<LoopExpressionContext *>(_tracker.createInstance<BabyCobolParser::UntilLoopExpContext>(_localctx));
+        _localctx = _tracker.createInstance<BabyCobolParser::UntilLoopExpContext>(_localctx);
         enterOuterAlt(_localctx, 3);
         setState(412);
         match(BabyCobolParser::UNTIL);
@@ -3469,7 +4204,7 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
       case BabyCobolParser::GO:
       case BabyCobolParser::SIGNAL:
       case BabyCobolParser::ALTER: {
-        _localctx = dynamic_cast<LoopExpressionContext *>(_tracker.createInstance<BabyCobolParser::LoopStatementContext>(_localctx));
+        _localctx = _tracker.createInstance<BabyCobolParser::LoopStatementContext>(_localctx);
         enterOuterAlt(_localctx, 4);
         setState(414);
         statement();
@@ -3525,12 +4260,24 @@ void BabyCobolParser::ContractedBooleanPartContext::exitRule(tree::ParseTreeList
     parserListener->exitContractedBooleanPart(this);
 }
 
+
+std::any BabyCobolParser::ContractedBooleanPartContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitContractedBooleanPart(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ContractedBooleanPartContext* BabyCobolParser::contractedBooleanPart() {
   ContractedBooleanPartContext *_localctx = _tracker.createInstance<ContractedBooleanPartContext>(_ctx, getState());
   enterRule(_localctx, 68, BabyCobolParser::RuleContractedBooleanPart);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3587,12 +4334,24 @@ void BabyCobolParser::ComparisonOpContext::exitRule(tree::ParseTreeListener *lis
     parserListener->exitComparisonOp(this);
 }
 
+
+std::any BabyCobolParser::ComparisonOpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitComparisonOp(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ComparisonOpContext* BabyCobolParser::comparisonOp() {
   ComparisonOpContext *_localctx = _tracker.createInstance<ComparisonOpContext>(_ctx, getState());
   enterRule(_localctx, 70, BabyCobolParser::RuleComparisonOp);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3658,12 +4417,24 @@ void BabyCobolParser::BooleanOpContext::exitRule(tree::ParseTreeListener *listen
     parserListener->exitBooleanOp(this);
 }
 
+
+std::any BabyCobolParser::BooleanOpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitBooleanOp(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::BooleanOpContext* BabyCobolParser::booleanOp() {
   BooleanOpContext *_localctx = _tracker.createInstance<BooleanOpContext>(_ctx, getState());
   enterRule(_localctx, 72, BabyCobolParser::RuleBooleanOp);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3714,12 +4485,24 @@ void BabyCobolParser::ArithmeticOpContext::exitRule(tree::ParseTreeListener *lis
     parserListener->exitArithmeticOp(this);
 }
 
+
+std::any BabyCobolParser::ArithmeticOpContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitArithmeticOp(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::ArithmeticOpContext* BabyCobolParser::arithmeticOp() {
   ArithmeticOpContext *_localctx = _tracker.createInstance<ArithmeticOpContext>(_ctx, getState());
   enterRule(_localctx, 74, BabyCobolParser::RuleArithmeticOp);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3794,6 +4577,13 @@ void BabyCobolParser::WhenOtherContext::exitRule(tree::ParseTreeListener *listen
   if (parserListener != nullptr)
     parserListener->exitWhenOther(this);
 }
+
+std::any BabyCobolParser::WhenOtherContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitWhenOther(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- WhenAnyExpressionContext ------------------------------------------------------------------
 
 tree::TerminalNode* BabyCobolParser::WhenAnyExpressionContext::WHEN() {
@@ -3828,12 +4618,23 @@ void BabyCobolParser::WhenAnyExpressionContext::exitRule(tree::ParseTreeListener
   if (parserListener != nullptr)
     parserListener->exitWhenAnyExpression(this);
 }
+
+std::any BabyCobolParser::WhenAnyExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitWhenAnyExpression(this);
+  else
+    return visitor->visitChildren(this);
+}
 BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
   WhenBlockContext *_localctx = _tracker.createInstance<WhenBlockContext>(_ctx, getState());
   enterRule(_localctx, 76, BabyCobolParser::RuleWhenBlock);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3841,7 +4642,7 @@ BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 48, _ctx)) {
     case 1: {
-      _localctx = dynamic_cast<WhenBlockContext *>(_tracker.createInstance<BabyCobolParser::WhenAnyExpressionContext>(_localctx));
+      _localctx = _tracker.createInstance<BabyCobolParser::WhenAnyExpressionContext>(_localctx);
       enterOuterAlt(_localctx, 1);
       setState(429);
       match(BabyCobolParser::WHEN);
@@ -3893,7 +4694,7 @@ BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
     }
 
     case 2: {
-      _localctx = dynamic_cast<WhenBlockContext *>(_tracker.createInstance<BabyCobolParser::WhenOtherContext>(_localctx));
+      _localctx = _tracker.createInstance<BabyCobolParser::WhenOtherContext>(_localctx);
       enterOuterAlt(_localctx, 2);
       setState(440);
       match(BabyCobolParser::WHEN);
@@ -3930,6 +4731,8 @@ BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -3975,6 +4778,13 @@ void BabyCobolParser::IdentifierContext::exitRule(tree::ParseTreeListener *liste
   if (parserListener != nullptr)
     parserListener->exitIdentifier(this);
 }
+
+std::any BabyCobolParser::IdentifierContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitIdentifier(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- StringLiteralContext ------------------------------------------------------------------
 
 tree::TerminalNode* BabyCobolParser::StringLiteralContext::LITERAL() {
@@ -3992,6 +4802,13 @@ void BabyCobolParser::StringLiteralContext::exitRule(tree::ParseTreeListener *li
   auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
   if (parserListener != nullptr)
     parserListener->exitStringLiteral(this);
+}
+
+std::any BabyCobolParser::StringLiteralContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitStringLiteral(this);
+  else
+    return visitor->visitChildren(this);
 }
 //----------------- IntLiteralContext ------------------------------------------------------------------
 
@@ -4011,11 +4828,22 @@ void BabyCobolParser::IntLiteralContext::exitRule(tree::ParseTreeListener *liste
   if (parserListener != nullptr)
     parserListener->exitIntLiteral(this);
 }
+
+std::any BabyCobolParser::IntLiteralContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitIntLiteral(this);
+  else
+    return visitor->visitChildren(this);
+}
 BabyCobolParser::AtomicContext* BabyCobolParser::atomic() {
   AtomicContext *_localctx = _tracker.createInstance<AtomicContext>(_ctx, getState());
   enterRule(_localctx, 78, BabyCobolParser::RuleAtomic);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -4023,7 +4851,7 @@ BabyCobolParser::AtomicContext* BabyCobolParser::atomic() {
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case BabyCobolParser::INT: {
-        _localctx = dynamic_cast<AtomicContext *>(_tracker.createInstance<BabyCobolParser::IntLiteralContext>(_localctx));
+        _localctx = _tracker.createInstance<BabyCobolParser::IntLiteralContext>(_localctx);
         enterOuterAlt(_localctx, 1);
         setState(449);
         match(BabyCobolParser::INT);
@@ -4031,7 +4859,7 @@ BabyCobolParser::AtomicContext* BabyCobolParser::atomic() {
       }
 
       case BabyCobolParser::LITERAL: {
-        _localctx = dynamic_cast<AtomicContext *>(_tracker.createInstance<BabyCobolParser::StringLiteralContext>(_localctx));
+        _localctx = _tracker.createInstance<BabyCobolParser::StringLiteralContext>(_localctx);
         enterOuterAlt(_localctx, 2);
         setState(450);
         match(BabyCobolParser::LITERAL);
@@ -4039,7 +4867,7 @@ BabyCobolParser::AtomicContext* BabyCobolParser::atomic() {
       }
 
       case BabyCobolParser::IDENTIFIER: {
-        _localctx = dynamic_cast<AtomicContext *>(_tracker.createInstance<BabyCobolParser::IdentifierContext>(_localctx));
+        _localctx = _tracker.createInstance<BabyCobolParser::IdentifierContext>(_localctx);
         enterOuterAlt(_localctx, 3);
         setState(451);
         identifiers();
@@ -4103,11 +4931,23 @@ void BabyCobolParser::IdentifiersContext::exitRule(tree::ParseTreeListener *list
     parserListener->exitIdentifiers(this);
 }
 
+
+std::any BabyCobolParser::IdentifiersContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
+    return parserVisitor->visitIdentifiers(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 BabyCobolParser::IdentifiersContext* BabyCobolParser::identifiers() {
   IdentifiersContext *_localctx = _tracker.createInstance<IdentifiersContext>(_ctx, getState());
   enterRule(_localctx, 80, BabyCobolParser::RuleIdentifiers);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -4143,6 +4983,8 @@ BabyCobolParser::IdentifiersContext* BabyCobolParser::identifiers() {
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -4157,9 +4999,9 @@ BabyCobolParser::IdentifiersContext* BabyCobolParser::identifiers() {
 
 bool BabyCobolParser::sempred(RuleContext *context, size_t ruleIndex, size_t predicateIndex) {
   switch (ruleIndex) {
-    case 30: return arithmeticExpressionSempred(dynamic_cast<ArithmeticExpressionContext *>(context), predicateIndex);
-    case 31: return stringExpressionSempred(dynamic_cast<StringExpressionContext *>(context), predicateIndex);
-    case 32: return booleanExpressionSempred(dynamic_cast<BooleanExpressionContext *>(context), predicateIndex);
+    case 30: return arithmeticExpressionSempred(antlrcpp::downCast<ArithmeticExpressionContext *>(context), predicateIndex);
+    case 31: return stringExpressionSempred(antlrcpp::downCast<StringExpressionContext *>(context), predicateIndex);
+    case 32: return booleanExpressionSempred(antlrcpp::downCast<BooleanExpressionContext *>(context), predicateIndex);
 
   default:
     break;
@@ -4197,410 +5039,6 @@ bool BabyCobolParser::booleanExpressionSempred(BooleanExpressionContext *_localc
   return true;
 }
 
-// Static vars and initialization.
-std::vector<dfa::DFA> BabyCobolParser::_decisionToDFA;
-atn::PredictionContextCache BabyCobolParser::_sharedContextCache;
-
-// We own the ATN which in turn owns the ATN states.
-atn::ATN BabyCobolParser::_atn;
-std::vector<uint16_t> BabyCobolParser::_serializedATN;
-
-std::vector<std::string> BabyCobolParser::_ruleNames = {
-  "program", "identification", "name", "value", "data", "variable", "level", 
-  "representation", "procedure", "paragraph", "sentence", "statement", "label", 
-  "display", "stop", "move", "subtract", "multiply", "perform", "ifStatement", 
-  "accept", "add", "divide", "evaluate", "nextSentence", "loop", "gotoStatement", 
-  "signal", "alter", "anyExpression", "arithmeticExpression", "stringExpression", 
-  "booleanExpression", "loopExpression", "contractedBooleanPart", "comparisonOp", 
-  "booleanOp", "arithmeticOp", "whenBlock", "atomic", "identifiers"
-};
-
-std::vector<std::string> BabyCobolParser::_literalNames = {
-  "", "'*'", "'-'", "'+'", "'='", "'>'", "'<'", "'>='", "'<='", "'!='", 
-  "'/'", "'**'", "'('", "')'", "'IDENTIFICATION'", "'DIVISION'", "'PROCEDURE'", 
-  "'DATA'", "'DISPLAY'", "'WITH'", "'NO'", "'ADVANCING'", "'STOP'", "'MOVE'", 
-  "'TO'", "'SUBTRACT'", "'FROM'", "'GIVING'", "'MULTIPLY'", "'BY'", "'PERFORM'", 
-  "'TIMES'", "'IF'", "'THEN'", "'ELSE'", "'END'", "'ACCEPT'", "'ADD'", "'DIVIDE'", 
-  "'INTO'", "'EVALUATE'", "'WHEN'", "'OTHER'", "'TRUE'", "'FALSE'", "'NOT'", 
-  "'OR'", "'AND'", "'XOR'", "'NEXT'", "'SENTENCE'", "'REMAINDER'", "'LOOP'", 
-  "'VARYING'", "'WHILE'", "'UNTIL'", "'OF'", "'THROUGH'", "'PICTURE'", "'IS'", 
-  "'LIKE'", "'OCCURS'", "'GO'", "'SPACES'", "'HIGH-VALUES'", "'LOW-VALUES'", 
-  "'SIGNAL'", "'ON ERROR'", "'OFF'", "'ALTER'", "'PROCEED'", "", "", "", 
-  "", "", "", "'.'"
-};
-
-std::vector<std::string> BabyCobolParser::_symbolicNames = {
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "IDENTIFICATION", 
-  "DIVISION", "PROCEDURE", "DATA", "DISPLAY", "WITH", "NO", "ADVANCING", 
-  "STOP", "MOVE", "TO", "SUBTRACT", "FROM", "GIVING", "MULTIPLY", "BY", 
-  "PERFORM", "TIMES", "IF", "THEN", "ELSE", "END", "ACCEPT", "ADD", "DIVIDE", 
-  "INTO", "EVALUATE", "WHEN", "OTHER", "TRUE", "FALSE", "NOT", "OR", "AND", 
-  "XOR", "NEXT", "SENTENCE", "REMAINDER", "LOOP", "VARYING", "WHILE", "UNTIL", 
-  "OF", "THROUGH", "PICTURE", "IS", "LIKE", "OCCURS", "GO", "SPACES", "HIGH", 
-  "LOW", "SIGNAL", "ONERROR", "OFF", "ALTER", "PROCEED", "NINE", "X", "COMMENTLINE", 
-  "IDENTIFIER", "INT", "LITERAL", "DOT", "VAR", "WS"
-};
-
-dfa::Vocabulary BabyCobolParser::_vocabulary(_literalNames, _symbolicNames);
-
-std::vector<std::string> BabyCobolParser::_tokenNames;
-
-BabyCobolParser::Initializer::Initializer() {
-	for (size_t i = 0; i < _symbolicNames.size(); ++i) {
-		std::string name = _vocabulary.getLiteralName(i);
-		if (name.empty()) {
-			name = _vocabulary.getSymbolicName(i);
-		}
-
-		if (name.empty()) {
-			_tokenNames.push_back("<INVALID>");
-		} else {
-      _tokenNames.push_back(name);
-    }
-	}
-
-  _serializedATN = {
-    0x3, 0x608b, 0xa72a, 0x8133, 0xb9ed, 0x417c, 0x3be7, 0x7786, 0x5964, 
-    0x3, 0x51, 0x1d6, 0x4, 0x2, 0x9, 0x2, 0x4, 0x3, 0x9, 0x3, 0x4, 0x4, 
-    0x9, 0x4, 0x4, 0x5, 0x9, 0x5, 0x4, 0x6, 0x9, 0x6, 0x4, 0x7, 0x9, 0x7, 
-    0x4, 0x8, 0x9, 0x8, 0x4, 0x9, 0x9, 0x9, 0x4, 0xa, 0x9, 0xa, 0x4, 0xb, 
-    0x9, 0xb, 0x4, 0xc, 0x9, 0xc, 0x4, 0xd, 0x9, 0xd, 0x4, 0xe, 0x9, 0xe, 
-    0x4, 0xf, 0x9, 0xf, 0x4, 0x10, 0x9, 0x10, 0x4, 0x11, 0x9, 0x11, 0x4, 
-    0x12, 0x9, 0x12, 0x4, 0x13, 0x9, 0x13, 0x4, 0x14, 0x9, 0x14, 0x4, 0x15, 
-    0x9, 0x15, 0x4, 0x16, 0x9, 0x16, 0x4, 0x17, 0x9, 0x17, 0x4, 0x18, 0x9, 
-    0x18, 0x4, 0x19, 0x9, 0x19, 0x4, 0x1a, 0x9, 0x1a, 0x4, 0x1b, 0x9, 0x1b, 
-    0x4, 0x1c, 0x9, 0x1c, 0x4, 0x1d, 0x9, 0x1d, 0x4, 0x1e, 0x9, 0x1e, 0x4, 
-    0x1f, 0x9, 0x1f, 0x4, 0x20, 0x9, 0x20, 0x4, 0x21, 0x9, 0x21, 0x4, 0x22, 
-    0x9, 0x22, 0x4, 0x23, 0x9, 0x23, 0x4, 0x24, 0x9, 0x24, 0x4, 0x25, 0x9, 
-    0x25, 0x4, 0x26, 0x9, 0x26, 0x4, 0x27, 0x9, 0x27, 0x4, 0x28, 0x9, 0x28, 
-    0x4, 0x29, 0x9, 0x29, 0x4, 0x2a, 0x9, 0x2a, 0x3, 0x2, 0x3, 0x2, 0x5, 
-    0x2, 0x57, 0xa, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x3, 0x3, 0x3, 
-    0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x7, 0x3, 
-    0x64, 0xa, 0x3, 0xc, 0x3, 0xe, 0x3, 0x67, 0xb, 0x3, 0x3, 0x4, 0x3, 0x4, 
-    0x3, 0x5, 0x3, 0x5, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x7, 0x6, 0x70, 0xa, 
-    0x6, 0xc, 0x6, 0xe, 0x6, 0x73, 0xb, 0x6, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 
-    0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x5, 0x7, 0x7c, 0xa, 0x7, 0x3, 
-    0x7, 0x3, 0x7, 0x3, 0x7, 0x5, 0x7, 0x81, 0xa, 0x7, 0x3, 0x7, 0x3, 0x7, 
-    0x3, 0x8, 0x3, 0x8, 0x3, 0x9, 0x3, 0x9, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 
-    0x3, 0xa, 0x7, 0xa, 0x8d, 0xa, 0xa, 0xc, 0xa, 0xe, 0xa, 0x90, 0xb, 0xa, 
-    0x3, 0xa, 0x6, 0xa, 0x93, 0xa, 0xa, 0xd, 0xa, 0xe, 0xa, 0x94, 0x3, 0xb, 
-    0x3, 0xb, 0x3, 0xb, 0x6, 0xb, 0x9a, 0xa, 0xb, 0xd, 0xb, 0xe, 0xb, 0x9b, 
-    0x3, 0xc, 0x6, 0xc, 0x9f, 0xa, 0xc, 0xd, 0xc, 0xe, 0xc, 0xa0, 0x3, 0xc, 
-    0x3, 0xc, 0x3, 0xd, 0x5, 0xd, 0xa6, 0xa, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 
-    0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 
-    0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xd, 0x5, 
-    0xd, 0xb8, 0xa, 0xd, 0x3, 0xe, 0x3, 0xe, 0x3, 0xf, 0x3, 0xf, 0x6, 0xf, 
-    0xbe, 0xa, 0xf, 0xd, 0xf, 0xe, 0xf, 0xbf, 0x3, 0xf, 0x3, 0xf, 0x3, 0xf, 
-    0x5, 0xf, 0xc5, 0xa, 0xf, 0x3, 0x10, 0x3, 0x10, 0x3, 0x11, 0x3, 0x11, 
-    0x3, 0x11, 0x3, 0x11, 0x3, 0x11, 0x5, 0x11, 0xce, 0xa, 0x11, 0x3, 0x11, 
-    0x3, 0x11, 0x6, 0x11, 0xd2, 0xa, 0x11, 0xd, 0x11, 0xe, 0x11, 0xd3, 0x3, 
-    0x12, 0x3, 0x12, 0x6, 0x12, 0xd8, 0xa, 0x12, 0xd, 0x12, 0xe, 0x12, 0xd9, 
-    0x3, 0x12, 0x3, 0x12, 0x3, 0x12, 0x3, 0x12, 0x5, 0x12, 0xe0, 0xa, 0x12, 
-    0x3, 0x13, 0x3, 0x13, 0x3, 0x13, 0x3, 0x13, 0x6, 0x13, 0xe6, 0xa, 0x13, 
-    0xd, 0x13, 0xe, 0x13, 0xe7, 0x3, 0x13, 0x3, 0x13, 0x5, 0x13, 0xec, 0xa, 
-    0x13, 0x3, 0x14, 0x3, 0x14, 0x3, 0x14, 0x3, 0x14, 0x5, 0x14, 0xf2, 0xa, 
-    0x14, 0x3, 0x14, 0x3, 0x14, 0x3, 0x14, 0x5, 0x14, 0xf7, 0xa, 0x14, 0x3, 
-    0x15, 0x3, 0x15, 0x3, 0x15, 0x3, 0x15, 0x6, 0x15, 0xfd, 0xa, 0x15, 0xd, 
-    0x15, 0xe, 0x15, 0xfe, 0x3, 0x15, 0x3, 0x15, 0x6, 0x15, 0x103, 0xa, 
-    0x15, 0xd, 0x15, 0xe, 0x15, 0x104, 0x5, 0x15, 0x107, 0xa, 0x15, 0x3, 
-    0x15, 0x3, 0x15, 0x3, 0x16, 0x3, 0x16, 0x6, 0x16, 0x10d, 0xa, 0x16, 
-    0xd, 0x16, 0xe, 0x16, 0x10e, 0x3, 0x17, 0x3, 0x17, 0x6, 0x17, 0x113, 
-    0xa, 0x17, 0xd, 0x17, 0xe, 0x17, 0x114, 0x3, 0x17, 0x3, 0x17, 0x3, 0x17, 
-    0x3, 0x17, 0x5, 0x17, 0x11b, 0xa, 0x17, 0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 
-    0x3, 0x18, 0x6, 0x18, 0x121, 0xa, 0x18, 0xd, 0x18, 0xe, 0x18, 0x122, 
-    0x3, 0x18, 0x3, 0x18, 0x5, 0x18, 0x127, 0xa, 0x18, 0x3, 0x18, 0x3, 0x18, 
-    0x5, 0x18, 0x12b, 0xa, 0x18, 0x3, 0x19, 0x3, 0x19, 0x3, 0x19, 0x7, 0x19, 
-    0x130, 0xa, 0x19, 0xc, 0x19, 0xe, 0x19, 0x133, 0xb, 0x19, 0x3, 0x19, 
-    0x3, 0x19, 0x3, 0x1a, 0x3, 0x1a, 0x3, 0x1a, 0x3, 0x1b, 0x3, 0x1b, 0x7, 
-    0x1b, 0x13c, 0xa, 0x1b, 0xc, 0x1b, 0xe, 0x1b, 0x13f, 0xb, 0x1b, 0x3, 
-    0x1b, 0x3, 0x1b, 0x3, 0x1c, 0x3, 0x1c, 0x3, 0x1c, 0x3, 0x1c, 0x3, 0x1d, 
-    0x3, 0x1d, 0x3, 0x1d, 0x5, 0x1d, 0x14a, 0xa, 0x1d, 0x3, 0x1d, 0x3, 0x1d, 
-    0x3, 0x1e, 0x3, 0x1e, 0x3, 0x1e, 0x3, 0x1e, 0x3, 0x1e, 0x3, 0x1e, 0x3, 
-    0x1e, 0x3, 0x1f, 0x3, 0x1f, 0x3, 0x1f, 0x5, 0x1f, 0x158, 0xa, 0x1f, 
-    0x3, 0x20, 0x3, 0x20, 0x3, 0x20, 0x3, 0x20, 0x3, 0x20, 0x3, 0x20, 0x3, 
-    0x20, 0x7, 0x20, 0x161, 0xa, 0x20, 0xc, 0x20, 0xe, 0x20, 0x164, 0xb, 
-    0x20, 0x3, 0x21, 0x3, 0x21, 0x3, 0x21, 0x3, 0x21, 0x3, 0x21, 0x3, 0x21, 
-    0x7, 0x21, 0x16c, 0xa, 0x21, 0xc, 0x21, 0xe, 0x21, 0x16f, 0xb, 0x21, 
-    0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 
-    0x22, 0x6, 0x22, 0x178, 0xa, 0x22, 0xd, 0x22, 0xe, 0x22, 0x179, 0x3, 
-    0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x5, 0x22, 
-    0x182, 0xa, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x7, 0x22, 
-    0x188, 0xa, 0x22, 0xc, 0x22, 0xe, 0x22, 0x18b, 0xb, 0x22, 0x3, 0x23, 
-    0x3, 0x23, 0x5, 0x23, 0x18f, 0xa, 0x23, 0x3, 0x23, 0x3, 0x23, 0x5, 0x23, 
-    0x193, 0xa, 0x23, 0x3, 0x23, 0x3, 0x23, 0x5, 0x23, 0x197, 0xa, 0x23, 
-    0x3, 0x23, 0x3, 0x23, 0x5, 0x23, 0x19b, 0xa, 0x23, 0x3, 0x23, 0x3, 0x23, 
-    0x3, 0x23, 0x3, 0x23, 0x3, 0x23, 0x5, 0x23, 0x1a2, 0xa, 0x23, 0x3, 0x24, 
-    0x3, 0x24, 0x5, 0x24, 0x1a6, 0xa, 0x24, 0x3, 0x24, 0x3, 0x24, 0x3, 0x25, 
-    0x3, 0x25, 0x3, 0x26, 0x3, 0x26, 0x3, 0x27, 0x3, 0x27, 0x3, 0x28, 0x3, 
-    0x28, 0x6, 0x28, 0x1b2, 0xa, 0x28, 0xd, 0x28, 0xe, 0x28, 0x1b3, 0x3, 
-    0x28, 0x6, 0x28, 0x1b7, 0xa, 0x28, 0xd, 0x28, 0xe, 0x28, 0x1b8, 0x3, 
-    0x28, 0x3, 0x28, 0x3, 0x28, 0x6, 0x28, 0x1be, 0xa, 0x28, 0xd, 0x28, 
-    0xe, 0x28, 0x1bf, 0x5, 0x28, 0x1c2, 0xa, 0x28, 0x3, 0x29, 0x3, 0x29, 
-    0x3, 0x29, 0x5, 0x29, 0x1c7, 0xa, 0x29, 0x3, 0x2a, 0x3, 0x2a, 0x3, 0x2a, 
-    0x7, 0x2a, 0x1cc, 0xa, 0x2a, 0xc, 0x2a, 0xe, 0x2a, 0x1cf, 0xb, 0x2a, 
-    0x3, 0x2a, 0x3, 0x2a, 0x3, 0x2a, 0x5, 0x2a, 0x1d4, 0xa, 0x2a, 0x3, 0x2a, 
-    0x2, 0x5, 0x3e, 0x40, 0x42, 0x2b, 0x2, 0x4, 0x6, 0x8, 0xa, 0xc, 0xe, 
-    0x10, 0x12, 0x14, 0x16, 0x18, 0x1a, 0x1c, 0x1e, 0x20, 0x22, 0x24, 0x26, 
-    0x28, 0x2a, 0x2c, 0x2e, 0x30, 0x32, 0x34, 0x36, 0x38, 0x3a, 0x3c, 0x3e, 
-    0x40, 0x42, 0x44, 0x46, 0x48, 0x4a, 0x4c, 0x4e, 0x50, 0x52, 0x2, 0x8, 
-    0x3, 0x2, 0x49, 0x4a, 0x3, 0x2, 0x3, 0x4, 0x4, 0x2, 0x25, 0x25, 0x4f, 
-    0x4f, 0x3, 0x2, 0x6, 0xb, 0x3, 0x2, 0x30, 0x32, 0x4, 0x2, 0x3, 0x5, 
-    0xc, 0xd, 0x2, 0x1f8, 0x2, 0x54, 0x3, 0x2, 0x2, 0x2, 0x4, 0x5b, 0x3, 
-    0x2, 0x2, 0x2, 0x6, 0x68, 0x3, 0x2, 0x2, 0x2, 0x8, 0x6a, 0x3, 0x2, 0x2, 
-    0x2, 0xa, 0x6c, 0x3, 0x2, 0x2, 0x2, 0xc, 0x74, 0x3, 0x2, 0x2, 0x2, 0xe, 
-    0x84, 0x3, 0x2, 0x2, 0x2, 0x10, 0x86, 0x3, 0x2, 0x2, 0x2, 0x12, 0x88, 
-    0x3, 0x2, 0x2, 0x2, 0x14, 0x96, 0x3, 0x2, 0x2, 0x2, 0x16, 0x9e, 0x3, 
-    0x2, 0x2, 0x2, 0x18, 0xa5, 0x3, 0x2, 0x2, 0x2, 0x1a, 0xb9, 0x3, 0x2, 
-    0x2, 0x2, 0x1c, 0xbb, 0x3, 0x2, 0x2, 0x2, 0x1e, 0xc6, 0x3, 0x2, 0x2, 
-    0x2, 0x20, 0xc8, 0x3, 0x2, 0x2, 0x2, 0x22, 0xd5, 0x3, 0x2, 0x2, 0x2, 
-    0x24, 0xe1, 0x3, 0x2, 0x2, 0x2, 0x26, 0xed, 0x3, 0x2, 0x2, 0x2, 0x28, 
-    0xf8, 0x3, 0x2, 0x2, 0x2, 0x2a, 0x10a, 0x3, 0x2, 0x2, 0x2, 0x2c, 0x110, 
-    0x3, 0x2, 0x2, 0x2, 0x2e, 0x11c, 0x3, 0x2, 0x2, 0x2, 0x30, 0x12c, 0x3, 
-    0x2, 0x2, 0x2, 0x32, 0x136, 0x3, 0x2, 0x2, 0x2, 0x34, 0x139, 0x3, 0x2, 
-    0x2, 0x2, 0x36, 0x142, 0x3, 0x2, 0x2, 0x2, 0x38, 0x146, 0x3, 0x2, 0x2, 
-    0x2, 0x3a, 0x14d, 0x3, 0x2, 0x2, 0x2, 0x3c, 0x157, 0x3, 0x2, 0x2, 0x2, 
-    0x3e, 0x159, 0x3, 0x2, 0x2, 0x2, 0x40, 0x165, 0x3, 0x2, 0x2, 0x2, 0x42, 
-    0x181, 0x3, 0x2, 0x2, 0x2, 0x44, 0x1a1, 0x3, 0x2, 0x2, 0x2, 0x46, 0x1a3, 
-    0x3, 0x2, 0x2, 0x2, 0x48, 0x1a9, 0x3, 0x2, 0x2, 0x2, 0x4a, 0x1ab, 0x3, 
-    0x2, 0x2, 0x2, 0x4c, 0x1ad, 0x3, 0x2, 0x2, 0x2, 0x4e, 0x1c1, 0x3, 0x2, 
-    0x2, 0x2, 0x50, 0x1c6, 0x3, 0x2, 0x2, 0x2, 0x52, 0x1c8, 0x3, 0x2, 0x2, 
-    0x2, 0x54, 0x56, 0x5, 0x4, 0x3, 0x2, 0x55, 0x57, 0x5, 0xa, 0x6, 0x2, 
-    0x56, 0x55, 0x3, 0x2, 0x2, 0x2, 0x56, 0x57, 0x3, 0x2, 0x2, 0x2, 0x57, 
-    0x58, 0x3, 0x2, 0x2, 0x2, 0x58, 0x59, 0x5, 0x12, 0xa, 0x2, 0x59, 0x5a, 
-    0x7, 0x2, 0x2, 0x3, 0x5a, 0x3, 0x3, 0x2, 0x2, 0x2, 0x5b, 0x5c, 0x7, 
-    0x10, 0x2, 0x2, 0x5c, 0x5d, 0x7, 0x11, 0x2, 0x2, 0x5d, 0x65, 0x7, 0x4f, 
-    0x2, 0x2, 0x5e, 0x5f, 0x5, 0x6, 0x4, 0x2, 0x5f, 0x60, 0x7, 0x4f, 0x2, 
-    0x2, 0x60, 0x61, 0x5, 0x8, 0x5, 0x2, 0x61, 0x62, 0x7, 0x4f, 0x2, 0x2, 
-    0x62, 0x64, 0x3, 0x2, 0x2, 0x2, 0x63, 0x5e, 0x3, 0x2, 0x2, 0x2, 0x64, 
-    0x67, 0x3, 0x2, 0x2, 0x2, 0x65, 0x63, 0x3, 0x2, 0x2, 0x2, 0x65, 0x66, 
-    0x3, 0x2, 0x2, 0x2, 0x66, 0x5, 0x3, 0x2, 0x2, 0x2, 0x67, 0x65, 0x3, 
-    0x2, 0x2, 0x2, 0x68, 0x69, 0x7, 0x4c, 0x2, 0x2, 0x69, 0x7, 0x3, 0x2, 
-    0x2, 0x2, 0x6a, 0x6b, 0x7, 0x4e, 0x2, 0x2, 0x6b, 0x9, 0x3, 0x2, 0x2, 
-    0x2, 0x6c, 0x6d, 0x7, 0x13, 0x2, 0x2, 0x6d, 0x71, 0x7, 0x11, 0x2, 0x2, 
-    0x6e, 0x70, 0x5, 0xc, 0x7, 0x2, 0x6f, 0x6e, 0x3, 0x2, 0x2, 0x2, 0x70, 
-    0x73, 0x3, 0x2, 0x2, 0x2, 0x71, 0x6f, 0x3, 0x2, 0x2, 0x2, 0x71, 0x72, 
-    0x3, 0x2, 0x2, 0x2, 0x72, 0xb, 0x3, 0x2, 0x2, 0x2, 0x73, 0x71, 0x3, 
-    0x2, 0x2, 0x2, 0x74, 0x75, 0x5, 0xe, 0x8, 0x2, 0x75, 0x7b, 0x7, 0x4c, 
-    0x2, 0x2, 0x76, 0x77, 0x7, 0x3c, 0x2, 0x2, 0x77, 0x78, 0x7, 0x3d, 0x2, 
-    0x2, 0x78, 0x7c, 0x5, 0x10, 0x9, 0x2, 0x79, 0x7a, 0x7, 0x3e, 0x2, 0x2, 
-    0x7a, 0x7c, 0x5, 0x52, 0x2a, 0x2, 0x7b, 0x76, 0x3, 0x2, 0x2, 0x2, 0x7b, 
-    0x79, 0x3, 0x2, 0x2, 0x2, 0x7b, 0x7c, 0x3, 0x2, 0x2, 0x2, 0x7c, 0x80, 
-    0x3, 0x2, 0x2, 0x2, 0x7d, 0x7e, 0x7, 0x3f, 0x2, 0x2, 0x7e, 0x7f, 0x7, 
-    0x4d, 0x2, 0x2, 0x7f, 0x81, 0x7, 0x21, 0x2, 0x2, 0x80, 0x7d, 0x3, 0x2, 
-    0x2, 0x2, 0x80, 0x81, 0x3, 0x2, 0x2, 0x2, 0x81, 0x82, 0x3, 0x2, 0x2, 
-    0x2, 0x82, 0x83, 0x7, 0x4f, 0x2, 0x2, 0x83, 0xd, 0x3, 0x2, 0x2, 0x2, 
-    0x84, 0x85, 0x7, 0x4d, 0x2, 0x2, 0x85, 0xf, 0x3, 0x2, 0x2, 0x2, 0x86, 
-    0x87, 0x9, 0x2, 0x2, 0x2, 0x87, 0x11, 0x3, 0x2, 0x2, 0x2, 0x88, 0x89, 
-    0x7, 0x12, 0x2, 0x2, 0x89, 0x8a, 0x7, 0x11, 0x2, 0x2, 0x8a, 0x8e, 0x7, 
-    0x4f, 0x2, 0x2, 0x8b, 0x8d, 0x5, 0x16, 0xc, 0x2, 0x8c, 0x8b, 0x3, 0x2, 
-    0x2, 0x2, 0x8d, 0x90, 0x3, 0x2, 0x2, 0x2, 0x8e, 0x8c, 0x3, 0x2, 0x2, 
-    0x2, 0x8e, 0x8f, 0x3, 0x2, 0x2, 0x2, 0x8f, 0x92, 0x3, 0x2, 0x2, 0x2, 
-    0x90, 0x8e, 0x3, 0x2, 0x2, 0x2, 0x91, 0x93, 0x5, 0x14, 0xb, 0x2, 0x92, 
-    0x91, 0x3, 0x2, 0x2, 0x2, 0x93, 0x94, 0x3, 0x2, 0x2, 0x2, 0x94, 0x92, 
-    0x3, 0x2, 0x2, 0x2, 0x94, 0x95, 0x3, 0x2, 0x2, 0x2, 0x95, 0x13, 0x3, 
-    0x2, 0x2, 0x2, 0x96, 0x97, 0x5, 0x1a, 0xe, 0x2, 0x97, 0x99, 0x7, 0x4f, 
-    0x2, 0x2, 0x98, 0x9a, 0x5, 0x16, 0xc, 0x2, 0x99, 0x98, 0x3, 0x2, 0x2, 
-    0x2, 0x9a, 0x9b, 0x3, 0x2, 0x2, 0x2, 0x9b, 0x99, 0x3, 0x2, 0x2, 0x2, 
-    0x9b, 0x9c, 0x3, 0x2, 0x2, 0x2, 0x9c, 0x15, 0x3, 0x2, 0x2, 0x2, 0x9d, 
-    0x9f, 0x5, 0x18, 0xd, 0x2, 0x9e, 0x9d, 0x3, 0x2, 0x2, 0x2, 0x9f, 0xa0, 
-    0x3, 0x2, 0x2, 0x2, 0xa0, 0x9e, 0x3, 0x2, 0x2, 0x2, 0xa0, 0xa1, 0x3, 
-    0x2, 0x2, 0x2, 0xa1, 0xa2, 0x3, 0x2, 0x2, 0x2, 0xa2, 0xa3, 0x7, 0x4f, 
-    0x2, 0x2, 0xa3, 0x17, 0x3, 0x2, 0x2, 0x2, 0xa4, 0xa6, 0x9, 0x3, 0x2, 
-    0x2, 0xa5, 0xa4, 0x3, 0x2, 0x2, 0x2, 0xa5, 0xa6, 0x3, 0x2, 0x2, 0x2, 
-    0xa6, 0xb7, 0x3, 0x2, 0x2, 0x2, 0xa7, 0xb8, 0x5, 0x1c, 0xf, 0x2, 0xa8, 
-    0xb8, 0x5, 0x1e, 0x10, 0x2, 0xa9, 0xb8, 0x5, 0x20, 0x11, 0x2, 0xaa, 
-    0xb8, 0x5, 0x22, 0x12, 0x2, 0xab, 0xb8, 0x5, 0x24, 0x13, 0x2, 0xac, 
-    0xb8, 0x5, 0x26, 0x14, 0x2, 0xad, 0xb8, 0x5, 0x28, 0x15, 0x2, 0xae, 
-    0xb8, 0x5, 0x2a, 0x16, 0x2, 0xaf, 0xb8, 0x5, 0x2c, 0x17, 0x2, 0xb0, 
-    0xb8, 0x5, 0x2e, 0x18, 0x2, 0xb1, 0xb8, 0x5, 0x30, 0x19, 0x2, 0xb2, 
-    0xb8, 0x5, 0x32, 0x1a, 0x2, 0xb3, 0xb8, 0x5, 0x34, 0x1b, 0x2, 0xb4, 
-    0xb8, 0x5, 0x36, 0x1c, 0x2, 0xb5, 0xb8, 0x5, 0x38, 0x1d, 0x2, 0xb6, 
-    0xb8, 0x5, 0x3a, 0x1e, 0x2, 0xb7, 0xa7, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xa8, 
-    0x3, 0x2, 0x2, 0x2, 0xb7, 0xa9, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xaa, 0x3, 
-    0x2, 0x2, 0x2, 0xb7, 0xab, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xac, 0x3, 0x2, 
-    0x2, 0x2, 0xb7, 0xad, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xae, 0x3, 0x2, 0x2, 
-    0x2, 0xb7, 0xaf, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xb0, 0x3, 0x2, 0x2, 0x2, 
-    0xb7, 0xb1, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xb2, 0x3, 0x2, 0x2, 0x2, 0xb7, 
-    0xb3, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xb4, 0x3, 0x2, 0x2, 0x2, 0xb7, 0xb5, 
-    0x3, 0x2, 0x2, 0x2, 0xb7, 0xb6, 0x3, 0x2, 0x2, 0x2, 0xb8, 0x19, 0x3, 
-    0x2, 0x2, 0x2, 0xb9, 0xba, 0x7, 0x4c, 0x2, 0x2, 0xba, 0x1b, 0x3, 0x2, 
-    0x2, 0x2, 0xbb, 0xbd, 0x7, 0x14, 0x2, 0x2, 0xbc, 0xbe, 0x5, 0x50, 0x29, 
-    0x2, 0xbd, 0xbc, 0x3, 0x2, 0x2, 0x2, 0xbe, 0xbf, 0x3, 0x2, 0x2, 0x2, 
-    0xbf, 0xbd, 0x3, 0x2, 0x2, 0x2, 0xbf, 0xc0, 0x3, 0x2, 0x2, 0x2, 0xc0, 
-    0xc4, 0x3, 0x2, 0x2, 0x2, 0xc1, 0xc2, 0x7, 0x15, 0x2, 0x2, 0xc2, 0xc3, 
-    0x7, 0x16, 0x2, 0x2, 0xc3, 0xc5, 0x7, 0x17, 0x2, 0x2, 0xc4, 0xc1, 0x3, 
-    0x2, 0x2, 0x2, 0xc4, 0xc5, 0x3, 0x2, 0x2, 0x2, 0xc5, 0x1d, 0x3, 0x2, 
-    0x2, 0x2, 0xc6, 0xc7, 0x7, 0x18, 0x2, 0x2, 0xc7, 0x1f, 0x3, 0x2, 0x2, 
-    0x2, 0xc8, 0xcd, 0x7, 0x19, 0x2, 0x2, 0xc9, 0xce, 0x7, 0x41, 0x2, 0x2, 
-    0xca, 0xce, 0x7, 0x42, 0x2, 0x2, 0xcb, 0xce, 0x7, 0x43, 0x2, 0x2, 0xcc, 
-    0xce, 0x5, 0x50, 0x29, 0x2, 0xcd, 0xc9, 0x3, 0x2, 0x2, 0x2, 0xcd, 0xca, 
-    0x3, 0x2, 0x2, 0x2, 0xcd, 0xcb, 0x3, 0x2, 0x2, 0x2, 0xcd, 0xcc, 0x3, 
-    0x2, 0x2, 0x2, 0xce, 0xcf, 0x3, 0x2, 0x2, 0x2, 0xcf, 0xd1, 0x7, 0x1a, 
-    0x2, 0x2, 0xd0, 0xd2, 0x5, 0x52, 0x2a, 0x2, 0xd1, 0xd0, 0x3, 0x2, 0x2, 
-    0x2, 0xd2, 0xd3, 0x3, 0x2, 0x2, 0x2, 0xd3, 0xd1, 0x3, 0x2, 0x2, 0x2, 
-    0xd3, 0xd4, 0x3, 0x2, 0x2, 0x2, 0xd4, 0x21, 0x3, 0x2, 0x2, 0x2, 0xd5, 
-    0xd7, 0x7, 0x1b, 0x2, 0x2, 0xd6, 0xd8, 0x5, 0x50, 0x29, 0x2, 0xd7, 0xd6, 
-    0x3, 0x2, 0x2, 0x2, 0xd8, 0xd9, 0x3, 0x2, 0x2, 0x2, 0xd9, 0xd7, 0x3, 
-    0x2, 0x2, 0x2, 0xd9, 0xda, 0x3, 0x2, 0x2, 0x2, 0xda, 0xdb, 0x3, 0x2, 
-    0x2, 0x2, 0xdb, 0xdc, 0x7, 0x1c, 0x2, 0x2, 0xdc, 0xdf, 0x5, 0x50, 0x29, 
-    0x2, 0xdd, 0xde, 0x7, 0x1d, 0x2, 0x2, 0xde, 0xe0, 0x5, 0x52, 0x2a, 0x2, 
-    0xdf, 0xdd, 0x3, 0x2, 0x2, 0x2, 0xdf, 0xe0, 0x3, 0x2, 0x2, 0x2, 0xe0, 
-    0x23, 0x3, 0x2, 0x2, 0x2, 0xe1, 0xe2, 0x7, 0x1e, 0x2, 0x2, 0xe2, 0xe3, 
-    0x5, 0x50, 0x29, 0x2, 0xe3, 0xe5, 0x7, 0x1f, 0x2, 0x2, 0xe4, 0xe6, 0x5, 
-    0x50, 0x29, 0x2, 0xe5, 0xe4, 0x3, 0x2, 0x2, 0x2, 0xe6, 0xe7, 0x3, 0x2, 
-    0x2, 0x2, 0xe7, 0xe5, 0x3, 0x2, 0x2, 0x2, 0xe7, 0xe8, 0x3, 0x2, 0x2, 
-    0x2, 0xe8, 0xeb, 0x3, 0x2, 0x2, 0x2, 0xe9, 0xea, 0x7, 0x1d, 0x2, 0x2, 
-    0xea, 0xec, 0x5, 0x52, 0x2a, 0x2, 0xeb, 0xe9, 0x3, 0x2, 0x2, 0x2, 0xeb, 
-    0xec, 0x3, 0x2, 0x2, 0x2, 0xec, 0x25, 0x3, 0x2, 0x2, 0x2, 0xed, 0xee, 
-    0x7, 0x20, 0x2, 0x2, 0xee, 0xf1, 0x5, 0x1a, 0xe, 0x2, 0xef, 0xf0, 0x7, 
-    0x3b, 0x2, 0x2, 0xf0, 0xf2, 0x5, 0x1a, 0xe, 0x2, 0xf1, 0xef, 0x3, 0x2, 
-    0x2, 0x2, 0xf1, 0xf2, 0x3, 0x2, 0x2, 0x2, 0xf2, 0xf6, 0x3, 0x2, 0x2, 
-    0x2, 0xf3, 0xf4, 0x5, 0x50, 0x29, 0x2, 0xf4, 0xf5, 0x7, 0x21, 0x2, 0x2, 
-    0xf5, 0xf7, 0x3, 0x2, 0x2, 0x2, 0xf6, 0xf3, 0x3, 0x2, 0x2, 0x2, 0xf6, 
-    0xf7, 0x3, 0x2, 0x2, 0x2, 0xf7, 0x27, 0x3, 0x2, 0x2, 0x2, 0xf8, 0xf9, 
-    0x7, 0x22, 0x2, 0x2, 0xf9, 0xfa, 0x5, 0x42, 0x22, 0x2, 0xfa, 0xfc, 0x7, 
-    0x23, 0x2, 0x2, 0xfb, 0xfd, 0x5, 0x18, 0xd, 0x2, 0xfc, 0xfb, 0x3, 0x2, 
-    0x2, 0x2, 0xfd, 0xfe, 0x3, 0x2, 0x2, 0x2, 0xfe, 0xfc, 0x3, 0x2, 0x2, 
-    0x2, 0xfe, 0xff, 0x3, 0x2, 0x2, 0x2, 0xff, 0x106, 0x3, 0x2, 0x2, 0x2, 
-    0x100, 0x102, 0x7, 0x24, 0x2, 0x2, 0x101, 0x103, 0x5, 0x18, 0xd, 0x2, 
-    0x102, 0x101, 0x3, 0x2, 0x2, 0x2, 0x103, 0x104, 0x3, 0x2, 0x2, 0x2, 
-    0x104, 0x102, 0x3, 0x2, 0x2, 0x2, 0x104, 0x105, 0x3, 0x2, 0x2, 0x2, 
-    0x105, 0x107, 0x3, 0x2, 0x2, 0x2, 0x106, 0x100, 0x3, 0x2, 0x2, 0x2, 
-    0x106, 0x107, 0x3, 0x2, 0x2, 0x2, 0x107, 0x108, 0x3, 0x2, 0x2, 0x2, 
-    0x108, 0x109, 0x9, 0x4, 0x2, 0x2, 0x109, 0x29, 0x3, 0x2, 0x2, 0x2, 0x10a, 
-    0x10c, 0x7, 0x26, 0x2, 0x2, 0x10b, 0x10d, 0x5, 0x52, 0x2a, 0x2, 0x10c, 
-    0x10b, 0x3, 0x2, 0x2, 0x2, 0x10d, 0x10e, 0x3, 0x2, 0x2, 0x2, 0x10e, 
-    0x10c, 0x3, 0x2, 0x2, 0x2, 0x10e, 0x10f, 0x3, 0x2, 0x2, 0x2, 0x10f, 
-    0x2b, 0x3, 0x2, 0x2, 0x2, 0x110, 0x112, 0x7, 0x27, 0x2, 0x2, 0x111, 
-    0x113, 0x5, 0x50, 0x29, 0x2, 0x112, 0x111, 0x3, 0x2, 0x2, 0x2, 0x113, 
-    0x114, 0x3, 0x2, 0x2, 0x2, 0x114, 0x112, 0x3, 0x2, 0x2, 0x2, 0x114, 
-    0x115, 0x3, 0x2, 0x2, 0x2, 0x115, 0x116, 0x3, 0x2, 0x2, 0x2, 0x116, 
-    0x117, 0x7, 0x1a, 0x2, 0x2, 0x117, 0x11a, 0x5, 0x50, 0x29, 0x2, 0x118, 
-    0x119, 0x7, 0x1d, 0x2, 0x2, 0x119, 0x11b, 0x5, 0x52, 0x2a, 0x2, 0x11a, 
-    0x118, 0x3, 0x2, 0x2, 0x2, 0x11a, 0x11b, 0x3, 0x2, 0x2, 0x2, 0x11b, 
-    0x2d, 0x3, 0x2, 0x2, 0x2, 0x11c, 0x11d, 0x7, 0x28, 0x2, 0x2, 0x11d, 
-    0x11e, 0x5, 0x50, 0x29, 0x2, 0x11e, 0x120, 0x7, 0x29, 0x2, 0x2, 0x11f, 
-    0x121, 0x5, 0x50, 0x29, 0x2, 0x120, 0x11f, 0x3, 0x2, 0x2, 0x2, 0x121, 
-    0x122, 0x3, 0x2, 0x2, 0x2, 0x122, 0x120, 0x3, 0x2, 0x2, 0x2, 0x122, 
-    0x123, 0x3, 0x2, 0x2, 0x2, 0x123, 0x126, 0x3, 0x2, 0x2, 0x2, 0x124, 
-    0x125, 0x7, 0x1d, 0x2, 0x2, 0x125, 0x127, 0x5, 0x52, 0x2a, 0x2, 0x126, 
-    0x124, 0x3, 0x2, 0x2, 0x2, 0x126, 0x127, 0x3, 0x2, 0x2, 0x2, 0x127, 
-    0x12a, 0x3, 0x2, 0x2, 0x2, 0x128, 0x129, 0x7, 0x35, 0x2, 0x2, 0x129, 
-    0x12b, 0x5, 0x52, 0x2a, 0x2, 0x12a, 0x128, 0x3, 0x2, 0x2, 0x2, 0x12a, 
-    0x12b, 0x3, 0x2, 0x2, 0x2, 0x12b, 0x2f, 0x3, 0x2, 0x2, 0x2, 0x12c, 0x12d, 
-    0x7, 0x2a, 0x2, 0x2, 0x12d, 0x131, 0x5, 0x3c, 0x1f, 0x2, 0x12e, 0x130, 
-    0x5, 0x4e, 0x28, 0x2, 0x12f, 0x12e, 0x3, 0x2, 0x2, 0x2, 0x130, 0x133, 
-    0x3, 0x2, 0x2, 0x2, 0x131, 0x12f, 0x3, 0x2, 0x2, 0x2, 0x131, 0x132, 
-    0x3, 0x2, 0x2, 0x2, 0x132, 0x134, 0x3, 0x2, 0x2, 0x2, 0x133, 0x131, 
-    0x3, 0x2, 0x2, 0x2, 0x134, 0x135, 0x7, 0x25, 0x2, 0x2, 0x135, 0x31, 
-    0x3, 0x2, 0x2, 0x2, 0x136, 0x137, 0x7, 0x33, 0x2, 0x2, 0x137, 0x138, 
-    0x7, 0x34, 0x2, 0x2, 0x138, 0x33, 0x3, 0x2, 0x2, 0x2, 0x139, 0x13d, 
-    0x7, 0x36, 0x2, 0x2, 0x13a, 0x13c, 0x5, 0x44, 0x23, 0x2, 0x13b, 0x13a, 
-    0x3, 0x2, 0x2, 0x2, 0x13c, 0x13f, 0x3, 0x2, 0x2, 0x2, 0x13d, 0x13b, 
-    0x3, 0x2, 0x2, 0x2, 0x13d, 0x13e, 0x3, 0x2, 0x2, 0x2, 0x13e, 0x140, 
-    0x3, 0x2, 0x2, 0x2, 0x13f, 0x13d, 0x3, 0x2, 0x2, 0x2, 0x140, 0x141, 
-    0x7, 0x25, 0x2, 0x2, 0x141, 0x35, 0x3, 0x2, 0x2, 0x2, 0x142, 0x143, 
-    0x7, 0x40, 0x2, 0x2, 0x143, 0x144, 0x7, 0x1a, 0x2, 0x2, 0x144, 0x145, 
-    0x5, 0x6, 0x4, 0x2, 0x145, 0x37, 0x3, 0x2, 0x2, 0x2, 0x146, 0x149, 0x7, 
-    0x44, 0x2, 0x2, 0x147, 0x14a, 0x5, 0x1a, 0xe, 0x2, 0x148, 0x14a, 0x7, 
-    0x46, 0x2, 0x2, 0x149, 0x147, 0x3, 0x2, 0x2, 0x2, 0x149, 0x148, 0x3, 
-    0x2, 0x2, 0x2, 0x14a, 0x14b, 0x3, 0x2, 0x2, 0x2, 0x14b, 0x14c, 0x7, 
-    0x45, 0x2, 0x2, 0x14c, 0x39, 0x3, 0x2, 0x2, 0x2, 0x14d, 0x14e, 0x7, 
-    0x47, 0x2, 0x2, 0x14e, 0x14f, 0x5, 0x1a, 0xe, 0x2, 0x14f, 0x150, 0x7, 
-    0x1a, 0x2, 0x2, 0x150, 0x151, 0x7, 0x48, 0x2, 0x2, 0x151, 0x152, 0x7, 
-    0x1a, 0x2, 0x2, 0x152, 0x153, 0x5, 0x1a, 0xe, 0x2, 0x153, 0x3b, 0x3, 
-    0x2, 0x2, 0x2, 0x154, 0x158, 0x5, 0x3e, 0x20, 0x2, 0x155, 0x158, 0x5, 
-    0x40, 0x21, 0x2, 0x156, 0x158, 0x5, 0x42, 0x22, 0x2, 0x157, 0x154, 0x3, 
-    0x2, 0x2, 0x2, 0x157, 0x155, 0x3, 0x2, 0x2, 0x2, 0x157, 0x156, 0x3, 
-    0x2, 0x2, 0x2, 0x158, 0x3d, 0x3, 0x2, 0x2, 0x2, 0x159, 0x15a, 0x8, 0x20, 
-    0x1, 0x2, 0x15a, 0x15b, 0x5, 0x50, 0x29, 0x2, 0x15b, 0x162, 0x3, 0x2, 
-    0x2, 0x2, 0x15c, 0x15d, 0xc, 0x3, 0x2, 0x2, 0x15d, 0x15e, 0x5, 0x4c, 
-    0x27, 0x2, 0x15e, 0x15f, 0x5, 0x3e, 0x20, 0x4, 0x15f, 0x161, 0x3, 0x2, 
-    0x2, 0x2, 0x160, 0x15c, 0x3, 0x2, 0x2, 0x2, 0x161, 0x164, 0x3, 0x2, 
-    0x2, 0x2, 0x162, 0x160, 0x3, 0x2, 0x2, 0x2, 0x162, 0x163, 0x3, 0x2, 
-    0x2, 0x2, 0x163, 0x3f, 0x3, 0x2, 0x2, 0x2, 0x164, 0x162, 0x3, 0x2, 0x2, 
-    0x2, 0x165, 0x166, 0x8, 0x21, 0x1, 0x2, 0x166, 0x167, 0x5, 0x50, 0x29, 
-    0x2, 0x167, 0x16d, 0x3, 0x2, 0x2, 0x2, 0x168, 0x169, 0xc, 0x3, 0x2, 
-    0x2, 0x169, 0x16a, 0x7, 0x5, 0x2, 0x2, 0x16a, 0x16c, 0x5, 0x40, 0x21, 
-    0x4, 0x16b, 0x168, 0x3, 0x2, 0x2, 0x2, 0x16c, 0x16f, 0x3, 0x2, 0x2, 
-    0x2, 0x16d, 0x16b, 0x3, 0x2, 0x2, 0x2, 0x16d, 0x16e, 0x3, 0x2, 0x2, 
-    0x2, 0x16e, 0x41, 0x3, 0x2, 0x2, 0x2, 0x16f, 0x16d, 0x3, 0x2, 0x2, 0x2, 
-    0x170, 0x171, 0x8, 0x22, 0x1, 0x2, 0x171, 0x182, 0x7, 0x2d, 0x2, 0x2, 
-    0x172, 0x182, 0x7, 0x2e, 0x2, 0x2, 0x173, 0x174, 0x5, 0x50, 0x29, 0x2, 
-    0x174, 0x175, 0x5, 0x48, 0x25, 0x2, 0x175, 0x177, 0x5, 0x3e, 0x20, 0x2, 
-    0x176, 0x178, 0x5, 0x46, 0x24, 0x2, 0x177, 0x176, 0x3, 0x2, 0x2, 0x2, 
-    0x178, 0x179, 0x3, 0x2, 0x2, 0x2, 0x179, 0x177, 0x3, 0x2, 0x2, 0x2, 
-    0x179, 0x17a, 0x3, 0x2, 0x2, 0x2, 0x17a, 0x182, 0x3, 0x2, 0x2, 0x2, 
-    0x17b, 0x17c, 0x5, 0x3e, 0x20, 0x2, 0x17c, 0x17d, 0x5, 0x48, 0x25, 0x2, 
-    0x17d, 0x17e, 0x5, 0x3e, 0x20, 0x2, 0x17e, 0x182, 0x3, 0x2, 0x2, 0x2, 
-    0x17f, 0x180, 0x7, 0x2f, 0x2, 0x2, 0x180, 0x182, 0x5, 0x42, 0x22, 0x4, 
-    0x181, 0x170, 0x3, 0x2, 0x2, 0x2, 0x181, 0x172, 0x3, 0x2, 0x2, 0x2, 
-    0x181, 0x173, 0x3, 0x2, 0x2, 0x2, 0x181, 0x17b, 0x3, 0x2, 0x2, 0x2, 
-    0x181, 0x17f, 0x3, 0x2, 0x2, 0x2, 0x182, 0x189, 0x3, 0x2, 0x2, 0x2, 
-    0x183, 0x184, 0xc, 0x3, 0x2, 0x2, 0x184, 0x185, 0x5, 0x4a, 0x26, 0x2, 
-    0x185, 0x186, 0x5, 0x42, 0x22, 0x4, 0x186, 0x188, 0x3, 0x2, 0x2, 0x2, 
-    0x187, 0x183, 0x3, 0x2, 0x2, 0x2, 0x188, 0x18b, 0x3, 0x2, 0x2, 0x2, 
-    0x189, 0x187, 0x3, 0x2, 0x2, 0x2, 0x189, 0x18a, 0x3, 0x2, 0x2, 0x2, 
-    0x18a, 0x43, 0x3, 0x2, 0x2, 0x2, 0x18b, 0x189, 0x3, 0x2, 0x2, 0x2, 0x18c, 
-    0x18e, 0x7, 0x37, 0x2, 0x2, 0x18d, 0x18f, 0x5, 0x52, 0x2a, 0x2, 0x18e, 
-    0x18d, 0x3, 0x2, 0x2, 0x2, 0x18e, 0x18f, 0x3, 0x2, 0x2, 0x2, 0x18f, 
-    0x192, 0x3, 0x2, 0x2, 0x2, 0x190, 0x191, 0x7, 0x1c, 0x2, 0x2, 0x191, 
-    0x193, 0x5, 0x50, 0x29, 0x2, 0x192, 0x190, 0x3, 0x2, 0x2, 0x2, 0x192, 
-    0x193, 0x3, 0x2, 0x2, 0x2, 0x193, 0x196, 0x3, 0x2, 0x2, 0x2, 0x194, 
-    0x195, 0x7, 0x1a, 0x2, 0x2, 0x195, 0x197, 0x5, 0x50, 0x29, 0x2, 0x196, 
-    0x194, 0x3, 0x2, 0x2, 0x2, 0x196, 0x197, 0x3, 0x2, 0x2, 0x2, 0x197, 
-    0x19a, 0x3, 0x2, 0x2, 0x2, 0x198, 0x199, 0x7, 0x1f, 0x2, 0x2, 0x199, 
-    0x19b, 0x5, 0x50, 0x29, 0x2, 0x19a, 0x198, 0x3, 0x2, 0x2, 0x2, 0x19a, 
-    0x19b, 0x3, 0x2, 0x2, 0x2, 0x19b, 0x1a2, 0x3, 0x2, 0x2, 0x2, 0x19c, 
-    0x19d, 0x7, 0x38, 0x2, 0x2, 0x19d, 0x1a2, 0x5, 0x42, 0x22, 0x2, 0x19e, 
-    0x19f, 0x7, 0x39, 0x2, 0x2, 0x19f, 0x1a2, 0x5, 0x42, 0x22, 0x2, 0x1a0, 
-    0x1a2, 0x5, 0x18, 0xd, 0x2, 0x1a1, 0x18c, 0x3, 0x2, 0x2, 0x2, 0x1a1, 
-    0x19c, 0x3, 0x2, 0x2, 0x2, 0x1a1, 0x19e, 0x3, 0x2, 0x2, 0x2, 0x1a1, 
-    0x1a0, 0x3, 0x2, 0x2, 0x2, 0x1a2, 0x45, 0x3, 0x2, 0x2, 0x2, 0x1a3, 0x1a5, 
-    0x5, 0x4a, 0x26, 0x2, 0x1a4, 0x1a6, 0x5, 0x48, 0x25, 0x2, 0x1a5, 0x1a4, 
-    0x3, 0x2, 0x2, 0x2, 0x1a5, 0x1a6, 0x3, 0x2, 0x2, 0x2, 0x1a6, 0x1a7, 
-    0x3, 0x2, 0x2, 0x2, 0x1a7, 0x1a8, 0x5, 0x3e, 0x20, 0x2, 0x1a8, 0x47, 
-    0x3, 0x2, 0x2, 0x2, 0x1a9, 0x1aa, 0x9, 0x5, 0x2, 0x2, 0x1aa, 0x49, 0x3, 
-    0x2, 0x2, 0x2, 0x1ab, 0x1ac, 0x9, 0x6, 0x2, 0x2, 0x1ac, 0x4b, 0x3, 0x2, 
-    0x2, 0x2, 0x1ad, 0x1ae, 0x9, 0x7, 0x2, 0x2, 0x1ae, 0x4d, 0x3, 0x2, 0x2, 
-    0x2, 0x1af, 0x1b1, 0x7, 0x2b, 0x2, 0x2, 0x1b0, 0x1b2, 0x5, 0x3c, 0x1f, 
-    0x2, 0x1b1, 0x1b0, 0x3, 0x2, 0x2, 0x2, 0x1b2, 0x1b3, 0x3, 0x2, 0x2, 
-    0x2, 0x1b3, 0x1b1, 0x3, 0x2, 0x2, 0x2, 0x1b3, 0x1b4, 0x3, 0x2, 0x2, 
-    0x2, 0x1b4, 0x1b6, 0x3, 0x2, 0x2, 0x2, 0x1b5, 0x1b7, 0x5, 0x18, 0xd, 
-    0x2, 0x1b6, 0x1b5, 0x3, 0x2, 0x2, 0x2, 0x1b7, 0x1b8, 0x3, 0x2, 0x2, 
-    0x2, 0x1b8, 0x1b6, 0x3, 0x2, 0x2, 0x2, 0x1b8, 0x1b9, 0x3, 0x2, 0x2, 
-    0x2, 0x1b9, 0x1c2, 0x3, 0x2, 0x2, 0x2, 0x1ba, 0x1bb, 0x7, 0x2b, 0x2, 
-    0x2, 0x1bb, 0x1bd, 0x7, 0x2c, 0x2, 0x2, 0x1bc, 0x1be, 0x5, 0x18, 0xd, 
-    0x2, 0x1bd, 0x1bc, 0x3, 0x2, 0x2, 0x2, 0x1be, 0x1bf, 0x3, 0x2, 0x2, 
-    0x2, 0x1bf, 0x1bd, 0x3, 0x2, 0x2, 0x2, 0x1bf, 0x1c0, 0x3, 0x2, 0x2, 
-    0x2, 0x1c0, 0x1c2, 0x3, 0x2, 0x2, 0x2, 0x1c1, 0x1af, 0x3, 0x2, 0x2, 
-    0x2, 0x1c1, 0x1ba, 0x3, 0x2, 0x2, 0x2, 0x1c2, 0x4f, 0x3, 0x2, 0x2, 0x2, 
-    0x1c3, 0x1c7, 0x7, 0x4d, 0x2, 0x2, 0x1c4, 0x1c7, 0x7, 0x4e, 0x2, 0x2, 
-    0x1c5, 0x1c7, 0x5, 0x52, 0x2a, 0x2, 0x1c6, 0x1c3, 0x3, 0x2, 0x2, 0x2, 
-    0x1c6, 0x1c4, 0x3, 0x2, 0x2, 0x2, 0x1c6, 0x1c5, 0x3, 0x2, 0x2, 0x2, 
-    0x1c7, 0x51, 0x3, 0x2, 0x2, 0x2, 0x1c8, 0x1cd, 0x7, 0x4c, 0x2, 0x2, 
-    0x1c9, 0x1ca, 0x7, 0x3a, 0x2, 0x2, 0x1ca, 0x1cc, 0x7, 0x4c, 0x2, 0x2, 
-    0x1cb, 0x1c9, 0x3, 0x2, 0x2, 0x2, 0x1cc, 0x1cf, 0x3, 0x2, 0x2, 0x2, 
-    0x1cd, 0x1cb, 0x3, 0x2, 0x2, 0x2, 0x1cd, 0x1ce, 0x3, 0x2, 0x2, 0x2, 
-    0x1ce, 0x1d3, 0x3, 0x2, 0x2, 0x2, 0x1cf, 0x1cd, 0x3, 0x2, 0x2, 0x2, 
-    0x1d0, 0x1d1, 0x7, 0xe, 0x2, 0x2, 0x1d1, 0x1d2, 0x7, 0x4d, 0x2, 0x2, 
-    0x1d2, 0x1d4, 0x7, 0xf, 0x2, 0x2, 0x1d3, 0x1d0, 0x3, 0x2, 0x2, 0x2, 
-    0x1d3, 0x1d4, 0x3, 0x2, 0x2, 0x2, 0x1d4, 0x53, 0x3, 0x2, 0x2, 0x2, 0x36, 
-    0x56, 0x65, 0x71, 0x7b, 0x80, 0x8e, 0x94, 0x9b, 0xa0, 0xa5, 0xb7, 0xbf, 
-    0xc4, 0xcd, 0xd3, 0xd9, 0xdf, 0xe7, 0xeb, 0xf1, 0xf6, 0xfe, 0x104, 0x106, 
-    0x10e, 0x114, 0x11a, 0x122, 0x126, 0x12a, 0x131, 0x13d, 0x149, 0x157, 
-    0x162, 0x16d, 0x179, 0x181, 0x189, 0x18e, 0x192, 0x196, 0x19a, 0x1a1, 
-    0x1a5, 0x1b3, 0x1b8, 0x1bf, 0x1c1, 0x1c6, 0x1cd, 0x1d3, 
-  };
-
-  atn::ATNDeserializer deserializer;
-  _atn = deserializer.deserialize(_serializedATN);
-
-  size_t count = _atn.getNumberOfDecisions();
-  _decisionToDFA.reserve(count);
-  for (size_t i = 0; i < count; i++) { 
-    _decisionToDFA.emplace_back(_atn.getDecisionState(i), i);
-  }
+void BabyCobolParser::initialize() {
+  std::call_once(babycobolParserOnceFlag, babycobolParserInitialize);
 }
-
-BabyCobolParser::Initializer BabyCobolParser::_init;

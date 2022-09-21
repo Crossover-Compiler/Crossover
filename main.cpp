@@ -31,7 +31,6 @@
 
 int main() {
     std::cout << "Hello World" << std::endl;
-    BabyCobolListener listener;
     return 0;
 }
 
