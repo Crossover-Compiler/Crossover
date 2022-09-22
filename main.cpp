@@ -17,7 +17,7 @@
 //    CommonTokenStream tokens(&lexer);
 //    SceneParser parser(&tokens);
 //
-//    SceneParser::FileContext* tree = parser.file();
+//    SceneParser::FileContext* tree = parser.sfile();
 //
 //    ImageVisitor visitor;
 //    Scene scene = visitor.visitFile(tree).as<Scene>();
@@ -27,10 +27,40 @@
 //}
 
 #include <iostream>
-#include "include/antlr/BabyCobolListener.h"
+#include <csignal>
+#include "src/visitor/Visitor.h"
+#include "include/antlr/BabyCobolParser.h"
+#include "include/antlr/BabyCobolLexer.h"
+#include "antlr4-runtime.h"
+
+
+using namespace std;
+using namespace antlr4;
 
 int main() {
-    std::cout << "Hello World" << std::endl;
+    cout << "Starting Compiler..." << endl;
+
+//    char *cwd = get_current_dir_name();
+//    cout << "Current working directory: " << cwd << endl;
+//    free(cwd);
+//
+//    ofstream myfile;
+//    myfile.open ("example.txt");
+//    myfile << "Writing this to a file.\n";
+//    myfile.close();
+
+    ifstream stream;
+    stream.open("testProgram.txt");
+    ANTLRInputStream input(stream);
+    BabyCobolLexer lexer(&input);
+    CommonTokenStream tokens(&lexer);
+    BabyCobolParser parser(&tokens);
+
+    BabyCobolParser::ProgramContext* tree = parser.program();
+
+//    cout << tree->procedure()->depth() << endl;
+    Visitor visitor;
+    vector<string> babyCobol = any_cast<vector<string>>(visitor.visitProgram(tree));
     return 0;
 }
 
