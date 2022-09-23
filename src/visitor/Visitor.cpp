@@ -14,7 +14,7 @@ std::any Visitor::visitIdentification(BabyCobolParser::IdentificationContext *ct
 
 std::any Visitor::visitProgram(BabyCobolParser::ProgramContext *ctx) {
     BabyCobolBaseVisitor::visitProgram(ctx);
-    return compiledArray;
+    return compiledVector;
 }
 
 std::any Visitor::visitName(BabyCobolParser::NameContext *ctx) {
@@ -85,7 +85,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
         }
     }
 
-    // TODO: Add Print int values with or without nextLine to compileArray
+    // TODO: Add Print int values with or without nextLine to compileVector
     return 0;
 }
 

@@ -5,16 +5,11 @@
 #ifndef CROSSOVER_VISITOR_H
 #define CROSSOVER_VISITOR_H
 
-
-//
-// Created by bruh on 21-9-22.
-//
-
 #include "../../include/antlr/BabyCobolBaseVisitor.h"
 
 class Visitor : public BabyCobolBaseVisitor {
 
-    std::array<std::string, 1000> compiledArray;
+    std::vector<std::string> compiledVector;
 
 public:
     std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override;
