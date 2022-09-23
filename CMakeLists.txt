@@ -5,7 +5,21 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.7 FATAL_ERROR)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# compiler must be 11 or 14
+# add spdlog
+find_package(spdlog REQUIRED)
+
+# add LLVM
+find_package(LLVM REQUIRED CONFIG)
+
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
+include_directories(${LLVM_INCLUDE_DIRS})
+separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
+add_definitions(${LLVM_DEFINITIONS_LIST})
+# end add llvm
+
+
 set(CMAKE_CXX_STANDARD 17)
 
 # required if linking to static library
@@ -36,4 +50,5 @@ antlr_target(SampleGrammarLexer ${CMAKE_CURRENT_SOURCE_DIR}/grammar/BabyCobol.g4
 include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
 
 add_executable(output main.cpp src/visitor/Visitor.cpp src/visitor/Visitor.h)
-target_link_libraries(output antlr4_static)
+llvm_map_components_to_libnames(llvm_libs support core irreader)
+target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)
