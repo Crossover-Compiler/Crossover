@@ -56,5 +56,5 @@ add_executable(output main.cpp
         include/antlr/BabyCobolLexer.cpp
         include/antlr/BabyCobolParser.h
         include/antlr/BabyCobolParser.cpp src/Exceptions/NotImplemented.h)
-lvm_map_components_to_libnames(llvm_libs support core irreader)
+llvm_map_components_to_libnames(llvm_libs support core irreader)
 target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)
