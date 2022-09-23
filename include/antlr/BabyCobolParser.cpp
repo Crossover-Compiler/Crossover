@@ -2,7 +2,6 @@
 // Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 
-#include "BabyCobolListener.h"
 #include "BabyCobolVisitor.h"
 
 #include "BabyCobolParser.h"
@@ -315,18 +314,6 @@ size_t BabyCobolParser::ProgramContext::getRuleIndex() const {
   return BabyCobolParser::RuleProgram;
 }
 
-void BabyCobolParser::ProgramContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterProgram(this);
-}
-
-void BabyCobolParser::ProgramContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitProgram(this);
-}
-
 
 std::any BabyCobolParser::ProgramContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -417,18 +404,6 @@ size_t BabyCobolParser::IdentificationContext::getRuleIndex() const {
   return BabyCobolParser::RuleIdentification;
 }
 
-void BabyCobolParser::IdentificationContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterIdentification(this);
-}
-
-void BabyCobolParser::IdentificationContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitIdentification(this);
-}
-
 
 std::any BabyCobolParser::IdentificationContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -499,18 +474,6 @@ size_t BabyCobolParser::NameContext::getRuleIndex() const {
   return BabyCobolParser::RuleName;
 }
 
-void BabyCobolParser::NameContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterName(this);
-}
-
-void BabyCobolParser::NameContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitName(this);
-}
-
 
 std::any BabyCobolParser::NameContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -558,18 +521,6 @@ tree::TerminalNode* BabyCobolParser::ValueContext::LITERAL() {
 
 size_t BabyCobolParser::ValueContext::getRuleIndex() const {
   return BabyCobolParser::RuleValue;
-}
-
-void BabyCobolParser::ValueContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterValue(this);
-}
-
-void BabyCobolParser::ValueContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitValue(this);
 }
 
 
@@ -631,18 +582,6 @@ BabyCobolParser::VariableContext* BabyCobolParser::DataContext::variable(size_t 
 
 size_t BabyCobolParser::DataContext::getRuleIndex() const {
   return BabyCobolParser::RuleData;
-}
-
-void BabyCobolParser::DataContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterData(this);
-}
-
-void BabyCobolParser::DataContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitData(this);
 }
 
 
@@ -747,18 +686,6 @@ size_t BabyCobolParser::VariableContext::getRuleIndex() const {
   return BabyCobolParser::RuleVariable;
 }
 
-void BabyCobolParser::VariableContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterVariable(this);
-}
-
-void BabyCobolParser::VariableContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitVariable(this);
-}
-
 
 std::any BabyCobolParser::VariableContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -854,18 +781,6 @@ size_t BabyCobolParser::LevelContext::getRuleIndex() const {
   return BabyCobolParser::RuleLevel;
 }
 
-void BabyCobolParser::LevelContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterLevel(this);
-}
-
-void BabyCobolParser::LevelContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitLevel(this);
-}
-
 
 std::any BabyCobolParser::LevelContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -917,18 +832,6 @@ tree::TerminalNode* BabyCobolParser::RepresentationContext::X() {
 
 size_t BabyCobolParser::RepresentationContext::getRuleIndex() const {
   return BabyCobolParser::RuleRepresentation;
-}
-
-void BabyCobolParser::RepresentationContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterRepresentation(this);
-}
-
-void BabyCobolParser::RepresentationContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitRepresentation(this);
 }
 
 
@@ -1012,18 +915,6 @@ BabyCobolParser::ParagraphContext* BabyCobolParser::ProcedureContext::paragraph(
 
 size_t BabyCobolParser::ProcedureContext::getRuleIndex() const {
   return BabyCobolParser::RuleProcedure;
-}
-
-void BabyCobolParser::ProcedureContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterProcedure(this);
-}
-
-void BabyCobolParser::ProcedureContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitProcedure(this);
 }
 
 
@@ -1130,18 +1021,6 @@ size_t BabyCobolParser::ParagraphContext::getRuleIndex() const {
   return BabyCobolParser::RuleParagraph;
 }
 
-void BabyCobolParser::ParagraphContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterParagraph(this);
-}
-
-void BabyCobolParser::ParagraphContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitParagraph(this);
-}
-
 
 std::any BabyCobolParser::ParagraphContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -1228,18 +1107,6 @@ BabyCobolParser::StatementContext* BabyCobolParser::SentenceContext::statement(s
 
 size_t BabyCobolParser::SentenceContext::getRuleIndex() const {
   return BabyCobolParser::RuleSentence;
-}
-
-void BabyCobolParser::SentenceContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterSentence(this);
-}
-
-void BabyCobolParser::SentenceContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitSentence(this);
 }
 
 
@@ -1378,18 +1245,6 @@ BabyCobolParser::AlterContext* BabyCobolParser::StatementContext::alter() {
 
 size_t BabyCobolParser::StatementContext::getRuleIndex() const {
   return BabyCobolParser::RuleStatement;
-}
-
-void BabyCobolParser::StatementContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterStatement(this);
-}
-
-void BabyCobolParser::StatementContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitStatement(this);
 }
 
 
@@ -1561,18 +1416,6 @@ size_t BabyCobolParser::LabelContext::getRuleIndex() const {
   return BabyCobolParser::RuleLabel;
 }
 
-void BabyCobolParser::LabelContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterLabel(this);
-}
-
-void BabyCobolParser::LabelContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitLabel(this);
-}
-
 
 std::any BabyCobolParser::LabelContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -1640,18 +1483,6 @@ tree::TerminalNode* BabyCobolParser::DisplayContext::ADVANCING() {
 
 size_t BabyCobolParser::DisplayContext::getRuleIndex() const {
   return BabyCobolParser::RuleDisplay;
-}
-
-void BabyCobolParser::DisplayContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterDisplay(this);
-}
-
-void BabyCobolParser::DisplayContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitDisplay(this);
 }
 
 
@@ -1729,18 +1560,6 @@ size_t BabyCobolParser::StopContext::getRuleIndex() const {
   return BabyCobolParser::RuleStop;
 }
 
-void BabyCobolParser::StopContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterStop(this);
-}
-
-void BabyCobolParser::StopContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitStop(this);
-}
-
 
 std::any BabyCobolParser::StopContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -1816,18 +1635,6 @@ BabyCobolParser::IdentifiersContext* BabyCobolParser::MoveContext::identifiers(s
 
 size_t BabyCobolParser::MoveContext::getRuleIndex() const {
   return BabyCobolParser::RuleMove;
-}
-
-void BabyCobolParser::MoveContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterMove(this);
-}
-
-void BabyCobolParser::MoveContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitMove(this);
 }
 
 
@@ -1944,18 +1751,6 @@ size_t BabyCobolParser::SubtractContext::getRuleIndex() const {
   return BabyCobolParser::RuleSubtract;
 }
 
-void BabyCobolParser::SubtractContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterSubtract(this);
-}
-
-void BabyCobolParser::SubtractContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitSubtract(this);
-}
-
 
 std::any BabyCobolParser::SubtractContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -2054,18 +1849,6 @@ size_t BabyCobolParser::MultiplyContext::getRuleIndex() const {
   return BabyCobolParser::RuleMultiply;
 }
 
-void BabyCobolParser::MultiplyContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterMultiply(this);
-}
-
-void BabyCobolParser::MultiplyContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitMultiply(this);
-}
-
 
 std::any BabyCobolParser::MultiplyContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -2162,18 +1945,6 @@ BabyCobolParser::AtomicContext* BabyCobolParser::PerformContext::atomic() {
 
 size_t BabyCobolParser::PerformContext::getRuleIndex() const {
   return BabyCobolParser::RulePerform;
-}
-
-void BabyCobolParser::PerformContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterPerform(this);
-}
-
-void BabyCobolParser::PerformContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitPerform(this);
 }
 
 
@@ -2277,18 +2048,6 @@ BabyCobolParser::StatementContext* BabyCobolParser::IfStatementContext::statemen
 
 size_t BabyCobolParser::IfStatementContext::getRuleIndex() const {
   return BabyCobolParser::RuleIfStatement;
-}
-
-void BabyCobolParser::IfStatementContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterIfStatement(this);
-}
-
-void BabyCobolParser::IfStatementContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitIfStatement(this);
 }
 
 
@@ -2430,18 +2189,6 @@ size_t BabyCobolParser::AcceptContext::getRuleIndex() const {
   return BabyCobolParser::RuleAccept;
 }
 
-void BabyCobolParser::AcceptContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAccept(this);
-}
-
-void BabyCobolParser::AcceptContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAccept(this);
-}
-
 
 std::any BabyCobolParser::AcceptContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -2521,18 +2268,6 @@ BabyCobolParser::IdentifiersContext* BabyCobolParser::AddContext::identifiers() 
 
 size_t BabyCobolParser::AddContext::getRuleIndex() const {
   return BabyCobolParser::RuleAdd;
-}
-
-void BabyCobolParser::AddContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAdd(this);
-}
-
-void BabyCobolParser::AddContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAdd(this);
 }
 
 
@@ -2640,18 +2375,6 @@ size_t BabyCobolParser::DivideContext::getRuleIndex() const {
   return BabyCobolParser::RuleDivide;
 }
 
-void BabyCobolParser::DivideContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterDivide(this);
-}
-
-void BabyCobolParser::DivideContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitDivide(this);
-}
-
 
 std::any BabyCobolParser::DivideContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -2756,18 +2479,6 @@ size_t BabyCobolParser::EvaluateContext::getRuleIndex() const {
   return BabyCobolParser::RuleEvaluate;
 }
 
-void BabyCobolParser::EvaluateContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterEvaluate(this);
-}
-
-void BabyCobolParser::EvaluateContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitEvaluate(this);
-}
-
 
 std::any BabyCobolParser::EvaluateContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -2836,18 +2547,6 @@ size_t BabyCobolParser::NextSentenceContext::getRuleIndex() const {
   return BabyCobolParser::RuleNextSentence;
 }
 
-void BabyCobolParser::NextSentenceContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterNextSentence(this);
-}
-
-void BabyCobolParser::NextSentenceContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitNextSentence(this);
-}
-
 
 std::any BabyCobolParser::NextSentenceContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -2909,18 +2608,6 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::LoopContext::loopExpres
 
 size_t BabyCobolParser::LoopContext::getRuleIndex() const {
   return BabyCobolParser::RuleLoop;
-}
-
-void BabyCobolParser::LoopContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterLoop(this);
-}
-
-void BabyCobolParser::LoopContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitLoop(this);
 }
 
 
@@ -3014,18 +2701,6 @@ size_t BabyCobolParser::GotoStatementContext::getRuleIndex() const {
   return BabyCobolParser::RuleGotoStatement;
 }
 
-void BabyCobolParser::GotoStatementContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterGotoStatement(this);
-}
-
-void BabyCobolParser::GotoStatementContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitGotoStatement(this);
-}
-
 
 std::any BabyCobolParser::GotoStatementContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3089,18 +2764,6 @@ tree::TerminalNode* BabyCobolParser::SignalContext::OFF() {
 
 size_t BabyCobolParser::SignalContext::getRuleIndex() const {
   return BabyCobolParser::RuleSignal;
-}
-
-void BabyCobolParser::SignalContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterSignal(this);
-}
-
-void BabyCobolParser::SignalContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitSignal(this);
 }
 
 
@@ -3192,18 +2855,6 @@ size_t BabyCobolParser::AlterContext::getRuleIndex() const {
   return BabyCobolParser::RuleAlter;
 }
 
-void BabyCobolParser::AlterContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAlter(this);
-}
-
-void BabyCobolParser::AlterContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAlter(this);
-}
-
 
 std::any BabyCobolParser::AlterContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3269,18 +2920,6 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::AnyExpressionContext
 
 size_t BabyCobolParser::AnyExpressionContext::getRuleIndex() const {
   return BabyCobolParser::RuleAnyExpression;
-}
-
-void BabyCobolParser::AnyExpressionContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAnyExpression(this);
-}
-
-void BabyCobolParser::AnyExpressionContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAnyExpression(this);
 }
 
 
@@ -3364,16 +3003,6 @@ BabyCobolParser::AtomicContext* BabyCobolParser::AtomicArithmeticExpContext::ato
 
 BabyCobolParser::AtomicArithmeticExpContext::AtomicArithmeticExpContext(ArithmeticExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::AtomicArithmeticExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAtomicArithmeticExp(this);
-}
-void BabyCobolParser::AtomicArithmeticExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAtomicArithmeticExp(this);
-}
 
 std::any BabyCobolParser::AtomicArithmeticExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3397,16 +3026,6 @@ BabyCobolParser::ArithmeticExpressionContext* BabyCobolParser::ArithOpArithmetic
 
 BabyCobolParser::ArithOpArithmeticExpContext::ArithOpArithmeticExpContext(ArithmeticExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::ArithOpArithmeticExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterArithOpArithmeticExp(this);
-}
-void BabyCobolParser::ArithOpArithmeticExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitArithOpArithmeticExp(this);
-}
 
 std::any BabyCobolParser::ArithOpArithmeticExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3503,16 +3122,6 @@ BabyCobolParser::AtomicContext* BabyCobolParser::AtomicStringExpContext::atomic(
 
 BabyCobolParser::AtomicStringExpContext::AtomicStringExpContext(StringExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::AtomicStringExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAtomicStringExp(this);
-}
-void BabyCobolParser::AtomicStringExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAtomicStringExp(this);
-}
 
 std::any BabyCobolParser::AtomicStringExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3532,16 +3141,6 @@ BabyCobolParser::StringExpressionContext* BabyCobolParser::AdditionStringExpCont
 
 BabyCobolParser::AdditionStringExpContext::AdditionStringExpContext(StringExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::AdditionStringExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAdditionStringExp(this);
-}
-void BabyCobolParser::AdditionStringExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAdditionStringExp(this);
-}
 
 std::any BabyCobolParser::AdditionStringExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3638,16 +3237,6 @@ tree::TerminalNode* BabyCobolParser::TrueBooleanExpContext::TRUE() {
 
 BabyCobolParser::TrueBooleanExpContext::TrueBooleanExpContext(BooleanExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::TrueBooleanExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterTrueBooleanExp(this);
-}
-void BabyCobolParser::TrueBooleanExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitTrueBooleanExp(this);
-}
 
 std::any BabyCobolParser::TrueBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3671,16 +3260,6 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::BoolOpBooleanExpCont
 
 BabyCobolParser::BoolOpBooleanExpContext::BoolOpBooleanExpContext(BooleanExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::BoolOpBooleanExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterBoolOpBooleanExp(this);
-}
-void BabyCobolParser::BoolOpBooleanExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitBoolOpBooleanExp(this);
-}
 
 std::any BabyCobolParser::BoolOpBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3696,16 +3275,6 @@ tree::TerminalNode* BabyCobolParser::FalseBooleanExpContext::FALSE() {
 
 BabyCobolParser::FalseBooleanExpContext::FalseBooleanExpContext(BooleanExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::FalseBooleanExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterFalseBooleanExp(this);
-}
-void BabyCobolParser::FalseBooleanExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitFalseBooleanExp(this);
-}
 
 std::any BabyCobolParser::FalseBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3737,16 +3306,6 @@ BabyCobolParser::ContractedBooleanPartContext* BabyCobolParser::ContractedBoolea
 
 BabyCobolParser::ContractedBooleanExpContext::ContractedBooleanExpContext(BooleanExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::ContractedBooleanExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterContractedBooleanExp(this);
-}
-void BabyCobolParser::ContractedBooleanExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitContractedBooleanExp(this);
-}
 
 std::any BabyCobolParser::ContractedBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3766,16 +3325,6 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::NotBooleanExpContext
 
 BabyCobolParser::NotBooleanExpContext::NotBooleanExpContext(BooleanExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::NotBooleanExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterNotBooleanExp(this);
-}
-void BabyCobolParser::NotBooleanExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitNotBooleanExp(this);
-}
 
 std::any BabyCobolParser::NotBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -3799,16 +3348,6 @@ BabyCobolParser::ArithmeticExpressionContext* BabyCobolParser::CompareOpBooleanE
 
 BabyCobolParser::CompareOpBooleanExpContext::CompareOpBooleanExpContext(BooleanExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::CompareOpBooleanExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterCompareOpBooleanExp(this);
-}
-void BabyCobolParser::CompareOpBooleanExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitCompareOpBooleanExp(this);
-}
 
 std::any BabyCobolParser::CompareOpBooleanExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4004,16 +3543,6 @@ BabyCobolParser::AtomicContext* BabyCobolParser::VaryingLoopExpContext::atomic(s
 
 BabyCobolParser::VaryingLoopExpContext::VaryingLoopExpContext(LoopExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::VaryingLoopExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterVaryingLoopExp(this);
-}
-void BabyCobolParser::VaryingLoopExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitVaryingLoopExp(this);
-}
 
 std::any BabyCobolParser::VaryingLoopExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4029,16 +3558,6 @@ BabyCobolParser::StatementContext* BabyCobolParser::LoopStatementContext::statem
 
 BabyCobolParser::LoopStatementContext::LoopStatementContext(LoopExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::LoopStatementContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterLoopStatement(this);
-}
-void BabyCobolParser::LoopStatementContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitLoopStatement(this);
-}
 
 std::any BabyCobolParser::LoopStatementContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4058,16 +3577,6 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::UntilLoopExpContext:
 
 BabyCobolParser::UntilLoopExpContext::UntilLoopExpContext(LoopExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::UntilLoopExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterUntilLoopExp(this);
-}
-void BabyCobolParser::UntilLoopExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitUntilLoopExp(this);
-}
 
 std::any BabyCobolParser::UntilLoopExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4087,16 +3596,6 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::WhileLoopExpContext:
 
 BabyCobolParser::WhileLoopExpContext::WhileLoopExpContext(LoopExpressionContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::WhileLoopExpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterWhileLoopExp(this);
-}
-void BabyCobolParser::WhileLoopExpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitWhileLoopExp(this);
-}
 
 std::any BabyCobolParser::WhileLoopExpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4248,18 +3747,6 @@ size_t BabyCobolParser::ContractedBooleanPartContext::getRuleIndex() const {
   return BabyCobolParser::RuleContractedBooleanPart;
 }
 
-void BabyCobolParser::ContractedBooleanPartContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterContractedBooleanPart(this);
-}
-
-void BabyCobolParser::ContractedBooleanPartContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitContractedBooleanPart(this);
-}
-
 
 std::any BabyCobolParser::ContractedBooleanPartContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4320,18 +3807,6 @@ BabyCobolParser::ComparisonOpContext::ComparisonOpContext(ParserRuleContext *par
 
 size_t BabyCobolParser::ComparisonOpContext::getRuleIndex() const {
   return BabyCobolParser::RuleComparisonOp;
-}
-
-void BabyCobolParser::ComparisonOpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterComparisonOp(this);
-}
-
-void BabyCobolParser::ComparisonOpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitComparisonOp(this);
 }
 
 
@@ -4405,18 +3880,6 @@ size_t BabyCobolParser::BooleanOpContext::getRuleIndex() const {
   return BabyCobolParser::RuleBooleanOp;
 }
 
-void BabyCobolParser::BooleanOpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterBooleanOp(this);
-}
-
-void BabyCobolParser::BooleanOpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitBooleanOp(this);
-}
-
 
 std::any BabyCobolParser::BooleanOpContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4471,18 +3934,6 @@ BabyCobolParser::ArithmeticOpContext::ArithmeticOpContext(ParserRuleContext *par
 
 size_t BabyCobolParser::ArithmeticOpContext::getRuleIndex() const {
   return BabyCobolParser::RuleArithmeticOp;
-}
-
-void BabyCobolParser::ArithmeticOpContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterArithmeticOp(this);
-}
-
-void BabyCobolParser::ArithmeticOpContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitArithmeticOp(this);
 }
 
 
@@ -4567,16 +4018,6 @@ BabyCobolParser::StatementContext* BabyCobolParser::WhenOtherContext::statement(
 
 BabyCobolParser::WhenOtherContext::WhenOtherContext(WhenBlockContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::WhenOtherContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterWhenOther(this);
-}
-void BabyCobolParser::WhenOtherContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitWhenOther(this);
-}
 
 std::any BabyCobolParser::WhenOtherContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4608,16 +4049,6 @@ BabyCobolParser::StatementContext* BabyCobolParser::WhenAnyExpressionContext::st
 
 BabyCobolParser::WhenAnyExpressionContext::WhenAnyExpressionContext(WhenBlockContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::WhenAnyExpressionContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterWhenAnyExpression(this);
-}
-void BabyCobolParser::WhenAnyExpressionContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitWhenAnyExpression(this);
-}
 
 std::any BabyCobolParser::WhenAnyExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4768,16 +4199,6 @@ BabyCobolParser::IdentifiersContext* BabyCobolParser::IdentifierContext::identif
 
 BabyCobolParser::IdentifierContext::IdentifierContext(AtomicContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::IdentifierContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterIdentifier(this);
-}
-void BabyCobolParser::IdentifierContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitIdentifier(this);
-}
 
 std::any BabyCobolParser::IdentifierContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4793,16 +4214,6 @@ tree::TerminalNode* BabyCobolParser::StringLiteralContext::LITERAL() {
 
 BabyCobolParser::StringLiteralContext::StringLiteralContext(AtomicContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::StringLiteralContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterStringLiteral(this);
-}
-void BabyCobolParser::StringLiteralContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitStringLiteral(this);
-}
 
 std::any BabyCobolParser::StringLiteralContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4818,16 +4229,6 @@ tree::TerminalNode* BabyCobolParser::IntLiteralContext::INT() {
 
 BabyCobolParser::IntLiteralContext::IntLiteralContext(AtomicContext *ctx) { copyFrom(ctx); }
 
-void BabyCobolParser::IntLiteralContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterIntLiteral(this);
-}
-void BabyCobolParser::IntLiteralContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitIntLiteral(this);
-}
 
 std::any BabyCobolParser::IntLiteralContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
@@ -4917,18 +4318,6 @@ tree::TerminalNode* BabyCobolParser::IdentifiersContext::INT() {
 
 size_t BabyCobolParser::IdentifiersContext::getRuleIndex() const {
   return BabyCobolParser::RuleIdentifiers;
-}
-
-void BabyCobolParser::IdentifiersContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterIdentifiers(this);
-}
-
-void BabyCobolParser::IdentifiersContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<BabyCobolListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitIdentifiers(this);
 }
 
 

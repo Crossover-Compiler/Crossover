@@ -49,6 +49,12 @@ antlr_target(SampleGrammarLexer ${CMAKE_CURRENT_SOURCE_DIR}/grammar/BabyCobol.g4
 # include generated files in project environment
 include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
 
-add_executable(output main.cpp src/visitor/Visitor.cpp src/visitor/Visitor.h)
-llvm_map_components_to_libnames(llvm_libs support core irreader)
+add_executable(output main.cpp
+        src/visitor/Visitor.cpp
+        src/visitor/Visitor.h
+        include/antlr/BabyCobolLexer.h
+        include/antlr/BabyCobolLexer.cpp
+        include/antlr/BabyCobolParser.h
+        include/antlr/BabyCobolParser.cpp src/Exceptions/NotImplemented.h)
+lvm_map_components_to_libnames(llvm_libs support core irreader)
 target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)
