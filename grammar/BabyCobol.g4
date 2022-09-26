@@ -7,8 +7,8 @@ name            :   IDENTIFIER;
 value           :   LITERAL;
 
 data            :   DATA DIVISION variable*;
-variable        :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers)? (OCCURS INT TIMES)? DOT;
-level           :   INT;
+variable        :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers)? (OCCURS int TIMES)? DOT;
+level           :   int;
 representation  :   (NINE | X); // NOTE: This makes it impossible to use these as variable names
 
 procedure       :   PROCEDURE DIVISION DOT sentence* paragraph+;
@@ -107,12 +107,14 @@ whenBlock       :   WHEN anyExpression+ statement+      #whenAnyExpression
                 |   WHEN OTHER statement+               #whenOther
                 ;
 
-atomic          :   INT                         #intLiteral
+atomic          :   int                         #intLiteral
                 |   LITERAL                     #stringLiteral
                 |   identifiers                 #identifier
                 ;
 
-identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' INT ')')?;
+identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
+
+int             :   INT | NINE;
 
 // Keywords & symbol names
 IDENTIFICATION: 'IDENTIFICATION';
@@ -177,8 +179,9 @@ X:          [X]+;
 
 COMMENTLINE     :   '*' WS '\n' -> skip;
 IDENTIFIER      :   VAR ('-' VAR)* INT?;
-INT             :   '-'? [0-9]+;
+INT             :   '-'? ([0-9]+ | NINE);
 LITERAL         :   '"' ~'"'+ '"'; // Any char except for "
 DOT             :   '.';
 VAR             :   [A-Za-z]+;
+
 WS              :   [ \r\n\t\f]+ -> skip;

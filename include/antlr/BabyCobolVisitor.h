@@ -127,6 +127,8 @@ public:
 
     virtual std::any visitIdentifiers(BabyCobolParser::IdentifiersContext *context) = 0;
 
+    virtual std::any visitInt(BabyCobolParser::IntContext *context) = 0;
+
 
 };
 

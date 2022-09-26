@@ -37,32 +37,16 @@ using namespace llvm;
 using namespace llvm::sys;
 
 int main() {
-//    cout << "Starting Compiler..." << endl;
-//
-//    ifstream stream;
-//    stream.open("testProgram.txt");
-//    ANTLRInputStream input(stream);
-//    BabyCobolLexer lexer(&input);
-//    CommonTokenStream tokens(&lexer);
-//    BabyCobolParser parser(&tokens);
-//
-//    BabyCobolParser::ProgramContext* tree = parser.program();
-//
-//    Visitor visitor;
-//    vector<string> babyCobolCompiled = any_cast<vector<string>>(visitor.visitProgram(tree));
-//
-//    cout << endl << "----------------------------------------------" << endl;
-//    cout << "BabyCobol compiled:" << endl;
-//    cout << "----------------------------------------------" << endl << endl;
-//
-//    for (string &line: babyCobolCompiled) {
-//        cout << line << endl;
-//    }
-//
-//    cout << endl << "----------------------------------------------" << endl << endl;
-//
-//    cout << "Finished Compiling!" << endl;
+    cout << "Starting Compiler..." << endl;
 
+    ifstream stream;
+    stream.open("testProgram.txt");
+    ANTLRInputStream input(stream);
+    BabyCobolLexer lexer(&input);
+    CommonTokenStream tokens(&lexer);
+    BabyCobolParser parser(&tokens);
+
+    BabyCobolParser::ProgramContext* tree = parser.program();
 
 
     // init  llvm
@@ -70,25 +54,27 @@ int main() {
     BCModule* llvmModule = new BCModule("module", *llvmContext);
 
     llvm::FunctionType* FT = llvm::FunctionType::get(llvm::Type::getVoidTy(*llvmContext), false);
-
-    // twoandtwo test
-    //llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "twoAndTwo", llvmModule);
     llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", llvmModule);
-
-
     // Run compiler
     llvm::BasicBlock* block = llvm::BasicBlock::Create(*llvmContext, "root_block", F);
 
-    // hard-code some IR
-    llvm::Constant* val1 = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(*llvmContext), "2", 10);
-    llvm::Value* val2 = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(*llvmContext), "2", 10);
 
     llvm::IRBuilder<> builder(llvmModule->getContext());
     builder.SetInsertPoint(block);
 
-    llvm::Value* val3 = builder.CreateAdd(val1, val2, "mAdd");
+    Visitor visitor(llvmModule, &builder);
+    visitor.visitProgram(tree);
 
-    builder.CreateRet(val3);
+    cout << "Finished Compiling!" << endl;
+
+
+
+
+    // hard-code some IR
+//    llvm::Constant* val1 = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(*llvmContext), "2", 10);
+//    llvm::Value* val2 = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(*llvmContext), "2", 10);
+//    llvm::Value* val3 = builder.CreateAdd(val1, val2, "mAdd");
+//    builder.CreateRet(val3);
 
     llvmModule->print(llvm::outs(), nullptr);
 
@@ -148,7 +134,7 @@ int main() {
 
     outs() << "Wrote " << Filename << "\n";
 
-    //TODO: invoke gcc or clang++ here to link the object files
+//TODO: invoke gcc or clang++ here to link the object files
 
 
 
