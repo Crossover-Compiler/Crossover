@@ -71,7 +71,8 @@ int main() {
 
     llvm::FunctionType* FT = llvm::FunctionType::get(llvm::Type::getVoidTy(*llvmContext), false);
 
-//    llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "twoAndTwo", llvmModule);
+    // twoandtwo test
+    //llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "twoAndTwo", llvmModule);
     llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", llvmModule);
 
 
@@ -92,8 +93,8 @@ int main() {
     llvmModule->print(llvm::outs(), nullptr);
 
 
-// trying to generate a binary programmatically
-// code from llvm kaleidoscope tutorial
+    // trying to generate a binary programmatically
+    // code from llvm kaleidoscope tutorial
 
     InitializeAllTargetInfos();
     InitializeAllTargets();
@@ -107,9 +108,9 @@ int main() {
     std::string Error;
     auto Target = TargetRegistry::lookupTarget(TargetTriple, Error);
 
-// Print an error and exit if we couldn't find the requested target.
-// This generally occurs if we've forgotten to initialise the
-// TargetRegistry or we have a bogus target triple.
+    // Print an error and exit if we couldn't find the requested target.
+    // This generally occurs if we've forgotten to initialise the
+    // TargetRegistry or we have a bogus target triple.
 
     if (!Target) {
         errs() << Error;
