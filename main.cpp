@@ -67,15 +67,6 @@ int main() {
 
     cout << "Finished Compiling!" << endl;
 
-
-
-
-    // hard-code some IR
-//    llvm::Constant* val1 = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(*llvmContext), "2", 10);
-//    llvm::Value* val2 = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(*llvmContext), "2", 10);
-//    llvm::Value* val3 = builder.CreateAdd(val1, val2, "mAdd");
-//    builder.CreateRet(val3);
-
     llvmModule->print(llvm::outs(), nullptr);
 
 

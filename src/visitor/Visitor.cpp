@@ -107,7 +107,6 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
 
         llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
         builder->CreateCall(*printf_func, aref);
-        cout << value; // <- remove this
     }
 
     return 0;
