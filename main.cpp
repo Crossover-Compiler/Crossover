@@ -106,7 +106,7 @@ int main() {
     auto Features = "";
 
     TargetOptions opt;
-    auto RM = Optional<Reloc::Model>();
+    auto RM = Optional<Reloc::Model>(Reloc::PIC_);
     auto TheTargetMachine =
             Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
 
