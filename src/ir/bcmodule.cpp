@@ -43,28 +43,4 @@ llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, 
     spdlog::warn("identifier type is assumed to be string (Pls fix me later)");
     return builder->CreateGlobalStringPtr(identifier, identifier);
 
-//    switch (typeHint) {
-//
-//        case TokenType::LITERAL_STRING:
-//            return builder->CreateGlobalStringPtr(name, name);
-//
-//        case TokenType::LITERAL_NUMERIC:
-//            initializer = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(this->getContext()),  llvm::APInt(64, 0, defaultValue < 0));
-//            type = llvm::Type::getInt64Ty(this->getContext());
-//            break;
-//
-//        case TokenType::LITERAL_BOOLEAN:
-//            // fall through
-//        default:
-//            spdlog::error("Unsupported type hint for identifier");
-//    }
-//
-//    v = new llvm::GlobalVariable(*this, type, false, llvm::GlobalValue::CommonLinkage, initializer, identifier, nullptr, llvm::GlobalValue::NotThreadLocal, 64, false);
-//
-//    if (defaultValue != 0) {
-//        llvm::Constant* initAssign = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(this->getContext()),  llvm::APInt(64, static_cast<uint64_t>(defaultValue), defaultValue < 0));// workaround for non-zero initializer todo: check if this is consistent with FPs
-//        builder->CreateStore(initAssign, v);
-//    }
-//
-//    return v;
 }
