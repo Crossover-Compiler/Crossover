@@ -70,8 +70,7 @@ int main() {
     llvmModule->print(llvm::outs(), nullptr);
 
 
-    // trying to generate a binary programmatically
-    // code from llvm kaleidoscope tutorial
+    // The following code allows us to compile the IR into C object files
 
     InitializeAllTargetInfos();
     InitializeAllTargets();
