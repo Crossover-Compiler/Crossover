@@ -92,22 +92,17 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     llvm::FunctionCallee* printf_func = bcModule->getPrintf();
 
     bool nextLine = ctx->ADVANCING() == nullptr;
+    llvm::Value* raw = builder->CreateGlobalStringPtr(value);
+    llvm::Value* strPtr;
     if (nextLine) {
-        llvm::Value* raw = builder->CreateGlobalStringPtr(value);
         // create a printf call for every operand
-        llvm::Value* strPtr = builder->CreateGlobalStringPtr("%s\r\n");
-
-        llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
-        builder->CreateCall(*printf_func, aref);
-
+        strPtr = builder->CreateGlobalStringPtr("%s\r\n");
     } else {
-        llvm::Value* raw = builder->CreateGlobalStringPtr(value);
-        // create a printf call for every operand
-        llvm::Value* strPtr = builder->CreateGlobalStringPtr("%s");
-
-        llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
-        builder->CreateCall(*printf_func, aref);
+        strPtr = builder->CreateGlobalStringPtr("%s");
     }
+
+    llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
+    builder->CreateCall(*printf_func, aref);
 
     return 0;
 }
