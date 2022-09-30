@@ -53,10 +53,14 @@ add_executable(output main.cpp
         src/visitor/Visitor.cpp
         src/visitor/Visitor.h
         src/ir/bcmodule.cpp
+        src/Exceptions/NotImplemented.h
+        src/datastructures/DataTree.cpp
+        src/datastructures/DataTree.h
         include/antlr/BabyCobolLexer.h
         include/antlr/BabyCobolLexer.cpp
         include/antlr/BabyCobolParser.h
         include/ir/bcmodule.h
-        include/antlr/BabyCobolParser.cpp src/Exceptions/NotImplemented.h)
+        include/antlr/BabyCobolParser.cpp
+        )
 llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
 target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)
