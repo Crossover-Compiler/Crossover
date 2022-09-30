@@ -4,6 +4,13 @@
 
 #include "Visitor.h"
 #include "../Exceptions/NotImplemented.h"
+#include <llvm/IR/Constants.h>
+#include "llvm/MC/TargetRegistry.h"
+#include "llvm/Support/FileSystem.h"
+#include "llvm/Support/Host.h"
+#include "llvm/ADT/Optional.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Verifier.h"
 
 using namespace std;
 
@@ -42,7 +49,10 @@ std::any Visitor::visitRepresentation(BabyCobolParser::RepresentationContext *ct
 }
 
 std::any Visitor::visitProcedure(BabyCobolParser::ProcedureContext *ctx) {
-    return BabyCobolBaseVisitor::visitProcedure(ctx);
+
+    any return_val = BabyCobolBaseVisitor::visitProcedure(ctx);
+    builder->CreateRetVoid(); // TODO: Change based on actual return type
+    return return_val;
 }
 
 std::any Visitor::visitParagraph(BabyCobolParser::ParagraphContext *ctx) {
@@ -54,6 +64,7 @@ std::any Visitor::visitSentence(BabyCobolParser::SentenceContext *ctx) {
 }
 
 std::any Visitor::visitStatement(BabyCobolParser::StatementContext *ctx) {
+
     return BabyCobolBaseVisitor::visitStatement(ctx);
 }
 
@@ -62,30 +73,37 @@ std::any Visitor::visitLabel(BabyCobolParser::LabelContext *ctx) {
 }
 
 std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
-    bool nextLine = ctx->ADVANCING() == nullptr;
-    vector<string> values = {};
+    string value;
 
     for (int i = 0; i < ctx->atomic().size(); ++i) {
         if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            values.push_back(any_cast<string>(visit(ctx->atomic()[i])));
+            value += any_cast<string>(visit(ctx->atomic()[i]));
         } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            values.push_back(any_cast<string>(visit(ctx->atomic()[i])));
+            value += any_cast<string>(visit(ctx->atomic()[i]));
         } else {
             throw NotImplemented("Visitor:visitDisplay() Printing by identifier is not implemented");
         }
         i++;
     }
+
+    std::vector<llvm::Value*> outputValues;
+    outputValues.reserve(value.size());
+
+    llvm::FunctionCallee* printf_func = bcModule->getPrintf();
+
+    bool nextLine = ctx->ADVANCING() == nullptr;
+    llvm::Value* raw = builder->CreateGlobalStringPtr(value);
+    llvm::Value* strPtr;
     if (nextLine) {
-        for (string &value: values) {
-            cout << value << endl;
-        }
+        // create a printf call for every operand
+        strPtr = builder->CreateGlobalStringPtr("%s\r\n");
     } else {
-        for (string &value: values) {
-            cout << value;
-        }
+        strPtr = builder->CreateGlobalStringPtr("%s");
     }
 
-    // TODO: Add Print int values with or without nextLine to compileVector
+    llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
+    builder->CreateCall(*printf_func, aref);
+
     return 0;
 }
 
@@ -118,6 +136,13 @@ std::any Visitor::visitAccept(BabyCobolParser::AcceptContext *ctx) {
 }
 
 std::any Visitor::visitAdd(BabyCobolParser::AddContext *ctx) {
+    current_id = "baseValue";
+    visit(ctx->atomic()[ctx->atomic().size() - 1]);
+    for (int i = 0; i < ctx->atomic().size() - 1; i++) {
+        current_id = "visitAdd_" + std::to_string(i);
+        visit(ctx->atomic()[i]);
+        values["baseValue"] = builder->CreateAdd(values[current_id], values["baseValue"], "mAdd");
+    }
     return BabyCobolBaseVisitor::visitAdd(ctx);
 }
 
@@ -234,13 +259,14 @@ std::any Visitor::visitWhenOther(BabyCobolParser::WhenOtherContext *ctx) {
 }
 
 std::any Visitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *ctx) {
-    // TODO: This might need to be revisited
-    return stoi(ctx->INT()->getText());
+    return BabyCobolBaseVisitor::visitIntLiteral(ctx);
 }
 
 std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) {
     // Get the text and remove the quotes to get the string
     string value = ctx->LITERAL()->getText().substr(1, ctx->LITERAL()->getText().size() - 2);
+
+    values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
     return value;
 }
 
@@ -250,4 +276,16 @@ std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
 
 std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
     return BabyCobolBaseVisitor::visitIdentifiers(ctx);
+}
+
+any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
+    string value;
+    if (ctx->NINE() != nullptr) {
+        value = ctx->NINE()->getText();
+    } else {
+        value = ctx->INT()->getText();
+    }
+
+    values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
+    return value;
 }

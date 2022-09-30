@@ -38,7 +38,7 @@ public:
     RuleAnyExpression = 29, RuleArithmeticExpression = 30, RuleStringExpression = 31, 
     RuleBooleanExpression = 32, RuleLoopExpression = 33, RuleContractedBooleanPart = 34, 
     RuleComparisonOp = 35, RuleBooleanOp = 36, RuleArithmeticOp = 37, RuleWhenBlock = 38, 
-    RuleAtomic = 39, RuleIdentifiers = 40
+    RuleAtomic = 39, RuleIdentifiers = 40, RuleInt = 41
   };
 
   explicit BabyCobolParser(antlr4::TokenStream *input);
@@ -98,7 +98,8 @@ public:
   class ArithmeticOpContext;
   class WhenBlockContext;
   class AtomicContext;
-  class IdentifiersContext; 
+  class IdentifiersContext;
+  class IntContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
   public:
@@ -191,7 +192,7 @@ public:
     antlr4::tree::TerminalNode *LIKE();
     IdentifiersContext *identifiers();
     antlr4::tree::TerminalNode *OCCURS();
-    antlr4::tree::TerminalNode *INT();
+    IntContext *int_();
     antlr4::tree::TerminalNode *TIMES();
 
 
@@ -205,7 +206,7 @@ public:
   public:
     LevelContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *INT();
+    IntContext *int_();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -984,7 +985,7 @@ public:
   public:
     IntLiteralContext(AtomicContext *ctx);
 
-    antlr4::tree::TerminalNode *INT();
+    IntContext *int_();
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
@@ -999,7 +1000,7 @@ public:
     antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
     std::vector<antlr4::tree::TerminalNode *> OF();
     antlr4::tree::TerminalNode* OF(size_t i);
-    antlr4::tree::TerminalNode *INT();
+    IntContext *int_();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -1007,6 +1008,20 @@ public:
   };
 
   IdentifiersContext* identifiers();
+
+  class  IntContext : public antlr4::ParserRuleContext {
+  public:
+    IntContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *INT();
+    antlr4::tree::TerminalNode *NINE();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  IntContext* int_();
 
 
   bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;

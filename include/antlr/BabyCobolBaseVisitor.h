@@ -231,6 +231,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitInt(BabyCobolParser::IntContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
 
 };
 

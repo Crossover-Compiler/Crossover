@@ -6,12 +6,24 @@
 #define CROSSOVER_VISITOR_H
 
 #include "../../include/antlr/BabyCobolBaseVisitor.h"
+#include "../../include/ir/bcmodule.h"
+#include <llvm/IR/IRBuilder.h>
 
-class Visitor : public BabyCobolBaseVisitor {
+using namespace llvm;
+using namespace std;
 
-    std::vector<std::string> compiledVector;
+class Visitor: public BabyCobolBaseVisitor {
+
+private:
+    vector<std::string> compiledVector;
+    map<string, Value*> values;
+    string current_id;
+    BCModule* bcModule;
+    IRBuilder<>* builder;
 
 public:
+    Visitor(BCModule* bcModule, IRBuilder<>* builder) : bcModule(bcModule), builder(builder) {}
+
     std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override;
 
     std::any visitProgram(BabyCobolParser::ProgramContext *ctx) override;
@@ -120,6 +132,7 @@ public:
 
     std::any visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) override;
 
+    any visitInt(BabyCobolParser::IntContext *ctx) override;
 };
 
 
