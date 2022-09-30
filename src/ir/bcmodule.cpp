@@ -15,10 +15,21 @@ void BCModule::initialize() {
     this->printf_func = new llvm::FunctionCallee();
 
     *(this->printf_func) = this->getOrInsertFunction("printf", printf_type);
+
+
+    // Testing external function
+
+    this->prog_says_func = new llvm::FunctionCallee();
+    *(this->prog_says_func) = this->getOrInsertFunction("prog_says", printf_type);
+
 }
 
 llvm::FunctionCallee* BCModule::getPrintf() {
     return this->printf_func;
+}
+
+llvm::FunctionCallee* BCModule::getProgSays() {
+    return this->prog_says_func;
 }
 
 

@@ -11,6 +11,7 @@ class BCModule : public llvm::Module {
 
 private:
     llvm::FunctionCallee* printf_func;
+    llvm::FunctionCallee* prog_says_func;
 
 private:
 
@@ -33,6 +34,11 @@ public:
      */
     llvm::FunctionCallee* getPrintf();
 
+
+    /**
+     * @brief pls remove me
+     */
+    llvm::FunctionCallee* getProgSays();
 
 //    perhaps not even needed
 //
