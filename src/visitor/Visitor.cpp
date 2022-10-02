@@ -11,6 +11,7 @@
 #include "llvm/ADT/Optional.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Verifier.h"
+#include "../Exceptions/CompileException.h"
 
 using namespace std;
 
@@ -20,7 +21,13 @@ std::any Visitor::visitIdentification(BabyCobolParser::IdentificationContext *ct
 }
 
 std::any Visitor::visitProgram(BabyCobolParser::ProgramContext *ctx) {
-    BabyCobolBaseVisitor::visitProgram(ctx);
+    visit(ctx->identification());
+
+    if (ctx->data() != nullptr) {
+        visit(ctx->data());
+    }
+
+    visit(ctx->procedure());
     return compiledVector;
 }
 
@@ -32,9 +39,45 @@ std::any Visitor::visitValue(BabyCobolParser::ValueContext *ctx) {
     return BabyCobolBaseVisitor::visitValue(ctx);
 }
 
+
+
 std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
+    int startingLevel = stoi(ctx->variable()[0]->level()->getText());
+
+
+
+
+    for (auto v: ctx->variable()) {
+        int level = stoi(v->level()->getText());
+        string value = v->IDENTIFIER()->getText();
+        auto picture = v->representation();
+        auto like = v->identifiers();
+        DataTree* likeNode = nullptr;
+
+        if (like != nullptr) {
+            if (dataStructures.empty()) {
+                string exceptionString = "There is nothing to be like";
+                throw CompileException(exceptionString);
+            }
+            string path = like->getText();
+            auto result = getNodes(path)
+        }
+
+
+        if (level > startingLevel) {
+            // create child
+        } else if (level == startingLevel) {
+            // create root tree
+        } else if(level < startingLevel) {
+            string exceptionString = "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(startingLevel);
+            throw CompileException(exceptionString);
+        }
+    }
+
     return BabyCobolBaseVisitor::visitData(ctx);
 }
+
+
 
 std::any Visitor::visitVariable(BabyCobolParser::VariableContext *ctx) {
     return BabyCobolBaseVisitor::visitVariable(ctx);
@@ -289,3 +332,49 @@ any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
     values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
     return value;
 }
+
+/**
+ * ================
+ * HELPER FUNCTIONS
+ * ================
+ */
+
+
+void Visitor::reset() {
+    for (DataTree* dataStructure : dataStructures) {
+        while (dataStructure->getPrevious() != nullptr) {
+            dataStructure = dataStructure->getPrevious();
+        }
+    }
+}
+
+
+vector<DataTree*> Visitor::getNodes(string path) {
+    reset();
+    vector<DataTree*> result;
+    for (auto d : dataStructures) {
+        vector<DataTree*> tempVec;
+        tempVec = d->getNodesFromPath(path, tempVec);
+        for (auto item: tempVec) {
+            result.push_back(item);
+        }
+    }
+    return result;
+}
+
+vector<string> Visitor::split (string s, string delimiter) {
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    string token;
+    vector<string> res;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        token = s.substr (pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back (token);
+    }
+
+    res.push_back (s.substr (pos_start));
+    return res;
+}
+
+
