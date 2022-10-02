@@ -6,27 +6,28 @@
 
 using namespace std;
 
-    DataTree deepCopy() {
-        DataTree copy = new DataTree(name, level, value);
 
-        if (this.picture != null) {
-            copy.setPicture(getPicture());
+    DataTree* DataTree::deepCopy() {
+        DataTree* copy = new DataTree(name, level, value);
+
+        if (this->picture != DataType::UNDEFINED) {
+            copy->setPicture(getPicture());
         }
 
-        for (var c: this.getNext()) {
-            copy.addNext(c.deepCopy());
+        for (auto c: this->getNext()) {
+            copy->addNext(c->deepCopy());
         }
 
-        copy.setCardinality(cardinality);
+        copy->setCardinality(cardinality);
 
         return copy;
     }
 
-    Map<DataTree, int> getLeaves(Map<DataTree, int> result, int childOrder) {
+    map<DataTree*, int> DataTree::getLeaves(map<DataTree*, int> result, int childOrder) {
 
         for (auto n: next) {
-            if (n.getNext().isEmpty()) {
-                n.getLeaves(result, childOrder + 1);
+            if (n->getNext().empty()) {
+                n->getLeaves(result, childOrder + 1);
             } else {
                 result[n] = childOrder;
             }
@@ -34,147 +35,148 @@ using namespace std;
         return result;
     }
 
-    Bool identicalNode(DataTree dataTree) {
-        return level.equals(dataTree.getLevel() && name.equals(dataTree.getname()));
+    bool DataTree::identicalNode(DataTree* dataTree) {
+        return (level == dataTree->getLevel() && name == dataTree->getName());
     }
 
-    Bool isRecord() {
-        return !next.isEmpty();
+    bool DataTree::isRecord() {
+        return !next.empty();
     }
 
-    DataTree getLike() {
+    DataTree* DataTree::getLike() {
         return like;
     }
 
-    void setLike(DataTree like) {
-        this.like = like;
+    void DataTree::setLike(DataTree* like) {
+        this->like = like;
     }
 
-    int getOccurs() {
+    int DataTree::getOccurs() {
         return occurs;
     }
 
-    void setOccurs(int occurs) {
-        this.occurs = occurs;
+    void DataTree::setOccurs(int occurs) {
+        this->occurs = occurs;
     }
 
-    vector<DataTree> getNodesWithOccurs(vector<DataTree> result) {
+    vector<DataTree*> DataTree::getNodesWithOccurs(vector<DataTree*> result) {
         if (occurs > 1) {
-            result.add(this);
+            result.push_back(this);
         }
 
         for (auto c: next) {
-            c.getNodesWithOccurs(result);
+            c->getNodesWithOccurs(result);
         }
         return result;
     }
 
-    vector<DataTree> getNodesWithLikes(Vector<DataTree> result) {
+    vector<DataTree*> DataTree::getNodesWithLikes(vector<DataTree*> result) {
         if (like != nullptr) {
-            result.add(this);
+            result.push_back(this);
         }
 
         for (auto c: next) {
-            c.getNodesWithLikes(result);
+            c->getNodesWithLikes(result);
         }
         return result;
     }
 
-    void setIndex(int index) {
-        this.index = index;
+    void DataTree::setIndex(int index) {
+        this->index = index;
     }
 
-    int getIndex() {
+    int DataTree::getIndex() {
         return index;
     }
 
-    void setPicture(string picture) {
-        this.picture = DataTypes.valueOf(picture);
+    void DataTree::setPicture(DataType picture) {
+        this->picture = picture;
     }
 
-    void setPicture(DataTypes picture) {
-        this.picture = picture;
-    }
-
-    DataTypes getPicture() {
+    DataType DataTree::getPicture() {
         return picture;
     }
 
-    void addNext(DataTree dataTree) {
-        next.add(dataTree);
+    void DataTree::addNext(DataTree* dataTree) {
+        next.push_back(dataTree);
     }
 
-    void addNext(vector<DataTree> dataTree) {
+    void DataTree::addNext(vector<DataTree*> dataTree) {
         for (auto i: dataTree) {
-            next.add(i);
+            next.push_back(i);
         }
     }
 
-    void setNext(vector<DataTree> next) {
-        this.next = next;
+    void DataTree::setNext(vector<DataTree*> next) {
+        this->next = next;
     }
 
-    vector<DataTree> getNext() {
+    vector<DataTree*> DataTree::getNext() {
         return next;
     }
 
-    void setPrevious(DataTree dataTree) {
-        this.previous = previous;
+    void DataTree::setPrevious(DataTree* dataTree) {
+        this->previous = previous;
     }
 
-    DataTree getPrevious() {
+    DataTree* DataTree::getPrevious() {
         return previous;
     }
 
-    int getLevel() {
+    int DataTree::getLevel() {
         return level;
     }
 
-    string getValue() {
+    string DataTree::getValue() {
         return value;
     }
 
-    void setValue(string value) {
-        this.value = value;
+    void DataTree::setValue(string value) {
+        this->value = value;
     }
 
-    string getName() {
+    string DataTree::getName() {
         return name;
     }
 
-    int getCardinality() {
+    int DataTree::getCardinality() {
         return cardinality;
     }
 
-    setCardinality(int cardinality) {
-        this.cardinality = cardinality;
+    void DataTree::setCardinality(int cardinality) {
+        this->cardinality = cardinality;
     }
 
-    void resetTree() {
-        value = name.toUpperCase();
+    void DataTree::resetNode() {
+        string value = name;
+        for (auto & c: value) c = toupper(c);
+
         for (auto c: next) {
-            c.resetTree();
+            c->resetNode();
         }
     }
 
-    string toString() {
-        string result = level + " " + value + " " + name + " " + picture + "\n";
+    string DataTree::toString() {
+        string result = to_string(level) + " " + value + " " + name + " " + dataTypeToString(picture) + "\n";
         for (auto i: next) {
-            result += i.toString();
+            result += i->toString();
         }
         return result;
     }
 
-    vector<DataTree> getNodes(string node, vector<DataTree> result) {
-        if (name.equals(node)) {
-            result.add(this);
+    vector<DataTree*> DataTree::getNodes(string node, vector<DataTree*> result) {
+        if (name == node) {
+            result.push_back(this);
         }
         for (auto c: next) {
-            c.getNodes(node, result);
+            c->getNodes(node, result);
         }
-        result;
-    }
-
-    vector<DataTree> getNodesFromPath(string path, vector<DataTree> result) {
         return result;
     }
+
+    vector<DataTree*> DataTree::getNodesFromPath(string path, vector<DataTree*> result) {
+        return result;
+    }
+
+
+

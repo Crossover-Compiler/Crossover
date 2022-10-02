@@ -7,6 +7,7 @@
 
 #include "../../include/antlr/BabyCobolBaseVisitor.h"
 #include "../../include/ir/bcmodule.h"
+#include "../datastructures/DataTree.h"
 #include <llvm/IR/IRBuilder.h>
 
 using namespace llvm;
@@ -17,6 +18,7 @@ class Visitor: public BabyCobolBaseVisitor {
 private:
     vector<std::string> compiledVector;
     map<string, Value*> values;
+    vector<DataTree> dataStructures;
     string current_id;
     BCModule* bcModule;
     IRBuilder<>* builder;

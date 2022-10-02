@@ -32,7 +32,13 @@ std::any Visitor::visitValue(BabyCobolParser::ValueContext *ctx) {
     return BabyCobolBaseVisitor::visitValue(ctx);
 }
 
+// TODO: Use the dataStructures
 std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
+    int startingLevel = stoi(ctx->variable()[0]->level()->getText());
+    for (auto v: ctx->variable()) {
+//        TODO: create a tree from the variables
+    }
+
     return BabyCobolBaseVisitor::visitData(ctx);
 }
 

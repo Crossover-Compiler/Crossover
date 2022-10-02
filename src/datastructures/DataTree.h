@@ -1,81 +1,97 @@
 //
-// Created by Mart on 30/09/2022.
+// Created by bruh on 2-10-22.
 //
 
 #ifndef CROSSOVER_DATATREE_H
 #define CROSSOVER_DATATREE_H
 
-using namespace std
+#include <string>
+#include <utility>
+#include <vector>
+#include <map>
+#include <stdexcept>
+
+
+using namespace std;
+enum class DataType {NINE, X, UNDEFINED};
+constexpr const char* dataTypeToString(DataType dt) noexcept
+{
+    switch (dt)
+    {
+        case DataType::NINE: return "NINE";
+        case DataType::X: return "X";
+        case DataType::UNDEFINED: return "UNDEFINED";
+        default: throw std::invalid_argument("Unimplemented item");
+    }
+}
 
 class DataTree {
 
 private:
     string name;
-    vector<DataTree> next;
-    DataTree previous;
+    vector<DataTree*> next;
+    DataTree* previous;
     int level;
     string value;
-    string name;
-    DataTypes picture;
+    DataType picture;
     int cardinality;
     int index;
     int occurs;
-    DataTree like;
+    DataTree* like;
 
 public:
     DataTree(string name, int level, string value) :
-    name(name),
+    name(std::move(name)),
     level(level),
-    value(value),
-    next(new Vector<DataTree>),
+    value(std::move(value)),
+    next(),
     previous(nullptr),
-    picture(nullptr),
+    picture(DataType::UNDEFINED),
+    cardinality(-1),
     index(1),
     occurs(1),
-    like(nullptr),
+    like(nullptr)
     {}
 
-    DataTree deepCopy();
+    DataTree* deepCopy();
 
-    Map<DataTree, int> getLeaves(Map<DataTree, int> result, int childOrder);
+    map<DataTree*, int> getLeaves(map<DataTree*, int> result, int childOrder);
 
-    Bool identicalNode(DataTree dataTree);
+    bool identicalNode(DataTree* dataTree);
 
-    Bool isRecord();
+    bool isRecord();
 
-    DataTree getLike();
+    DataTree* getLike();
 
-    void setLike(DataTree like);
+    void setLike(DataTree* like);
 
     int getOccurs();
 
     void setOccurs(int occurs);
 
-    vector<DataTree> getNodesWithOccurs(vector<DataTree> result);
+    vector<DataTree*> getNodesWithOccurs(vector<DataTree*> result);
 
-    vector<DataTree> getNodesWithLikes(Vector<DataTree> result);
+    vector<DataTree*> getNodesWithLikes(vector<DataTree*> result);
 
     void setIndex(int index);
 
     int getIndex();
 
-    void setPicture(string picture);
+    void setPicture(DataType picture);
 
-    void setPicture(DataTypes picture);
+    DataType getPicture();
 
-    DataTypes getPicture();
+    void addNext(DataTree* dataTree);
 
-    void addNext(DataTree dataTree);
+    void addNext(vector<DataTree*> dataTree);
 
-    void addNext(vector<DataTree> dataTree);
+    void setNext(vector<DataTree*> next);
 
-    void setNext(vector<DataTree> next);
+    vector<DataTree*> getNext();
 
-    vector<DataTree> getNext();
+    void setPrevious(DataTree* dataTree);
 
-    void setPrevious(DataTree dataTree);
-
-    DataTree getPrevious();
+    DataTree* getPrevious();
 
     int getLevel();
 
@@ -87,18 +103,19 @@ public:
 
     int getCardinality();
 
-    setCardinality(int cardinality)
+    void setCardinality(int cardinality);
 
     void resetNode();
 
     string toString();
 
-    vector<DataTree> getTree(string node, vector<DataTree> result);
+    vector<DataTree*> getNodes(string node, vector<DataTree*> result);
 
-    vector<DataTree> getNodesFromPath(string path, vector<DataTree> result);
+    vector<DataTree*> getNodesFromPath(string path, vector<DataTree*> result);
 
 };
 
 
 
 #endif //CROSSOVER_DATATREE_H
+
