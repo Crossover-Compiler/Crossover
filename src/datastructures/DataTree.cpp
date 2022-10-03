@@ -117,7 +117,7 @@ using namespace std;
     }
 
     void DataTree::setPrevious(DataTree* dataTree) {
-        this->previous = previous;
+        this->previous = dataTree;
     }
 
     DataTree* DataTree::getPrevious() {
@@ -175,22 +175,24 @@ using namespace std;
         return result;
     }
 
+    // TODO:
     vector<DataTree*> DataTree::getNodesFromPath(string path, vector<DataTree*> result) {
-        auto ls = split(split(path, "//")[0], "OF");
-        std::reverse(ls.begin(), ls.end());
-        vector<DataTree*> temp;
-        vector<DataTree*> list = getNodes(ls[0], temp);
-        int index = 1;
-        for (int i = 0; i < ls.size(); ++i) {
-            vector<DataTree*> children;
-            for (auto l: list) {
-                children
-            }
-        }
+//        auto ls = split(split(path, "//")[0], "OF");
+//        std::reverse(ls.begin(), ls.end());
+//        vector<DataTree*> temp;
+//        vector<DataTree*> list = getNodes(ls[0], temp);
+//        int index = 1;
+//        for (int i = 0; i < ls.size(); ++i) {
+//            vector<DataTree*> children;
+//            for (auto l: list) {
+//                children
+//
+//            }
+//        }
     }
 
 
-
+// JAVA-like string split function
 vector<string> DataTree::split (string s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;

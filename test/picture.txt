@@ -1,21 +1,14 @@
 IDENTIFICATION DIVISION. A. "MOVETEST".
 DATA DIVISION
-    01 A.
-    03 B.
-    05 C PICTURE IS 999.
-    03 D.
-    05 E PICTURE IS XXX.
+    01 ROOT1.
+        02 SUBROOT1.
+            08 B PICTURE IS 999.
+                09 C.
+            04 D.
+                05 E.
+                    10 F.
+        02 SUBROOT2 PICTURE IS XXXXX.
+            08 G.
 PROCEDURE DIVISION.
     MAIN.
-    DISPLAY C.
-    DISPLAY E.
-    MOVE 10 TO C.
-    ADD 5 TO C.
-    SUBTRACT 2 FROM C.
-    MULTIPLY 2 BY C.
-    DIVIDE C INTO 2.
-    DISPLAY C.
-    MOVE 10 TO E.
-    ADD 5 TO E.
-    DISPLAY E.
-    MULTIPLY E BY 2.
+    DISPLAY 2.

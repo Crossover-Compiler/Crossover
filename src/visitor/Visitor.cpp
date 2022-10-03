@@ -39,42 +39,46 @@ std::any Visitor::visitValue(BabyCobolParser::ValueContext *ctx) {
     return BabyCobolBaseVisitor::visitValue(ctx);
 }
 
-
-
 std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
+    cout << "Starting DATA DIVISION" << endl;
     int startingLevel = stoi(ctx->variable()[0]->level()->getText());
-
-
-
 
     for (auto v: ctx->variable()) {
         int level = stoi(v->level()->getText());
-        string value = v->IDENTIFIER()->getText();
+        string identifier = v->IDENTIFIER()->getText();
         auto picture = v->representation();
         auto like = v->identifiers();
         DataTree* likeNode = nullptr;
 
-        if (like != nullptr) {
-            if (dataStructures.empty()) {
-                string exceptionString = "There is nothing to be like";
-                throw CompileException(exceptionString);
+        if (level == startingLevel) {
+            root = new DataTree(identifier, level, identifier);
+            setPictureForDataTree(root, picture);
+            dataStructures.push_back(root);
+
+        } else if (level > startingLevel) {
+            DataTree* child = new DataTree(identifier, level, identifier);
+            setPictureForDataTree(child, picture);
+
+            while (root->getLevel() >= level) {
+                root = root->getPrevious();
             }
-            string path = like->getText();
-            auto result = getNodes(path)
-        }
 
+            child->setPrevious(root);
+            root->addNext(child);
+            root = child;
 
-        if (level > startingLevel) {
-            // create child
-        } else if (level == startingLevel) {
-            // create root tree
         } else if(level < startingLevel) {
             string exceptionString = "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(startingLevel);
             throw CompileException(exceptionString);
         }
     }
 
-    return BabyCobolBaseVisitor::visitData(ctx);
+    reset();
+    for (DataTree* tree: dataStructures) {
+        cout << tree->toString() << endl;
+    }
+    cout << "Finished DATA DIVISION" << endl;
+    return nullptr;
 }
 
 
@@ -348,6 +352,20 @@ void Visitor::reset() {
     }
 }
 
+void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture) {
+    if (picture != nullptr) {
+        if (picture->NINE() != nullptr) {
+            dataTree->setPicture(DataType::NINE);
+            dataTree->setCardinality(picture->NINE()->getText().size());
+            dataTree->setValue(string(dataTree->getCardinality(), '9'));
+        } else if (picture->X() != nullptr) {
+            dataTree->setPicture(DataType::X);
+            dataTree->setCardinality(picture->X()->getText().size());
+            dataTree->setValue(string(dataTree->getCardinality(), 'X'));
+        }
+    }
+}
+
 
 vector<DataTree*> Visitor::getNodes(string path) {
     reset();
@@ -362,6 +380,7 @@ vector<DataTree*> Visitor::getNodes(string path) {
     return result;
 }
 
+// JAVA-like split function for strings
 vector<string> Visitor::split (string s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;
@@ -376,5 +395,3 @@ vector<string> Visitor::split (string s, string delimiter) {
     res.push_back (s.substr (pos_start));
     return res;
 }
-
-

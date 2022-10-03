@@ -19,6 +19,7 @@ private:
     vector<std::string> compiledVector;
     map<string, Value*> values;
     vector<DataTree*> dataStructures;
+    DataTree* root;
     string current_id;
     BCModule* bcModule;
     IRBuilder<>* builder;
@@ -136,12 +137,19 @@ public:
 
     std::any visitInt(BabyCobolParser::IntContext *ctx) override;
 
+    /**
+     * ================
+     * HELPER FUNCTIONS
+     * ================
+     */
+
     void reset();
+
+    void setPictureForDataTree(DataTree *dataTree, BabyCobolParser::RepresentationContext *picture);
 
     vector<DataTree*> getNodes(string path);
 
     vector<string> split(string s, string delimiter);
-
 };
 
 
