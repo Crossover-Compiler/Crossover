@@ -17,10 +17,15 @@ void BCModule::initialize() {
     *(this->printf_func) = this->getOrInsertFunction("printf", printf_type);
 
 
-    // Testing external function
+    // Testing external function TODO: remove
+
+    llvm::Type* void_t = llvm::Type::getVoidTy(this->getContext());
+
+
+    llvm::FunctionType* prog_says_types = llvm::FunctionType::get(void_t, int_types, true);
 
     this->prog_says_func = new llvm::FunctionCallee();
-    *(this->prog_says_func) = this->getOrInsertFunction("prog_says", printf_type);
+    *(this->prog_says_func) = this->getOrInsertFunction("prog_says", prog_says_types);
 
 }
 

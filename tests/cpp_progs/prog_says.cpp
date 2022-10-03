@@ -1,10 +1,7 @@
 #include <iostream>
 extern "C" {
 
-    using namespace std;
-
-
-    void prog_says(std::string input) {
+    void prog_says(char* input) {
         std::cout << "this program says: ";
 
         std::cout << input;
