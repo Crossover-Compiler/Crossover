@@ -113,6 +113,8 @@ public:
 
     vector<DataTree*> getNodesFromPath(string path, vector<DataTree*> result);
 
+    vector<string> split(string s, string delimiter);
+
 };
 
 

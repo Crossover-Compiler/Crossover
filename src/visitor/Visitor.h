@@ -18,7 +18,7 @@ class Visitor: public BabyCobolBaseVisitor {
 private:
     vector<std::string> compiledVector;
     map<string, Value*> values;
-    vector<DataTree> dataStructures;
+    vector<DataTree*> dataStructures;
     string current_id;
     BCModule* bcModule;
     IRBuilder<>* builder;
@@ -134,7 +134,14 @@ public:
 
     std::any visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) override;
 
-    any visitInt(BabyCobolParser::IntContext *ctx) override;
+    std::any visitInt(BabyCobolParser::IntContext *ctx) override;
+
+    void reset();
+
+    vector<DataTree*> getNodes(string path);
+
+    vector<string> split(string s, string delimiter);
+
 };
 
 
