@@ -104,12 +104,18 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
     builder->CreateCall(*printf_func, aref);
 
-    // todo: trying to invoke external function, remove later
+    // trying to invoke external function, TODO: remove later
     // https://stackoverflow.com/questions/71655233/linking-llvm-getorinsertfunction-to-a-external-c-function-in-a-llvm-pass
 
+    // prog says
     llvm::FunctionCallee* prog_says_func = bcModule->getProgSays();
     llvm::ArrayRef<llvm::Value*> aref2 = { raw };
     builder->CreateCall(*prog_says_func, aref2);
+
+    //fib
+    llvm::FunctionCallee* fib_func = bcModule->getFib();
+    builder->CreateCall(*fib_func);
+
 
     return 0;
 }

@@ -19,13 +19,16 @@ void BCModule::initialize() {
 
     // Testing external function TODO: remove
 
+    // progsays
     llvm::Type* void_t = llvm::Type::getVoidTy(this->getContext());
-
-
     llvm::FunctionType* prog_says_types = llvm::FunctionType::get(void_t, int_types, true);
-
     this->prog_says_func = new llvm::FunctionCallee();
     *(this->prog_says_func) = this->getOrInsertFunction("prog_says", prog_says_types);
+
+    // fib
+    llvm::FunctionType* fib_types = llvm::FunctionType::get(void_t, true);
+    this->fib_func = new llvm::FunctionCallee();
+    *(this->fib_func) = this->getOrInsertFunction("fib", fib_types);
 
 }
 
@@ -37,12 +40,13 @@ llvm::FunctionCallee* BCModule::getProgSays() {
     return this->prog_says_func;
 }
 
+llvm::FunctionCallee* BCModule::getFib() {
+    return this->fib_func;
+}
+
 
 
 llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, float defaultValue) {
-
-
-
     llvm::Value* v = this->getGlobalVariable(identifier);
 
     if (v) {
