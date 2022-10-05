@@ -104,10 +104,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
     builder->CreateCall(*printf_func, aref);
 
-    // trying to invoke external function, TODO: remove later
-    // https://stackoverflow.com/questions/71655233/linking-llvm-getorinsertfunction-to-a-external-c-function-in-a-llvm-pass
-
-    // prog says
+     // prog says
     llvm::FunctionCallee* prog_says_func = bcModule->getProgSays();
     llvm::ArrayRef<llvm::Value*> aref2 = { raw };
     builder->CreateCall(*prog_says_func, aref2);
@@ -117,12 +114,39 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     builder->CreateCall(*fib_func);
 
     //m1
+    //WARNING: created with string and duct tape
 
+    // handy for understanding GEP
+    // https://stackoverflow.com/questions/40771022/how-to-get-the-value-of-a-member-of-a-structure-in-llvm
     llvm::FunctionCallee* struct_func = bcModule->getStructFunc();
     CallInst* ret_val = builder->CreateCall(*struct_func);
     auto* ty = ret_val->getType();
-//    builder->CreateInBoundsGEP(ty, ret_val, aref3);
+    auto st_types = bcModule->getIdentifiedStructTypes();
 
+    // get 0th index of struct and store
+    llvm::Value* member_index = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 0, true));
+    llvm::Value* data = ret_val;
+
+    llvm::AllocaInst* alloc = builder->CreateAlloca(ty, 0, "alloctmp");
+    builder->CreateStore(data, alloc);
+
+    std::vector<llvm::Value*> indices(2);
+    indices[0] = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 0, true));
+    indices[1] = member_index;
+
+    llvm::Value* member_ptr = builder->CreateGEP(ty, alloc, indices, "memberptr");
+    llvm::Type* i_32_ty = llvm::Type::getInt32Ty(bcModule->getContext());
+    llvm::Value* loaded_member_0 = builder->CreateLoad(i_32_ty, member_ptr, "loadtmp");
+
+    // update member index to 1
+    indices[1] = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 1, true));
+    member_ptr = builder->CreateGEP(ty, alloc, indices, "memberptr");
+    llvm::Value* loaded_member_1 = builder->CreateLoad(i_32_ty, member_ptr, "loadtmp");
+
+    // do quick maths
+    builder->CreateAdd(loaded_member_1, loaded_member_0);
+
+    builder->CreateCall(*bcModule->getPrintf(), {builder->CreateGlobalStringPtr("%ld\r\n"), loaded_member_0});
 
     return 0;
 }
