@@ -116,6 +116,13 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     llvm::FunctionCallee* fib_func = bcModule->getFib();
     builder->CreateCall(*fib_func);
 
+    //m1
+
+    llvm::FunctionCallee* struct_func = bcModule->getStructFunc();
+    CallInst* ret_val = builder->CreateCall(*struct_func);
+    auto* ty = ret_val->getType();
+//    builder->CreateInBoundsGEP(ty, ret_val, aref3);
+
 
     return 0;
 }

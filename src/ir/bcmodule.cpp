@@ -30,6 +30,12 @@ void BCModule::initialize() {
     this->fib_func = new llvm::FunctionCallee();
     *(this->fib_func) = this->getOrInsertFunction("fib", fib_types);
 
+    //structptr
+    llvm::ArrayRef<llvm::Type*> aref_struct = {vt, vt};
+    llvm::Type* struct_t = llvm::StructType::create(this->getContext(), aref_struct,"Struct.A");
+    this->struct_func = new llvm::FunctionCallee();
+    *(this->struct_func) = this->getOrInsertFunction("m1", struct_t);
+
 }
 
 llvm::FunctionCallee* BCModule::getPrintf() {
@@ -44,6 +50,10 @@ llvm::FunctionCallee* BCModule::getFib() {
     return this->fib_func;
 }
 
+
+llvm::FunctionCallee* BCModule::getStructFunc() {
+    return this->struct_func;
+}
 
 
 llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, float defaultValue) {

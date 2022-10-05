@@ -13,6 +13,7 @@ private:
     llvm::FunctionCallee* printf_func;
     llvm::FunctionCallee* prog_says_func;
     llvm::FunctionCallee* fib_func;
+    llvm::FunctionCallee* struct_func;
 
 private:
 
@@ -45,6 +46,11 @@ public:
      * @brief pls remove me
      */
     llvm::FunctionCallee* getFib();
+
+    /**
+     * @brief pls remove me
+     */
+    llvm::FunctionCallee* getStructFunc();
 
 //    perhaps not even needed
 //
