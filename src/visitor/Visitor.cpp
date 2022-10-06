@@ -123,30 +123,45 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     auto* ty = ret_val->getType();
     auto st_types = bcModule->getIdentifiedStructTypes();
 
+    // struct type
+    llvm::Type* struct_t = llvm::StructType::getTypeByName(bcModule->getContext(), "Struct.A");
+
     // get 0th index of struct and store
     llvm::Value* member_index = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 0, true));
-    llvm::Value* data = ret_val;
+    llvm::Value* data = builder->CreateLoad(struct_t, ret_val, "return_deref");
 
-    llvm::AllocaInst* alloc = builder->CreateAlloca(ty, 0, "alloctmp");
+    llvm::AllocaInst* alloc = builder->CreateAlloca(struct_t, 0, "alloctmp");
     builder->CreateStore(data, alloc);
 
     std::vector<llvm::Value*> indices(2);
     indices[0] = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 0, true));
     indices[1] = member_index;
 
-    llvm::Value* member_ptr = builder->CreateGEP(ty, alloc, indices, "memberptr");
+    llvm::Value* member_ptr = builder->CreateGEP(data->getType(), alloc, indices, "memberptr");
     llvm::Type* i_32_ty = llvm::Type::getInt32Ty(bcModule->getContext());
     llvm::Value* loaded_member_0 = builder->CreateLoad(i_32_ty, member_ptr, "loadtmp");
 
     // update member index to 1
     indices[1] = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 1, true));
-    member_ptr = builder->CreateGEP(ty, alloc, indices, "memberptr");
+    member_ptr = builder->CreateGEP(struct_t, alloc, indices, "memberptr");
     llvm::Value* loaded_member_1 = builder->CreateLoad(i_32_ty, member_ptr, "loadtmp");
 
     // do quick maths
-    builder->CreateAdd(loaded_member_1, loaded_member_0);
+    llvm::Value* sumValue = builder->CreateAdd(loaded_member_1, loaded_member_0);
 
-    builder->CreateCall(*bcModule->getPrintf(), {builder->CreateGlobalStringPtr("%ld\r\n"), loaded_member_0});
+    llvm::Value* strPtr2;
+    if (nextLine) {
+        // create a printf call for every operand
+        strPtr2 = builder->CreateGlobalStringPtr("Baby Cobol says: %d\r\n");
+    } else {
+        strPtr2 = builder->CreateGlobalStringPtr("Baby Cobol says: %d");
+    }
+
+    builder->CreateCall(*printf_func, {strPtr2, loaded_member_0});
+    builder->CreateCall(*printf_func, {strPtr2, loaded_member_1});
+
+    llvm::ArrayRef<llvm::Value*> aref3 = { strPtr2, sumValue };
+    builder->CreateCall(*printf_func, aref3);
 
     return 0;
 }

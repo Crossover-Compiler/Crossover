@@ -4,8 +4,8 @@ using namespace std;
 extern "C" {
 
     struct A {
-        int first;
-        int second;
+        uint32_t first;
+        uint32_t second;
     };
 
     A* m1() {

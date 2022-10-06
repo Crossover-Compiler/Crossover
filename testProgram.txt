@@ -4,3 +4,4 @@ IDENTIFICATION DIVISION.
        MAIN.
         ADD 2 9 1 TO 2.
         DISPLAY "plz work".
+        CALL external_func USING A.

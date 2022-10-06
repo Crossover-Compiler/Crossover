@@ -40,7 +40,7 @@ int main() {
     cout << "Starting Compiler..." << endl;
 
     ifstream stream;
-    stream.open("testProgram.txt");
+    stream.open("../testProgram.txt");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);

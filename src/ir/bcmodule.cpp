@@ -33,8 +33,9 @@ void BCModule::initialize() {
     //structptr
     llvm::ArrayRef<llvm::Type*> aref_struct = {vt, vt};
     llvm::Type* struct_t = llvm::StructType::create(this->getContext(), aref_struct,"Struct.A");
+    llvm::PointerType* struct_ptr_t = llvm::PointerType::get(struct_t, 8);
     this->struct_func = new llvm::FunctionCallee();
-    *(this->struct_func) = this->getOrInsertFunction("m1", struct_t);
+    *(this->struct_func) = this->getOrInsertFunction("m1", struct_ptr_t);
 
 }
 
