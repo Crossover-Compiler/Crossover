@@ -39,6 +39,7 @@ statement       :
                 |   gotoStatement
                 |   signal
                 |   alter
+                |   callStatement
                 );
 
 label           :   IDENTIFIER;
@@ -58,6 +59,7 @@ loop            :   LOOP loopExpression* END;
 gotoStatement   :   GO TO name;
 signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
+callStatement   :   CALL FUNCTIONNAME (USING (usingID+=IDENTIFIER | usingLIT+=LITERAL)+)? (RETURNING GIVING? returning=IDENTIFIER)?; // TODO: Test if the identifiers and literals are added to the lists correctly
 
 anyExpression   :   arithmeticExpression
                 |   stringExpression
@@ -122,7 +124,6 @@ identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
 int             :   INT;
 
 
-
 // Keywords & symbol names
 IDENTIFICATION: 'IDENTIFICATION';
 DIVISION:   'DIVISION';
@@ -181,7 +182,10 @@ ONERROR:    'ON ERROR';
 OFF:        'OFF';
 ALTER:      'ALTER';
 PROCEED:    'PROCEED';
-
+CALL:       'CALL';
+RETURNING:  'RETURNING';
+USING:      'USING';
+FUNCTIONNAME:VAR'()';
 
 COMMENTLINE     :   '*' WS '\n' -> skip;
 WS              :   [ \r\n\t\f]+ -> skip;

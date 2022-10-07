@@ -139,6 +139,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitCallStatement(BabyCobolParser::CallStatementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitAnyExpression(BabyCobolParser::AnyExpressionContext *ctx) override {
     return visitChildren(ctx);
   }

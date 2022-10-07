@@ -81,6 +81,8 @@ public:
 
     virtual std::any visitAlter(BabyCobolParser::AlterContext *context) = 0;
 
+    virtual std::any visitCallStatement(BabyCobolParser::CallStatementContext *context) = 0;
+
     virtual std::any visitAnyExpression(BabyCobolParser::AnyExpressionContext *context) = 0;
 
     virtual std::any visitAtomicArithmeticExp(BabyCobolParser::AtomicArithmeticExpContext *context) = 0;
