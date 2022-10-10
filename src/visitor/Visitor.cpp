@@ -363,7 +363,8 @@ std::any Visitor::visitWhenOther(BabyCobolParser::WhenOtherContext *ctx) {
 }
 
 std::any Visitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *ctx) {
-    return BabyCobolBaseVisitor::visitIntLiteral(ctx);
+    // TODO: Check
+    return ctx->getText();
 }
 
 std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) {
@@ -375,6 +376,7 @@ std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx)
 }
 
 std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
+    // TODO
     return BabyCobolBaseVisitor::visitIdentifier(ctx);
 }
 
@@ -461,3 +463,38 @@ vector<string> Visitor::split (string s, string delimiter) {
     res.push_back (s.substr (pos_start));
     return res;
 }
+
+any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
+    // Literals in the using clause
+    vector<string> strings;
+    vector<int> ints;
+    for (BabyCobolParser::AtomicContext* atomic: ctx->atomics) {
+
+        if (dynamic_cast<BabyCobolParser::IntLiteralContext*>(atomic) != nullptr) {
+            ints.push_back(any_cast<int>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
+        } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic) != nullptr) {
+            visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic));
+        } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
+            visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
+        }
+
+//        string temp = dynamic_cast<std::string>(atomicVal);
+    }
+
+
+    cout << endl;
+    string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
+
+    cout << functionName << endl;
+
+    //create function call w/ no input
+    llvm::Type* void_t = llvm::Type::getVoidTy(bcModule->getContext());
+    llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, true);
+    auto* new_function = new llvm::FunctionCallee();
+    *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
+
+    builder->CreateCall(*new_function);
+
+    return BabyCobolBaseVisitor::visitCallStatement(ctx);
+}
+
