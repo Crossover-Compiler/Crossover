@@ -472,9 +472,13 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
         if (dynamic_cast<BabyCobolParser::IntLiteralContext*>(atomic) != nullptr) {
             ints.push_back(any_cast<int>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
-        } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic) != nullptr) {
+        }
+
+        if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(atomic) != nullptr) {
             visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic));
-        } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
+        }
+
+        if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
             visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
         }
 
