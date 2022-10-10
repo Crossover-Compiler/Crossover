@@ -467,29 +467,65 @@ vector<string> Visitor::split (string s, string delimiter) {
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     // Literals in the using clause
     vector<string> strings;
+    vector<string*> stringPointers;
     vector<int> ints;
-    for (BabyCobolParser::AtomicContext* atomic: ctx->byvalueatomics) {
-        if (dynamic_cast<BabyCobolParser::IntLiteralContext*>(atomic) != nullptr) {
-            cout << "IntLiteralContext" << endl;
-            ints.push_back(any_cast<int>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
-        } else if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(atomic) != nullptr) {
-            cout << "StringLiteralContext" << endl;
-            strings.push_back(any_cast<string>(visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic))));
-        } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
-            cout << "IdentifierContext" << endl;
-            visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
+    vector<int*> intPointers;
+
+    // try to get the order from here
+    // TODO: Switch between BY VALUE and BYREFERENCE based on children order and walk both lists in turn
+
+
+    if (ctx->USING() != nullptr) {
+        // Pass on these values
+        for (BabyCobolParser::AtomicContext *atomic: ctx->byvalueatomics) {
+            if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic) != nullptr) {
+                cout << "IntLiteralContext" << endl;
+                ints.push_back(
+                        any_cast<int>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
+            } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic) != nullptr) {
+                cout << "StringLiteralContext" << endl;
+                strings.push_back(any_cast<string>(
+                        visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic))));
+            } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
+                // TODO
+                cout << "IdentifierContext" << endl;
+                visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
+            }
+        }
+
+        // Pass on these pointers
+        for (BabyCobolParser::AtomicContext *atomic: ctx->byreferenceatomics) {
+            if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic) != nullptr) {
+                cout << "IntLiteralContext" << endl;
+                intPointers.push_back(
+                        any_cast<int *>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
+            } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic) != nullptr) {
+                cout << "StringLiteralContext" << endl;
+                stringPointers.push_back(any_cast<string *>(
+                        visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic))));
+            } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
+                // TODO
+                cout << "IdentifierContext" << endl;
+                visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
+            }
         }
     }
 
-    for (BabyCobolParser::AtomicContext)
 
-
-    cout << strings.size() << endl;
-    cout << ints.size() << endl;
+    cout << "strings.size(): " << strings.size() << endl;
+    cout << "ints.size(): " << ints.size() << endl;
+    cout << "stringPointers.size(): " << stringPointers.size() << endl;
+    cout << "intPointers.size(): " << intPointers.size() << endl;
 
     string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
-
     cout << functionName << endl;
+
+    if (ctx->RETURNING() != nullptr) {
+        // TODO: return type is a value. So get the value
+    } else if (ctx->RETURNINGBYREFERENCE() != nullptr) {
+        // TODO: return type is a pointer. So get the value from the pointer
+    }
+
 
     //create function call w/ no input
     llvm::Type* void_t = llvm::Type::getVoidTy(bcModule->getContext());

@@ -59,7 +59,7 @@ loop            :   LOOP loopExpression* END;
 gotoStatement   :   GO TO name;
 signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
-callStatement   :   CALL FUNCTIONNAME (USING ((BYVALUE byvalueatomics+=atomic+) | (BYREFERENCE byreferenceatomics+=atomic+) | (byvalueatomics+=atomic+))+ )? (RETURNING BYREFERENCE? returning=IDENTIFIER)?; // TODO: Test if the identifiers and literals are added to the lists correctly
+callStatement   :   CALL FUNCTIONNAME (USING ((BYVALUE byvalueatomics+=atomic+) | (BYREFERENCE byreferenceatomics+=atomic+) | (byvalueatomics+=atomic+))+ )? ((RETURNING | RETURNINGBYREFERENCE) returning=IDENTIFIER)?; // TODO: Test if the identifiers and literals are added to the lists correctly
 
 anyExpression   :   arithmeticExpression
                 |   stringExpression
@@ -186,6 +186,7 @@ CALL:       'CALL';
 RETURNING:  'RETURNING';
 BYVALUE:    'BY VALUE';
 BYREFERENCE:'BY REFERENCE';
+RETURNINGBYREFERENCE: RETURNING BYREFERENCE;
 USING:      'USING';
 
 COMMENTLINE     :   '*' WS '\n' -> skip;
