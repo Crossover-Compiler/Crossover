@@ -364,7 +364,7 @@ std::any Visitor::visitWhenOther(BabyCobolParser::WhenOtherContext *ctx) {
 
 std::any Visitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *ctx) {
     // TODO: Check
-    return ctx->getText();
+    return stoi(ctx->getText());
 }
 
 std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) {
@@ -376,7 +376,7 @@ std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx)
 }
 
 std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
-    // TODO
+    // TODO once data division is ready
     return BabyCobolBaseVisitor::visitIdentifier(ctx);
 }
 
@@ -468,25 +468,25 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     // Literals in the using clause
     vector<string> strings;
     vector<int> ints;
-    for (BabyCobolParser::AtomicContext* atomic: ctx->atomics) {
-
+    for (BabyCobolParser::AtomicContext* atomic: ctx->byvalueatomics) {
         if (dynamic_cast<BabyCobolParser::IntLiteralContext*>(atomic) != nullptr) {
+            cout << "IntLiteralContext" << endl;
             ints.push_back(any_cast<int>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
-        }
-
-        if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(atomic) != nullptr) {
-            visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic));
-        }
-
-        if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
+        } else if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(atomic) != nullptr) {
+            cout << "StringLiteralContext" << endl;
+            strings.push_back(any_cast<string>(visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic))));
+        } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
+            cout << "IdentifierContext" << endl;
             visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
         }
-
-//        string temp = dynamic_cast<std::string>(atomicVal);
     }
 
+    for (BabyCobolParser::AtomicContext)
 
-    cout << endl;
+
+    cout << strings.size() << endl;
+    cout << ints.size() << endl;
+
     string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
 
     cout << functionName << endl;
