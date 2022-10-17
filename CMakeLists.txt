@@ -62,6 +62,6 @@ add_executable(output main.cpp
         include/antlr/BabyCobolParser.h
         include/ir/bcmodule.h
         include/antlr/BabyCobolParser.cpp
-        src/Exceptions/CompileException.h)
+        src/Exceptions/CompileException.h src/lib/arithmetic.cpp include/lib/arithmetic.h include/lib/number.h)
 llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
 target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)

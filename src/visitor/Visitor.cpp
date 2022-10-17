@@ -60,7 +60,7 @@ std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
                 throw CompileException(exceptionString);
             }
             string path = like->getText();
-            auto result = getNodes(path)
+            auto result = getNodes(path);
         }
 
 
