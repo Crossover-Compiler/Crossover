@@ -10,7 +10,10 @@
 #include <vector>
 #include <map>
 #include <stdexcept>
+#include <llvm/IR/IRBuilder.h>
+#include "../../include/ir/bcmodule.h"
 
+class Record;
 
 using namespace std;
 enum class DataType {NINE, X, UNDEFINED};
@@ -113,7 +116,7 @@ public:
 
     vector<string> split(string s, string delimiter);
 
-    virtual llvm::Value* codegen(IRBuilder<>* builder, BCModule* bcModule, Record* record) = 0;
+    virtual llvm::Value* codegen(llvm::IRBuilder<>* builder, BCModule* bcModule, Record* record) = 0;
 
 };
 
