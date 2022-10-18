@@ -18,13 +18,17 @@ class Visitor: public BabyCobolBaseVisitor {
 private:
     vector<std::string> compiledVector;
     map<string, Value*> values;
+    int topLevel;
+    DataTree* root;
     vector<DataTree*> dataStructures;
     string current_id;
     BCModule* bcModule;
     IRBuilder<>* builder;
 
 public:
-    Visitor(BCModule* bcModule, IRBuilder<>* builder) : bcModule(bcModule), builder(builder) {}
+    Visitor(BCModule* bcModule, IRBuilder<>* builder) : bcModule(bcModule), builder(builder), topLevel(-1) {}
+
+    void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
 
     std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override;
 
@@ -36,7 +40,11 @@ public:
 
     std::any visitData(BabyCobolParser::DataContext *ctx) override;
 
-    std::any visitVariable(BabyCobolParser::VariableContext *ctx) override;
+    std::any visitLine(BabyCobolParser::LineContext *ctx) override;
+
+    std::any visitField(BabyCobolParser::FieldContext *ctx) override;
+
+    std::any visitRecord(BabyCobolParser::RecordContext *ctx) override;
 
     std::any visitLevel(BabyCobolParser::LevelContext *ctx) override;
 

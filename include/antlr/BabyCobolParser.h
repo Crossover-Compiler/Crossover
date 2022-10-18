@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -29,16 +29,17 @@ public:
 
   enum {
     RuleProgram = 0, RuleIdentification = 1, RuleName = 2, RuleValue = 3, 
-    RuleData = 4, RuleVariable = 5, RuleLevel = 6, RuleRepresentation = 7, 
-    RuleProcedure = 8, RuleParagraph = 9, RuleSentence = 10, RuleStatement = 11, 
-    RuleLabel = 12, RuleDisplay = 13, RuleStop = 14, RuleMove = 15, RuleSubtract = 16, 
-    RuleMultiply = 17, RulePerform = 18, RuleIfStatement = 19, RuleAccept = 20, 
-    RuleAdd = 21, RuleDivide = 22, RuleEvaluate = 23, RuleNextSentence = 24, 
-    RuleLoop = 25, RuleGotoStatement = 26, RuleSignal = 27, RuleAlter = 28, 
-    RuleAnyExpression = 29, RuleArithmeticExpression = 30, RuleStringExpression = 31, 
-    RuleBooleanExpression = 32, RuleLoopExpression = 33, RuleContractedBooleanPart = 34, 
-    RuleComparisonOp = 35, RuleBooleanOp = 36, RuleArithmeticOp = 37, RuleWhenBlock = 38, 
-    RuleAtomic = 39, RuleIdentifiers = 40, RuleInt = 41
+    RuleData = 4, RuleLine = 5, RuleRecord = 6, RuleField = 7, RuleLevel = 8, 
+    RuleRepresentation = 9, RuleProcedure = 10, RuleParagraph = 11, RuleSentence = 12, 
+    RuleStatement = 13, RuleLabel = 14, RuleDisplay = 15, RuleStop = 16, 
+    RuleMove = 17, RuleSubtract = 18, RuleMultiply = 19, RulePerform = 20, 
+    RuleIfStatement = 21, RuleAccept = 22, RuleAdd = 23, RuleDivide = 24, 
+    RuleEvaluate = 25, RuleNextSentence = 26, RuleLoop = 27, RuleGotoStatement = 28, 
+    RuleSignal = 29, RuleAlter = 30, RuleAnyExpression = 31, RuleArithmeticExpression = 32, 
+    RuleStringExpression = 33, RuleBooleanExpression = 34, RuleLoopExpression = 35, 
+    RuleContractedBooleanPart = 36, RuleComparisonOp = 37, RuleBooleanOp = 38, 
+    RuleArithmeticOp = 39, RuleWhenBlock = 40, RuleAtomic = 41, RuleIdentifiers = 42, 
+    RuleInt = 43
   };
 
   explicit BabyCobolParser(antlr4::TokenStream *input);
@@ -63,7 +64,9 @@ public:
   class NameContext;
   class ValueContext;
   class DataContext;
-  class VariableContext;
+  class LineContext;
+  class RecordContext;
+  class FieldContext;
   class LevelContext;
   class RepresentationContext;
   class ProcedureContext;
@@ -169,8 +172,8 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *DATA();
     antlr4::tree::TerminalNode *DIVISION();
-    std::vector<VariableContext *> variable();
-    VariableContext* variable(size_t i);
+    std::vector<LineContext *> line();
+    LineContext* line(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -179,9 +182,38 @@ public:
 
   DataContext* data();
 
-  class  VariableContext : public antlr4::ParserRuleContext {
+  class  LineContext : public antlr4::ParserRuleContext {
   public:
-    VariableContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    LineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    RecordContext *record();
+    FieldContext *field();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  LineContext* line();
+
+  class  RecordContext : public antlr4::ParserRuleContext {
+  public:
+    RecordContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    LevelContext *level();
+    antlr4::tree::TerminalNode *IDENTIFIER();
+    antlr4::tree::TerminalNode *DOT();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  RecordContext* record();
+
+  class  FieldContext : public antlr4::ParserRuleContext {
+  public:
+    FieldContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     LevelContext *level();
     antlr4::tree::TerminalNode *IDENTIFIER();
@@ -200,7 +232,7 @@ public:
    
   };
 
-  VariableContext* variable();
+  FieldContext* field();
 
   class  LevelContext : public antlr4::ParserRuleContext {
   public:

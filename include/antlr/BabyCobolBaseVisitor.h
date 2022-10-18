@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -35,7 +35,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitVariable(BabyCobolParser::VariableContext *ctx) override {
+  virtual std::any visitLine(BabyCobolParser::LineContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitRecord(BabyCobolParser::RecordContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitField(BabyCobolParser::FieldContext *ctx) override {
     return visitChildren(ctx);
   }
 

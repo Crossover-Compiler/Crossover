@@ -7,23 +7,6 @@
 
 using namespace std;
 
-
-    DataTree* DataTree::deepCopy() {
-        DataTree* copy = new DataTree(name, level, value);
-
-        if (this->picture != DataType::UNDEFINED) {
-            copy->setPicture(getPicture());
-        }
-
-        for (auto c: this->getNext()) {
-            copy->addNext(c->deepCopy());
-        }
-
-        copy->setCardinality(cardinality);
-
-        return copy;
-    }
-
     map<DataTree*, int> DataTree::getLeaves(map<DataTree*, int> result, int childOrder) {
 
         for (auto n: next) {
@@ -184,7 +167,7 @@ using namespace std;
         for (int i = 0; i < ls.size(); ++i) {
             vector<DataTree*> children;
             for (auto l: list) {
-                children
+//                children
             }
         }
     }

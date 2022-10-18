@@ -27,7 +27,19 @@ constexpr const char* dataTypeToString(DataType dt) noexcept
 
 class DataTree {
 
-private:
+protected:
+    DataTree(string name, int level) :
+            name(std::move(name)),
+            level(level),
+            next(),
+            previous(nullptr),
+            picture(DataType::UNDEFINED),
+            cardinality(-1),
+            index(1),
+            occurs(1),
+            like(nullptr)
+    {}
+
     string name;
     vector<DataTree*> next;
     DataTree* previous;
@@ -40,20 +52,6 @@ private:
     DataTree* like;
 
 public:
-    DataTree(string name, int level, string value) :
-    name(std::move(name)),
-    level(level),
-    value(std::move(value)),
-    next(),
-    previous(nullptr),
-    picture(DataType::UNDEFINED),
-    cardinality(-1),
-    index(1),
-    occurs(1),
-    like(nullptr)
-    {}
-
-    DataTree* deepCopy();
 
     map<DataTree*, int> getLeaves(map<DataTree*, int> result, int childOrder);
 
@@ -114,6 +112,8 @@ public:
     vector<DataTree*> getNodesFromPath(string path, vector<DataTree*> result);
 
     vector<string> split(string s, string delimiter);
+
+    virtual llvm::Value* codegen(IRBuilder<>* builder, BCModule* bcModule, Record* record) = 0;
 
 };
 

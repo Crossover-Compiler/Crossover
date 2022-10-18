@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -29,7 +29,11 @@ public:
 
     virtual std::any visitData(BabyCobolParser::DataContext *context) = 0;
 
-    virtual std::any visitVariable(BabyCobolParser::VariableContext *context) = 0;
+    virtual std::any visitLine(BabyCobolParser::LineContext *context) = 0;
+
+    virtual std::any visitRecord(BabyCobolParser::RecordContext *context) = 0;
+
+    virtual std::any visitField(BabyCobolParser::FieldContext *context) = 0;
 
     virtual std::any visitLevel(BabyCobolParser::LevelContext *context) = 0;
 

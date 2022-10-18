@@ -12,6 +12,8 @@
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Verifier.h"
 #include "../Exceptions/CompileException.h"
+#include "../datastructures/Field.h"
+#include "../datastructures/Record.h"
 
 using namespace std;
 
@@ -39,48 +41,109 @@ std::any Visitor::visitValue(BabyCobolParser::ValueContext *ctx) {
     return BabyCobolBaseVisitor::visitValue(ctx);
 }
 
-
-
 std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
-    int startingLevel = stoi(ctx->variable()[0]->level()->getText());
 
+    cout << "Starting DATA DIVISION" << endl;
 
-
-
-    for (auto v: ctx->variable()) {
-        int level = stoi(v->level()->getText());
-        string value = v->IDENTIFIER()->getText();
-        auto picture = v->representation();
-        auto like = v->identifiers();
-        DataTree* likeNode = nullptr;
-
-        if (like != nullptr) {
-            if (dataStructures.empty()) {
-                string exceptionString = "There is nothing to be like";
-                throw CompileException(exceptionString);
-            }
-            string path = like->getText();
-            auto result = getNodes(path);
-        }
-
-
-        if (level > startingLevel) {
-            // create child
-        } else if (level == startingLevel) {
-            // create root tree
-        } else if(level < startingLevel) {
-            string exceptionString = "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(startingLevel);
-            throw CompileException(exceptionString);
-        }
+    for (auto l : ctx->line()) {
+        visitLine(l);
     }
 
-    return BabyCobolBaseVisitor::visitData(ctx);
+    reset();
+
+    std::vector<llvm::Value*> values;
+    // compile the data division
+    for (DataTree* tree: dataStructures) {
+        llvm::Value* v = tree->codegen(builder, bcModule, nullptr);
+        values.push_back(v);
+    }
+
+    cout << "Finished DATA DIVISION" << endl;
+    return nullptr;
 }
 
+std::any Visitor::visitLine(BabyCobolParser::LineContext *ctx) {
+
+    auto f = ctx->field();
+    auto r = ctx->record();
+
+    if (f != nullptr) {
+        visitField(f);
+    } else if (r != nullptr) {
+        visitRecord(r);
+    }
+
+    return nullptr;
+}
+
+std::any Visitor::visitField(BabyCobolParser::FieldContext *ctx) {
+    int level = stoi(ctx->level()->getText());
+    if (topLevel == -1) {
+        topLevel = level;
+    }
+    string identifier = ctx->IDENTIFIER()->getText();
+    auto picture = ctx->representation();
+
+    if (level == topLevel) {
+        root = new Field(identifier, level, identifier);
+        setPictureForDataTree(root, picture);
+        dataStructures.push_back(root);
+
+    } else if (level > topLevel) {
+        DataTree* child = new Field(identifier, level, identifier);
+        setPictureForDataTree(child, picture);
+
+        while (root->getLevel() >= level) {
+            root = root->getPrevious();
+        }
+
+        child->setPrevious(root);
+        root->addNext(child);
+        root = child;
+
+    } else if(level < topLevel) {
+        string exceptionString = "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
+        throw CompileException(exceptionString);
+    }
+
+    return nullptr;
+}
+
+std::any Visitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
+
+    int level = stoi(ctx->level()->getText());
+    if (topLevel == -1) {
+        topLevel = level;
+    }
+    string identifier = ctx->IDENTIFIER()->getText();
 
 
-std::any Visitor::visitVariable(BabyCobolParser::VariableContext *ctx) {
-    return BabyCobolBaseVisitor::visitVariable(ctx);
+    if (level == topLevel) {
+        root = new Record(identifier, level);
+        dataStructures.push_back(root);
+
+    } else if (level > topLevel) {
+        DataTree* child = new Record(identifier, level);
+
+        while (root != nullptr && root->getLevel() >= level) {
+            root = root->getPrevious();
+        }
+
+        if (root == nullptr) {
+            root = new Record(identifier, level);
+            dataStructures.push_back(root);
+        } else {
+            child->setPrevious(root);
+            root->addNext(child);
+            root = child;
+        }
+
+    } else if(level < topLevel) {
+        string exceptionString = "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
+        throw CompileException(exceptionString);
+    }
+
+    return nullptr;
 }
 
 std::any Visitor::visitLevel(BabyCobolParser::LevelContext *ctx) {
@@ -348,6 +411,20 @@ void Visitor::reset() {
     }
 }
 
+void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture) {
+    if (picture != nullptr) {
+        if (picture->NINE() != nullptr) {
+            dataTree->setPicture(DataType::NINE);
+            dataTree->setCardinality(picture->NINE()->getText().size());
+            dataTree->setValue(string(dataTree->getCardinality(), '9'));
+        } else if (picture->X() != nullptr) {
+            dataTree->setPicture(DataType::X);
+            dataTree->setCardinality(picture->X()->getText().size());
+            dataTree->setValue(string(dataTree->getCardinality(), 'X'));
+        }
+    }
+}
+
 
 vector<DataTree*> Visitor::getNodes(string path) {
     reset();
@@ -362,6 +439,7 @@ vector<DataTree*> Visitor::getNodes(string path) {
     return result;
 }
 
+// JAVA-like split function for strings
 vector<string> Visitor::split (string s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;
@@ -376,5 +454,3 @@ vector<string> Visitor::split (string s, string delimiter) {
     res.push_back (s.substr (pos_start));
     return res;
 }
-
-
