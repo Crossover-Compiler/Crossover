@@ -73,11 +73,11 @@ using namespace std;
         return index;
     }
 
-    void DataTree::setPicture(DataType picture) {
+    void DataTree::setPicture(string picture) {
         this->picture = picture;
     }
 
-    DataType DataTree::getPicture() {
+    string DataTree::getPicture() {
         return picture;
     }
 
@@ -141,7 +141,8 @@ using namespace std;
     }
 
     string DataTree::toString() {
-        string result = to_string(level) + " " + value + " " + name + " " + dataTypeToString(picture) + "\n";
+//        string result = to_string(level) + " " + value + " " + name + " " + dataTypeToString(picture) + "\n";
+        string result = to_string(level) + " " + value + " " + name + " " + picture + "\n";
         for (auto i: next) {
             result += i->toString();
         }

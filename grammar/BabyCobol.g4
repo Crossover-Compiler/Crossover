@@ -6,12 +6,15 @@ identification  :   IDENTIFICATION DIVISION DOT (name DOT value DOT)*;
 name            :   IDENTIFIER;
 value           :   LITERAL;
 
-data            :   DATA DIVISION line*;
-line            :   (record | field);
+data            :   DATA DIVISION lines+=line*;
+line            :   record | field;
 record          :   level IDENTIFIER DOT;
-field           :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers) (OCCURS int TIMES)? DOT;
+field           :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers) (OCCURS INT TIMES)? DOT;
 level           :   int; // todo: should be exactly two numbers
-representation  :   (NINE | X); // NOTE: This makes it impossible to use these as variable names
+
+// TODO: AVX is recognised as VAR. A V X is recognised as valid picture. TODO: Find a way to not need the spaces. Hint: this has to do with the greedy-ness of the VAR rule.
+representation  :   IDENTIFIER | INT;
+//picrep          :   ;
 
 procedure       :   PROCEDURE DIVISION DOT sentence* paragraph+;
 paragraph       :   label DOT sentence+;
@@ -43,12 +46,12 @@ display         :   DISPLAY atomic+ (WITH NO ADVANCING)?;
 stop            :   STOP;
 move            :   MOVE (SPACES | HIGH | LOW | atomic) TO identifiers+;
 subtract        :   SUBTRACT as+=atomic+ FROM from=atomic (GIVING giving=identifiers)?;
-multiply        :   MULTIPLY a=atomic BY as+=atomic+ (GIVING giving=identifiers)?;
+multiply        :   MULTIPLY at=atomic BY as+=atomic+ (GIVING giving=identifiers)?;
 perform         :   PERFORM procedureName=label (THROUGH through=label)? (times=atomic TIMES)?;
 ifStatement     :   IF booleanExpression THEN t+=statement+ (ELSE f+=statement+)? (END | DOT);
 accept          :   ACCEPT id+=identifiers+;
 add             :   ADD atomic+ TO to=atomic (GIVING id=identifiers)?;
-divide          :   DIVIDE a=atomic INTO as+=atomic+ (GIVING id=identifiers)? (REMAINDER rem=identifiers)?;
+divide          :   DIVIDE at=atomic INTO as+=atomic+ (GIVING id=identifiers)? (REMAINDER rem=identifiers)?;
 evaluate        :   EVALUATE anyExpression whenBlock* END;
 nextSentence    :   NEXT SENTENCE;
 loop            :   LOOP loopExpression* END;
@@ -116,7 +119,9 @@ atomic          :   int                         #intLiteral
 
 identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
 
-int             :   INT | NINE;
+int             :   INT;
+
+
 
 // Keywords & symbol names
 IDENTIFICATION: 'IDENTIFICATION';
@@ -176,14 +181,15 @@ ONERROR:    'ON ERROR';
 OFF:        'OFF';
 ALTER:      'ALTER';
 PROCEED:    'PROCEED';
-NINE:       [9]+;
-X:          [X]+;
+
 
 COMMENTLINE     :   '*' WS '\n' -> skip;
-IDENTIFIER      :   VAR ('-' VAR)* INT?;
-INT             :   '-'? ([0-9]+ | NINE);
+WS              :   [ \r\n\t\f]+ -> skip;
+INT             : '-'? [0-9]+;
 LITERAL         :   '"' ~'"'+ '"'; // Any char except for "
 DOT             :   '.';
-VAR             :   [A-Za-z]+;
+IDENTIFIER      : [a-zA-Z0-9]+ ([-_]+ [a-zA-Z0-9]+)*;
 
-WS              :   [ \r\n\t\f]+ -> skip;
+
+
+

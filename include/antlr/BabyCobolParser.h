@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -23,8 +23,8 @@ public:
     LOOP = 52, VARYING = 53, WHILE = 54, UNTIL = 55, OF = 56, THROUGH = 57, 
     PICTURE = 58, IS = 59, LIKE = 60, OCCURS = 61, GO = 62, SPACES = 63, 
     HIGH = 64, LOW = 65, SIGNAL = 66, ONERROR = 67, OFF = 68, ALTER = 69, 
-    PROCEED = 70, NINE = 71, X = 72, COMMENTLINE = 73, IDENTIFIER = 74, 
-    INT = 75, LITERAL = 76, DOT = 77, VAR = 78, WS = 79
+    PROCEED = 70, COMMENTLINE = 71, WS = 72, INT = 73, LITERAL = 74, DOT = 75, 
+    IDENTIFIER = 76
   };
 
   enum {
@@ -168,6 +168,8 @@ public:
 
   class  DataContext : public antlr4::ParserRuleContext {
   public:
+    BabyCobolParser::LineContext *lineContext = nullptr;
+    std::vector<LineContext *> lines;
     DataContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *DATA();
@@ -224,7 +226,7 @@ public:
     antlr4::tree::TerminalNode *LIKE();
     IdentifiersContext *identifiers();
     antlr4::tree::TerminalNode *OCCURS();
-    IntContext *int_();
+    antlr4::tree::TerminalNode *INT();
     antlr4::tree::TerminalNode *TIMES();
 
 
@@ -251,8 +253,8 @@ public:
   public:
     RepresentationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *NINE();
-    antlr4::tree::TerminalNode *X();
+    antlr4::tree::TerminalNode *IDENTIFIER();
+    antlr4::tree::TerminalNode *INT();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -427,7 +429,7 @@ public:
 
   class  MultiplyContext : public antlr4::ParserRuleContext {
   public:
-    BabyCobolParser::AtomicContext *a = nullptr;
+    BabyCobolParser::AtomicContext *at = nullptr;
     BabyCobolParser::AtomicContext *atomicContext = nullptr;
     std::vector<AtomicContext *> as;
     BabyCobolParser::IdentifiersContext *giving = nullptr;
@@ -530,7 +532,7 @@ public:
 
   class  DivideContext : public antlr4::ParserRuleContext {
   public:
-    BabyCobolParser::AtomicContext *a = nullptr;
+    BabyCobolParser::AtomicContext *at = nullptr;
     BabyCobolParser::AtomicContext *atomicContext = nullptr;
     std::vector<AtomicContext *> as;
     BabyCobolParser::IdentifiersContext *id = nullptr;
@@ -1046,7 +1048,6 @@ public:
     IntContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *INT();
-    antlr4::tree::TerminalNode *NINE();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;

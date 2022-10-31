@@ -5,6 +5,7 @@
 #include "Visitor.h"
 #include "../Exceptions/NotImplemented.h"
 #include <llvm/IR/Constants.h>
+#include <regex>
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/Host.h"
@@ -385,13 +386,7 @@ std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
 }
 
 any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
-    string value;
-    if (ctx->NINE() != nullptr) {
-        value = ctx->NINE()->getText();
-    } else {
-        value = ctx->INT()->getText();
-    }
-
+    string value = ctx->INT()->getText();
     values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
     return value;
 }
@@ -413,14 +408,29 @@ void Visitor::reset() {
 
 void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture) {
     if (picture != nullptr) {
-        if (picture->NINE() != nullptr) {
-            dataTree->setPicture(DataType::NINE);
-            dataTree->setCardinality(picture->NINE()->getText().size());
-            dataTree->setValue(string(dataTree->getCardinality(), '9'));
-        } else if (picture->X() != nullptr) {
-            dataTree->setPicture(DataType::X);
-            dataTree->setCardinality(picture->X()->getText().size());
-            dataTree->setValue(string(dataTree->getCardinality(), 'X'));
+        // TODO: Check for valid regex
+        string pictureString;
+        if (picture->INT() != nullptr) {
+            pictureString = picture->INT()->getText();
+        } else if (picture->IDENTIFIER() != nullptr) {
+            pictureString = picture->IDENTIFIER()->getText();
+        } else {
+            throw CompileException("No picture found in INT or INDENTIFIER");
+        }
+
+        std::regex r ("S?Z*(A|X|V|9)*)S?");
+        bool match = std::regex_match(pictureString, r);
+
+
+
+        if (match) {
+            cout << "Correct Picture: " << pictureString << endl;
+            // TODO: Set picture
+            dataTree->setPicture(pictureString);
+            dataTree->setCardinality(pictureString.size());
+            // TODO: Set default value if we want to
+        } else {
+            throw CompileException("Invalid PICTURE: " + pictureString);
         }
     }
 }

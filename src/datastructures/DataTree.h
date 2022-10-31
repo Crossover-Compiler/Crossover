@@ -36,7 +36,7 @@ protected:
             level(level),
             next(),
             previous(nullptr),
-            picture(DataType::UNDEFINED),
+            picture(nullptr),
             cardinality(-1),
             index(1),
             occurs(1),
@@ -48,7 +48,7 @@ protected:
     DataTree* previous;
     int level;
     string value;
-    DataType picture;
+    string picture;
     int cardinality;
     int index;
     int occurs;
@@ -78,9 +78,9 @@ public:
 
     int getIndex();
 
-    void setPicture(DataType picture);
+    void setPicture(string picture);
 
-    DataType getPicture();
+    string getPicture();
 
     void addNext(DataTree* dataTree);
 
