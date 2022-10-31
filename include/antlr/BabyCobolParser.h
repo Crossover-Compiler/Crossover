@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -23,8 +23,8 @@ public:
     LOOP = 52, VARYING = 53, WHILE = 54, UNTIL = 55, OF = 56, THROUGH = 57, 
     PICTURE = 58, IS = 59, LIKE = 60, OCCURS = 61, GO = 62, SPACES = 63, 
     HIGH = 64, LOW = 65, SIGNAL = 66, ONERROR = 67, OFF = 68, ALTER = 69, 
-    PROCEED = 70, NINE = 71, X = 72, COMMENTLINE = 73, IDENTIFIER = 74, 
-    INT = 75, LITERAL = 76, DOT = 77, VAR = 78, WS = 79
+    PROCEED = 70, NINE = 71, A = 72, X = 73, Z = 74, S = 75, V = 76, COMMENTLINE = 77, 
+    WS = 78, INT = 79, LITERAL = 80, DOT = 81, VAR = 82
   };
 
   enum {
@@ -39,7 +39,7 @@ public:
     RuleStringExpression = 33, RuleBooleanExpression = 34, RuleLoopExpression = 35, 
     RuleContractedBooleanPart = 36, RuleComparisonOp = 37, RuleBooleanOp = 38, 
     RuleArithmeticOp = 39, RuleWhenBlock = 40, RuleAtomic = 41, RuleIdentifiers = 42, 
-    RuleInt = 43
+    RuleInt = 43, RuleVar = 44, RuleIdentifier = 45
   };
 
   explicit BabyCobolParser(antlr4::TokenStream *input);
@@ -102,7 +102,9 @@ public:
   class WhenBlockContext;
   class AtomicContext;
   class IdentifiersContext;
-  class IntContext; 
+  class IntContext;
+  class VarContext;
+  class IdentifierContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
   public:
@@ -144,7 +146,7 @@ public:
   public:
     NameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *IDENTIFIER();
+    IdentifierContext *identifier();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -168,6 +170,8 @@ public:
 
   class  DataContext : public antlr4::ParserRuleContext {
   public:
+    BabyCobolParser::LineContext *lineContext = nullptr;
+    std::vector<LineContext *> lines;
     DataContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *DATA();
@@ -201,7 +205,7 @@ public:
     RecordContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     LevelContext *level();
-    antlr4::tree::TerminalNode *IDENTIFIER();
+    IdentifierContext *identifier();
     antlr4::tree::TerminalNode *DOT();
 
 
@@ -216,7 +220,7 @@ public:
     FieldContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     LevelContext *level();
-    antlr4::tree::TerminalNode *IDENTIFIER();
+    IdentifierContext *identifier();
     antlr4::tree::TerminalNode *DOT();
     antlr4::tree::TerminalNode *PICTURE();
     antlr4::tree::TerminalNode *IS();
@@ -224,7 +228,7 @@ public:
     antlr4::tree::TerminalNode *LIKE();
     IdentifiersContext *identifiers();
     antlr4::tree::TerminalNode *OCCURS();
-    IntContext *int_();
+    antlr4::tree::TerminalNode *INT();
     antlr4::tree::TerminalNode *TIMES();
 
 
@@ -249,10 +253,23 @@ public:
 
   class  RepresentationContext : public antlr4::ParserRuleContext {
   public:
+    antlr4::Token *leadingS = nullptr;
+    antlr4::Token *zToken = nullptr;
+    std::vector<antlr4::Token *> leadingZ;
+    antlr4::Token *trailingS = nullptr;
     RepresentationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *NINE();
-    antlr4::tree::TerminalNode *X();
+    antlr4::tree::TerminalNode *S();
+    std::vector<antlr4::tree::TerminalNode *> Z();
+    antlr4::tree::TerminalNode* Z(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> NINE();
+    antlr4::tree::TerminalNode* NINE(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> A();
+    antlr4::tree::TerminalNode* A(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> X();
+    antlr4::tree::TerminalNode* X(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> V();
+    antlr4::tree::TerminalNode* V(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -343,7 +360,7 @@ public:
   public:
     LabelContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *IDENTIFIER();
+    IdentifierContext *identifier();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -427,7 +444,7 @@ public:
 
   class  MultiplyContext : public antlr4::ParserRuleContext {
   public:
-    BabyCobolParser::AtomicContext *a = nullptr;
+    BabyCobolParser::AtomicContext *at = nullptr;
     BabyCobolParser::AtomicContext *atomicContext = nullptr;
     std::vector<AtomicContext *> as;
     BabyCobolParser::IdentifiersContext *giving = nullptr;
@@ -530,7 +547,7 @@ public:
 
   class  DivideContext : public antlr4::ParserRuleContext {
   public:
-    BabyCobolParser::AtomicContext *a = nullptr;
+    BabyCobolParser::AtomicContext *at = nullptr;
     BabyCobolParser::AtomicContext *atomicContext = nullptr;
     std::vector<AtomicContext *> as;
     BabyCobolParser::IdentifiersContext *id = nullptr;
@@ -995,9 +1012,9 @@ public:
    
   };
 
-  class  IdentifierContext : public AtomicContext {
+  class  IdentifierAtomicContext : public AtomicContext {
   public:
-    IdentifierContext(AtomicContext *ctx);
+    IdentifierAtomicContext(AtomicContext *ctx);
 
     IdentifiersContext *identifiers();
 
@@ -1028,8 +1045,8 @@ public:
   public:
     IdentifiersContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
-    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
+    std::vector<IdentifierContext *> identifier();
+    IdentifierContext* identifier(size_t i);
     std::vector<antlr4::tree::TerminalNode *> OF();
     antlr4::tree::TerminalNode* OF(size_t i);
     IntContext *int_();
@@ -1054,6 +1071,45 @@ public:
   };
 
   IntContext* int_();
+
+  class  VarContext : public antlr4::ParserRuleContext {
+  public:
+    VarContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<antlr4::tree::TerminalNode *> VAR();
+    antlr4::tree::TerminalNode* VAR(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> A();
+    antlr4::tree::TerminalNode* A(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> X();
+    antlr4::tree::TerminalNode* X(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> Z();
+    antlr4::tree::TerminalNode* Z(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> S();
+    antlr4::tree::TerminalNode* S(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> V();
+    antlr4::tree::TerminalNode* V(size_t i);
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  VarContext* var();
+
+  class  IdentifierContext : public antlr4::ParserRuleContext {
+  public:
+    IdentifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<VarContext *> var();
+    VarContext* var(size_t i);
+    antlr4::tree::TerminalNode *INT();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  IdentifierContext* identifier();
 
 
   bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;

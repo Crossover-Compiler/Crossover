@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -127,11 +127,15 @@ public:
 
     virtual std::any visitStringLiteral(BabyCobolParser::StringLiteralContext *context) = 0;
 
-    virtual std::any visitIdentifier(BabyCobolParser::IdentifierContext *context) = 0;
+    virtual std::any visitIdentifierAtomic(BabyCobolParser::IdentifierAtomicContext *context) = 0;
 
     virtual std::any visitIdentifiers(BabyCobolParser::IdentifiersContext *context) = 0;
 
     virtual std::any visitInt(BabyCobolParser::IntContext *context) = 0;
+
+    virtual std::any visitVar(BabyCobolParser::VarContext *context) = 0;
+
+    virtual std::any visitIdentifier(BabyCobolParser::IdentifierContext *context) = 0;
 
 
 };

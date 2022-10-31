@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -23,8 +23,8 @@ public:
     LOOP = 52, VARYING = 53, WHILE = 54, UNTIL = 55, OF = 56, THROUGH = 57, 
     PICTURE = 58, IS = 59, LIKE = 60, OCCURS = 61, GO = 62, SPACES = 63, 
     HIGH = 64, LOW = 65, SIGNAL = 66, ONERROR = 67, OFF = 68, ALTER = 69, 
-    PROCEED = 70, NINE = 71, X = 72, COMMENTLINE = 73, IDENTIFIER = 74, 
-    INT = 75, LITERAL = 76, DOT = 77, VAR = 78, WS = 79
+    PROCEED = 70, NINE = 71, A = 72, X = 73, Z = 74, S = 75, V = 76, COMMENTLINE = 77, 
+    WS = 78, INT = 79, LITERAL = 80, DOT = 81, VAR = 82
   };
 
   explicit BabyCobolLexer(antlr4::CharStream *input);
