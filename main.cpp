@@ -36,6 +36,30 @@ using namespace antlr4;
 using namespace llvm;
 using namespace llvm::sys;
 
+
+// TODO: pls move me to somewhere sensible
+void generateStructs(vector<DataTree*> dataStructures){
+    ofstream outputFile("BBCBLAPI.h");
+
+    auto headerFileString = "// Generated with Crossover";
+
+    while(!dataStructures.empty()){
+        DataTree* treeptr = dataStructures[0];
+
+        auto structname = treeptr->getName();
+
+
+        dataStructures.erase(dataStructures.begin());
+    }
+
+
+
+    // Write to the file
+    outputFile << headerFileString;
+    // Close the file
+    outputFile.close();
+}
+
 int main() {
     cout << "Starting Compiler..." << endl;
 
@@ -126,6 +150,7 @@ int main() {
 
 //TODO: invoke gcc or clang++ here to link the object files
 
+    generateStructs(visitor.dataStructures);
 
 
     return 0;

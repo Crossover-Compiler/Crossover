@@ -20,12 +20,13 @@ private:
     map<string, Value*> values;
     int topLevel;
     DataTree* root;
-    vector<DataTree*> dataStructures;
     string current_id;
     BCModule* bcModule;
     IRBuilder<>* builder;
 
 public:
+    vector<DataTree*> dataStructures;
+
     Visitor(BCModule* bcModule, IRBuilder<>* builder) : bcModule(bcModule), builder(builder), topLevel(-1) {}
 
     void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
