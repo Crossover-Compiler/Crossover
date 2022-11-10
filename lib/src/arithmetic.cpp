@@ -2,7 +2,7 @@
 // Created by bruh on 10/17/22.
 //
 
-#include "include/arithmetic.h"
+#include "../include/arithmetic.h"
 #include <algorithm>
 #include <math.h>
 
