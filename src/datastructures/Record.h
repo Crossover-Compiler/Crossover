@@ -12,7 +12,7 @@ class Record : public DataTree {
 public:
     Record(std::string name, int level) : DataTree(std::move(name), level) {};
 
-    llvm::Value* codegen(IRBuilder<>* builder, BCModule* bcModule, Record* record) override;
+    llvm::Value* codegen(llvm::IRBuilder<>* builder, BCModule* bcModule, Record* record) override;
 };
 
 
