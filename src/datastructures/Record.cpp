@@ -8,7 +8,7 @@ llvm::Type* getType(llvm::Value* value) {
     return value->getType();
 }
 
-llvm::Value* Record::codegen(llvm::IRBuilder<>* builder, BCModule* bcModule, Record* record) {
+llvm::Value* Record::codegen(BCBuilder* builder, BCModule* bcModule, Record* record) {
 
     // code gen all children, generate struct for this record, and insert the children into this struct.
 
@@ -35,6 +35,17 @@ llvm::Value* Record::codegen(llvm::IRBuilder<>* builder, BCModule* bcModule, Rec
     } else {
         // we are not a root type, so allocate local memory
         alloc = builder->CreateAlloca(recordType, nullptr, "tmp" + this->name);
+    }
+
+    // assign children this record struct
+    std::vector<llvm::Value*> indices(values.size());
+    llvm::Value* offset = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 0, isSigned));
+    for (int i = 0; i < values.size(); ++i) {
+        indices[i] = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, i, isSigned));
+
+        // store value to field of struct
+        llvm::Value* value_ptr = builder->CreateGEP(number_struct_type, alloc, {offset, indices[i]}, "valuePtr");
+        builder->CreateStore(values[i], value_ptr);
     }
 
     return alloc;

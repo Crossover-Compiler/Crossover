@@ -8,12 +8,11 @@
 #include <cstdint>
 #include <cstdlib>
 
-struct Number {
+typedef struct Number {
 
     uint64_t value;
     uint64_t scale;
-    uint64_t length;
-    uint64_t digits;
+    uint8_t length;
     bool isSigned = false;
     bool positive = true;
 
@@ -21,6 +20,6 @@ struct Number {
         return positive ? value : (-1 * (int)value);
     }
 
-};
+} Number;
 
 #endif //CROSSOVER_NUMBER_H

@@ -7,10 +7,9 @@
 
 #include "number.h"
 
-class Arithmetic {
+namespace bstd {
 
-public:
-    static Number add(Number* lhs, Number* rhs);
+    Number* add(Number* lhs, Number* rhs);
 
 };
 

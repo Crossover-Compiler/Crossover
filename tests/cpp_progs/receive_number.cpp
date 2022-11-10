@@ -2,7 +2,7 @@
 // Created by bruh on 10/18/22.
 //
 
-#include "../../include/lib/number.h"
+#include "../../lib/include/number.h"
 #include "iostream"
 
 extern "C" {

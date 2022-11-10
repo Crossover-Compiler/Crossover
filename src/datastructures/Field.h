@@ -15,7 +15,7 @@ public:
         this->value = std::move(value);
     };
 
-    llvm::Value* codegen(llvm::IRBuilder<>* builder, BCModule* bcModule, Record* record) override;
+    llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, Record* record) override;
 };
 
 
