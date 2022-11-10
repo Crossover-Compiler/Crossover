@@ -4,7 +4,7 @@
 
 #include "Field.h"
 
-llvm::Value* Field::codegen(IRBuilder<>* builder, BCModule* bcModule, Record* record) {
+llvm::Value* Field::codegen(llvm::IRBuilder<>* builder, BCModule* bcModule, Record* record) {
 
     uint64_t value = std::stoi(this->value);
     uint64_t scale = 0; // todo: add to grammar

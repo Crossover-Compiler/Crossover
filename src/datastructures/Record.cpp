@@ -8,7 +8,7 @@ llvm::Type* getType(llvm::Value* value) {
     return value->getType();
 }
 
-llvm::Value* Record::codegen(IRBuilder<>* builder, BCModule* bcModule, Record* record) {
+llvm::Value* Record::codegen(llvm::IRBuilder<>* builder, BCModule* bcModule, Record* record) {
 
     // code gen all children, generate struct for this record, and insert the children into this struct.
 

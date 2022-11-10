@@ -100,7 +100,7 @@ using namespace std;
     }
 
     void DataTree::setPrevious(DataTree* dataTree) {
-        this->previous = previous;
+        this->previous = dataTree;
     }
 
     DataTree* DataTree::getPrevious() {
