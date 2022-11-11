@@ -38,24 +38,90 @@ using namespace llvm::sys;
 
 
 // TODO: pls move me to somewhere sensible
+string generateSubStruct(DataTree* structure){
+    //make recursive somehow
+    string result;
+    string name = structure->getName();
+    result.append("struct");
+    result.append(" ");
+    result.append(name);
+    result.append("{");
+
+    vector<DataTree*> children = structure->getNext();
+    while(!children.empty()){
+        result.append("\n\t");
+        DataTree* subtreeptr = children[0];
+        string subtreetype = typeid(*subtreeptr).name();
+        if(subtreetype == "6Record"){
+            result.append(subtreeptr->getName());
+            result.append("* ");
+            result.append(subtreeptr->getName()); //todo turn to lower
+            result.append(";");
+            result.insert(0, generateSubStruct(subtreeptr));
+        } else if(subtreetype == "5Field"){
+            //Todo expand later when more fields other than numeric
+            result.append("Number* ");
+            result.append(subtreeptr->getName()); //todo turn to lower
+            result.append(";");
+        }
+        children.erase(children.begin());
+    }
+
+    result.append("\n};\n\n");
+    return result;
+}
+
 void generateStructs(vector<DataTree*> dataStructures){
     ofstream outputFile("BBCBLAPI.h");
 
-    auto headerFileString = "// Generated with Crossover";
+    string firstLines = "// Generated with Crossover\n"
+                        "\n// *** "
+                        "\n// Include lib files here"
+                        "\n// ***"
+                        "\n";
+
+    string middleLines= "\n" ;
+    string lastLines = "\n";
 
     while(!dataStructures.empty()){
         DataTree* treeptr = dataStructures[0];
-
+        string currentype = typeid(*treeptr).name();
         auto structname = treeptr->getName();
-
-
+        if (currentype == "6Record"){
+            lastLines.append("struct");
+            lastLines.append(" ");
+            lastLines.append(structname);
+            lastLines.append("{");
+            //add members here
+            vector<DataTree*> children = treeptr->getNext();
+            while(!children.empty()){
+                lastLines.append("\n\t");
+                DataTree* subtreeptr = children[0];
+                string subtreetype = typeid(*subtreeptr).name();
+                if(subtreetype == "6Record"){
+                    lastLines.append(subtreeptr->getName());
+                    lastLines.append("* ");
+                    lastLines.append(subtreeptr->getName()); //todo turn to lower
+                    lastLines.append(";");
+                    middleLines.append(generateSubStruct(subtreeptr));
+                } else if(subtreetype == "5Field"){
+                    //Todo expand later when more fields other than numeric
+                    lastLines.append("Number* ");
+                    lastLines.append(subtreeptr->getName()); //todo turn to lower
+                    lastLines.append(";");
+                }
+                children.erase(children.begin());
+            }
+            lastLines.append("\n};");
+        }
         dataStructures.erase(dataStructures.begin());
     }
 
-
-
     // Write to the file
-    outputFile << headerFileString;
+    outputFile << firstLines;
+    outputFile << middleLines;
+    outputFile << lastLines;
+
     // Close the file
     outputFile.close();
 }
