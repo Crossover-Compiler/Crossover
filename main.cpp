@@ -45,7 +45,7 @@ string generateSubStruct(DataTree* structure){
     result.append("struct");
     result.append(" ");
     result.append(name);
-    result.append("{");
+    result.append("_t {");
 
     vector<DataTree*> children = structure->getNext();
     while(!children.empty()){
@@ -54,10 +54,10 @@ string generateSubStruct(DataTree* structure){
         string subtreetype = typeid(*subtreeptr).name();
         if(subtreetype == "6Record"){
             result.append(subtreeptr->getName());
-            result.append("* ");
+            result.append("_t* ");
             result.append(subtreeptr->getName()); //todo turn to lower
             result.append(";");
-            result.insert(0, generateSubStruct(subtreeptr));
+            result.insert(0, generateSubStruct(subtreeptr)); // generate substruct recursively and prepend to result
         } else if(subtreetype == "5Field"){
             //Todo expand later when more fields other than numeric
             result.append("Number* ");
@@ -75,7 +75,7 @@ void generateStructs(vector<DataTree*> dataStructures){
     ofstream outputFile("BBCBLAPI.h");
 
     string firstLines = "// Generated with Crossover\n"
-                        "\n// *** "
+                        "\n// ***"
                         "\n// Include lib files here"
                         "\n// ***"
                         "\n";
@@ -88,10 +88,9 @@ void generateStructs(vector<DataTree*> dataStructures){
         string currentype = typeid(*treeptr).name();
         auto structname = treeptr->getName();
         if (currentype == "6Record"){
-            lastLines.append("struct");
-            lastLines.append(" ");
+            lastLines.append("struct ");
             lastLines.append(structname);
-            lastLines.append("{");
+            lastLines.append("_t {");
             //add members here
             vector<DataTree*> children = treeptr->getNext();
             while(!children.empty()){
@@ -100,19 +99,25 @@ void generateStructs(vector<DataTree*> dataStructures){
                 string subtreetype = typeid(*subtreeptr).name();
                 if(subtreetype == "6Record"){
                     lastLines.append(subtreeptr->getName());
-                    lastLines.append("* ");
-                    lastLines.append(subtreeptr->getName()); //todo turn to lower
+                    lastLines.append("_t* ");
+                    lastLines.append(subtreeptr->getName());
                     lastLines.append(";");
                     middleLines.append(generateSubStruct(subtreeptr));
                 } else if(subtreetype == "5Field"){
                     //Todo expand later when more fields other than numeric
                     lastLines.append("Number* ");
-                    lastLines.append(subtreeptr->getName()); //todo turn to lower
+                    lastLines.append(subtreeptr->getName());
                     lastLines.append(";");
                 }
                 children.erase(children.begin());
             }
-            lastLines.append("\n};");
+            lastLines.append("\n};\n");
+        }
+        else if(currentype == "5Field"){
+            //Todo expand later when more fields other than numeric
+            lastLines.append("Number* ");
+            lastLines.append(treeptr->getName());
+            lastLines.append(";");
         }
         dataStructures.erase(dataStructures.begin());
     }
