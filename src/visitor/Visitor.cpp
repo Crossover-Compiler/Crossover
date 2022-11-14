@@ -156,10 +156,7 @@ std::any Visitor::visitRepresentation(BabyCobolParser::RepresentationContext *ct
 }
 
 std::any Visitor::visitProcedure(BabyCobolParser::ProcedureContext *ctx) {
-
-    any return_val = BabyCobolBaseVisitor::visitProcedure(ctx);
-    builder->CreateRetVoid(); // TODO: Change based on actual return type
-    return return_val;
+    return BabyCobolBaseVisitor::visitProcedure(ctx);
 }
 
 std::any Visitor::visitParagraph(BabyCobolParser::ParagraphContext *ctx) {

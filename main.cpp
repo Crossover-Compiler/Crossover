@@ -28,8 +28,7 @@
 #include <memory>
 #include <system_error>
 #include <vector>
-
-
+#include "lib/include/picutils.h"
 
 using namespace std;
 using namespace antlr4;
@@ -40,14 +39,13 @@ int main() {
     cout << "Starting Compiler..." << endl;
 
     ifstream stream;
-    stream.open("../test/picture.txt");
+    stream.open("../test/composite.txt");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     BabyCobolParser parser(&tokens);
 
     BabyCobolParser::ProgramContext* tree = parser.program();
-
 
     // init  llvm
     llvm::LLVMContext* llvmContext = new llvm::LLVMContext();
@@ -58,16 +56,22 @@ int main() {
     // Run compiler
     llvm::BasicBlock* block = llvm::BasicBlock::Create(*llvmContext, "root_block", F);
 
-
     BCBuilder builder(module, block);
 
     Visitor visitor(module, &builder);
     visitor.visitProgram(tree);
 
+    // test number print
+    bstd::Picture* pic = bstd::picutils::of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);
+
+    string name = string("test_pic");
+    auto pic_val = builder.CreatePicture(pic, name);
+    builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
+
+    builder.CreateRetVoid();
     cout << "Finished Compiling!" << endl;
 
     module->print(llvm::outs(), nullptr);
-
 
     // The following code allows us to compile the IR into C object files
 
@@ -124,8 +128,6 @@ int main() {
     outs() << "Wrote " << Filename << "\n";
 
 //TODO: invoke gcc or clang++ here to link the object files
-
-
 
     return 0;
 }

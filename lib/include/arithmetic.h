@@ -7,11 +7,14 @@
 
 #include "number.h"
 
+extern "C" {
+
 namespace bstd {
 
-    Number* add(Number* lhs, Number* rhs);
+    Number *add(Number *lhs, Number *rhs);
 
-};
+}
 
+}
 
 #endif //CROSSOVER_ARITHMETIC_H

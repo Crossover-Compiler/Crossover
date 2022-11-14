@@ -12,6 +12,11 @@ class Record : public DataTree {
 public:
     Record(std::string name, int level) : DataTree(std::move(name), level) {};
 
+    /**
+     * todo: doc
+     */
+    static llvm::Type* getType(llvm::Value *value);
+
     llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, Record* record) override;
 };
 

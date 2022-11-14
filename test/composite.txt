@@ -9,6 +9,8 @@ DATA DIVISION
                     10 F PICTURE IS 999.
         02 SUBROOT2.
             08 G PICTURE IS 99.
+    01 I PICTURE IS 9.
+    01 H PICTURE IS 9.
 PROCEDURE DIVISION.
     MAIN.
     DISPLAY 2.

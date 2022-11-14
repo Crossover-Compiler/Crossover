@@ -6,9 +6,9 @@
 #include "iostream"
 
 extern "C" {
-    void printNumber(Number*);
+    void printNumber(bstd::Number*);
 }
 
-void printNumber(Number* number) {
+void printNumber(bstd::Number* number) {
     std::cout << number->value << " with scale " << number->scale << std::endl;
 }

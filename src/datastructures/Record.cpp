@@ -4,8 +4,8 @@
 
 #include "Record.h"
 
-llvm::Type* getType(llvm::Value* value) {
-    return value->getType();
+llvm::Type* Record::getType(llvm::Value *value) {
+        return value->getType();
 }
 
 llvm::Value* Record::codegen(BCBuilder* builder, BCModule* bcModule, Record* record) {
@@ -23,7 +23,7 @@ llvm::Value* Record::codegen(BCBuilder* builder, BCModule* bcModule, Record* rec
 
     std::vector<llvm::Type*> types;
     types.reserve(values.size());
-    transform(values.begin(), values.end(), back_inserter(types), ::getType);
+    transform(values.begin(), values.end(), back_inserter(types), Record::getType);
 
     // create record struct
     llvm::StructType* recordType = llvm::StructType::create(bcModule->getContext(), types, "Struct." + this->name);
@@ -31,7 +31,8 @@ llvm::Value* Record::codegen(BCBuilder* builder, BCModule* bcModule, Record* rec
 
     if (record == nullptr) {
         // we are a root record, so we should allocate global memory
-        alloc = new llvm::GlobalVariable(*(llvm::Module*)bcModule, recordType, false, llvm::GlobalValue::CommonLinkage, /*todo: initializer*/nullptr, this->name, nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
+        llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(recordType);
+        alloc = new llvm::GlobalVariable(*(llvm::Module*)bcModule, recordType, false, llvm::GlobalVariable::CommonLinkage, zeroInit, this->name, nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
     } else {
         // we are not a root type, so allocate local memory
         alloc = builder->CreateAlloca(recordType, nullptr, "tmp" + this->name);

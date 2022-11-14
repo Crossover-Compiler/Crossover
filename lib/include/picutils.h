@@ -7,7 +7,9 @@
 
 #include "picture.h"
 
-namespace bstd {
+extern "C" {
+
+namespace bstd::picutils {
 
     /**
      * todo: doc. Make sure it copies the arrays!
@@ -16,7 +18,7 @@ namespace bstd {
      * @param length
      * @return
      */
-    Picture* of(char* bytes, char* mask, uint8_t length);
+    Picture *of(char *bytes, char *mask, uint8_t length);
 
     /**
      * todo: doc. assigns picture to another
@@ -24,14 +26,14 @@ namespace bstd {
      * @param target
      * @return
      */
-    Picture* assign(Picture* asignee, Picture* target);
+    Picture *assign(Picture *asignee, Picture *target);
 
     /**
      * todo: doc
      * @param picture
      * @return
      */
-    char* to_cstr(Picture* picture);
+    char *to_cstr(Picture *picture);
 
     /**
      * todo: doc
@@ -40,6 +42,8 @@ namespace bstd {
      * @return
      */
     char mask_char(char c, char mask);
+
+}
 
 }
 

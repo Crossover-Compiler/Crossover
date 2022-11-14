@@ -8,6 +8,7 @@
 #include <llvm/IR/IRBuilder.h>
 #include "../../lib/include/number.h"
 #include "bcmodule.h"
+#include "../../lib/include/picture.h"
 
 class BCBuilder : public llvm::IRBuilder<> {
 
@@ -23,6 +24,15 @@ public:
      * @return
      */
     llvm::Value* CreateNumber(bstd::Number* number, std::string& name, bool global = false);
+
+    /**
+     * todo: doc
+     * @param picture
+     * @param name
+     * @param global
+     * @return
+     */
+    llvm::Value* CreatePicture(bstd::Picture* picture, std::string &name, bool global = false);
 
     /**
      * todo: doc

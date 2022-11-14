@@ -5,7 +5,7 @@
 #include "../include/picutils.h"
 #include <string>
 
-bstd::Picture* bstd::of(char* bytes, char* mask, uint8_t length) {
+bstd::Picture* bstd::picutils::of(char* bytes, char* mask, uint8_t length) {
     char* b = new char[length];
     char* m = new char[length];
     return new Picture {
@@ -16,12 +16,12 @@ bstd::Picture* bstd::of(char* bytes, char* mask, uint8_t length) {
 }
 
 
-bstd::Picture* bstd::assign(Picture* asignee, Picture* target) {
+bstd::Picture* bstd::picutils::assign(Picture* asignee, Picture* target) {
     // todo: implement
     return nullptr;
 }
 
-char* bstd::to_cstr(Picture* picture) {
+char* bstd::picutils::to_cstr(Picture* picture) {
     char* str = new char[picture->length + 1];
     str[picture->length] = '\0'; // null terminator
     for (int i = 0; i < picture->length; ++i) {
@@ -31,7 +31,7 @@ char* bstd::to_cstr(Picture* picture) {
     return str;
 }
 
-char bstd::mask_char(char c, char mask) {
+char bstd::picutils::mask_char(char c, char mask) {
     switch (mask) {
         case 'x':
         case 'X':

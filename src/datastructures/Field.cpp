@@ -18,5 +18,5 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, Record* reco
         .length = length,
         .isSigned = isSigned,
         .positive = positive
-    }, this->name);
+    }, this->name, record == nullptr);
 }

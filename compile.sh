@@ -1,13 +1,17 @@
 #!/bin/bash
 
 # make output directory
-mkdir -p out
+mkdir -p out/lib
 
 # build library
-clang++ -c lib/include/* lib/src/* out/lib.o
+cd out/lib || exit 1
+clang++ -c --include-directory ../../lib/include/ ../../lib/src/*.cpp
+# make static library
+ar cr libbstd.a *.o
+cd ../..
 
 # build specified files and link against library
-clang++ build/output.o out/lib.o "${@}" out/exec
+clang++ --for-linker=-Lout/lib/,-lbstd build/output.o "${@}" -o out/exec
 
 # clean up files
 #rm out/lib.o
