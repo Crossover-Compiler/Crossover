@@ -38,13 +38,13 @@ using namespace llvm::sys;
 
 
 // TODO: pls move me to somewhere sensible
-string generateSubStruct(DataTree* structure){
-    //make recursive somehow
+string generateSubStruct(string* ancestorsPtr,DataTree* structure){
+
     string result;
     string name = structure->getName();
-    result.append("struct");
+    result.append("typedef struct");
     result.append(" ");
-    result.append(name);
+    result.append(*ancestorsPtr);
     result.append("_t {");
 
     vector<DataTree*> children = structure->getNext();
@@ -53,21 +53,29 @@ string generateSubStruct(DataTree* structure){
         DataTree* subtreeptr = children[0];
         string subtreetype = typeid(*subtreeptr).name();
         if(subtreetype == "6Record"){
+            string ancestors = *ancestorsPtr;
+            result.append(ancestors);
+            result.append("_");
             result.append(subtreeptr->getName());
             result.append("_t* ");
-            result.append(subtreeptr->getName()); //todo turn to lower
+            result.append(subtreeptr->getName());
             result.append(";");
-            result.insert(0, generateSubStruct(subtreeptr)); // generate substruct recursively and prepend to result
+            ancestors.append("_");
+            ancestors.append(subtreeptr->getName());
+            result.insert(0, generateSubStruct(&ancestors ,subtreeptr)); // generate substructs recursively and prepend to result
         } else if(subtreetype == "5Field"){
             //Todo expand later when more fields other than numeric
             result.append("Number* ");
-            result.append(subtreeptr->getName()); //todo turn to lower
-            result.append(";");
+            result.append(subtreeptr->getName());
+            result.append("; // expected format: ");
+            result.append(subtreeptr->getValue());
         }
         children.erase(children.begin());
     }
 
-    result.append("\n};\n\n");
+    result.append("\n} ");
+    result.append(*ancestorsPtr);
+    result.append("_t;\n\n");
     return result;
 }
 
@@ -86,9 +94,9 @@ void generateStructs(vector<DataTree*> dataStructures){
     while(!dataStructures.empty()){
         DataTree* treeptr = dataStructures[0];
         string currentype = typeid(*treeptr).name();
-        auto structname = treeptr->getName();
+        string structname = treeptr->getName();
         if (currentype == "6Record"){
-            lastLines.append("struct ");
+            lastLines.append("typedef struct ");
             lastLines.append(structname);
             lastLines.append("_t {");
             //add members here
@@ -98,26 +106,37 @@ void generateStructs(vector<DataTree*> dataStructures){
                 DataTree* subtreeptr = children[0];
                 string subtreetype = typeid(*subtreeptr).name();
                 if(subtreetype == "6Record"){
+                    lastLines.append(structname);
+                    lastLines.append("_");
                     lastLines.append(subtreeptr->getName());
                     lastLines.append("_t* ");
                     lastLines.append(subtreeptr->getName());
                     lastLines.append(";");
-                    middleLines.append(generateSubStruct(subtreeptr));
+
+                    string currentPath = structname;
+                    currentPath.append("_");
+                    currentPath.append(subtreeptr->getName());
+                    middleLines.append(generateSubStruct(&currentPath, subtreeptr));
                 } else if(subtreetype == "5Field"){
                     //Todo expand later when more fields other than numeric
                     lastLines.append("Number* ");
                     lastLines.append(subtreeptr->getName());
-                    lastLines.append(";");
+                    lastLines.append("; // expected format: ");
+                    lastLines.append(subtreeptr->getValue());
                 }
                 children.erase(children.begin());
             }
-            lastLines.append("\n};\n");
+            lastLines.append("\n} ");
+            lastLines.append(structname);
+            lastLines.append("_t;\n\n");
         }
         else if(currentype == "5Field"){
             //Todo expand later when more fields other than numeric
             lastLines.append("Number* ");
             lastLines.append(treeptr->getName());
-            lastLines.append(";");
+            lastLines.append("; // expected format: ");
+            lastLines.append(treeptr->getValue());
+            lastLines.append("\n");
         }
         dataStructures.erase(dataStructures.begin());
     }
