@@ -31,6 +31,7 @@
 
 
 
+
 using namespace std;
 using namespace antlr4;
 using namespace llvm;
@@ -38,6 +39,10 @@ using namespace llvm::sys;
 
 
 // TODO: pls move me to somewhere sensible
+#include "src/datastructures/DataTree.h"
+#include "src/datastructures/Record.h"
+#include "src/datastructures/Field.h"
+
 string generateSubStruct(string* ancestorsPtr,DataTree* structure){
 
     string result;
@@ -51,8 +56,7 @@ string generateSubStruct(string* ancestorsPtr,DataTree* structure){
     while(!children.empty()){
         result.append("\n\t");
         DataTree* subtreeptr = children[0];
-        string subtreetype = typeid(*subtreeptr).name();
-        if(subtreetype == "6Record"){
+        if(dynamic_cast<Record*>(subtreeptr) != nullptr){
             string ancestors = *ancestorsPtr;
             result.append(ancestors);
             result.append("_");
@@ -63,7 +67,7 @@ string generateSubStruct(string* ancestorsPtr,DataTree* structure){
             ancestors.append("_");
             ancestors.append(subtreeptr->getName());
             result.insert(0, generateSubStruct(&ancestors ,subtreeptr)); // generate substructs recursively and prepend to result
-        } else if(subtreetype == "5Field"){
+        } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
             //Todo expand later when more fields other than numeric
             result.append("Number* ");
             result.append(subtreeptr->getName());
@@ -93,9 +97,8 @@ void generateStructs(vector<DataTree*> dataStructures){
 
     while(!dataStructures.empty()){
         DataTree* treeptr = dataStructures[0];
-        string currentype = typeid(*treeptr).name();
         string structname = treeptr->getName();
-        if (currentype == "6Record"){
+        if (dynamic_cast<Record*>(treeptr) != nullptr){
             lastLines.append("typedef struct ");
             lastLines.append(structname);
             lastLines.append("_t {");
@@ -104,8 +107,7 @@ void generateStructs(vector<DataTree*> dataStructures){
             while(!children.empty()){
                 lastLines.append("\n\t");
                 DataTree* subtreeptr = children[0];
-                string subtreetype = typeid(*subtreeptr).name();
-                if(subtreetype == "6Record"){
+                if(dynamic_cast<Record*>(subtreeptr) != nullptr){
                     lastLines.append(structname);
                     lastLines.append("_");
                     lastLines.append(subtreeptr->getName());
@@ -117,7 +119,7 @@ void generateStructs(vector<DataTree*> dataStructures){
                     currentPath.append("_");
                     currentPath.append(subtreeptr->getName());
                     middleLines.append(generateSubStruct(&currentPath, subtreeptr));
-                } else if(subtreetype == "5Field"){
+                } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
                     //Todo expand later when more fields other than numeric
                     lastLines.append("Number* ");
                     lastLines.append(subtreeptr->getName());
@@ -130,7 +132,7 @@ void generateStructs(vector<DataTree*> dataStructures){
             lastLines.append(structname);
             lastLines.append("_t;\n\n");
         }
-        else if(currentype == "5Field"){
+        else if(dynamic_cast<Field*>(treeptr) != nullptr){
             //Todo expand later when more fields other than numeric
             lastLines.append("Number* ");
             lastLines.append(treeptr->getName());
