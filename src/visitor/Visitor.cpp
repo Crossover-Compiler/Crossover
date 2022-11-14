@@ -18,6 +18,9 @@
 
 using namespace std;
 
+llvm::Type* Visitor::getType(llvm::Value* value) {
+    return value->getType();
+}
 
 std::any Visitor::visitIdentification(BabyCobolParser::IdentificationContext *ctx) {
     return BabyCobolBaseVisitor::visitIdentification(ctx);
@@ -474,91 +477,157 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     // try to get the order from here
     // TODO: Not sure about this boolean vector. But the final implementation depends of datadtypes we can send and receive
 
-    // True if -> BY VALUE
-    vector<bool> passType;
+    // True, True if -> BY VALUE, AS PRIMITIVE
+    // False, False if -> BY REFERENCE, AS STRUCT
+    vector<tuple<bool,bool>> passType(ctx->atomic().size());
+    std::vector<llvm::Value*> parameters;
+    parameters.reserve(ctx->atomic().size());
 
     if (ctx->USING() != nullptr) {
-        int valueCursor = 0;
-        int referenceCursor = 0;
+        int valuePrimCursor = 0;
+        int referencePrimCursor = 0;
+        int valueStructCursor = 0;
+        int referenceStructCursor = 0;
         cout << "size: " << ctx->atomic().size() << endl;
         for (int i = 0; i < ctx->atomic().size(); i++) {
             cout << "I am here. i: " << i << endl;
-            if (!ctx->byreferenceatomics.empty()) {
-                if (ctx->byreferenceatomics[referenceCursor] == ctx->atomic()[i]) {
-                    cout << "reference pointer is the same" << endl;
-                    passType[i] = false;
-                    referenceCursor++;
+            if (!ctx->byreferenceatomicsprim.empty()) {
+                if (ctx->byreferenceatomicsprim[referencePrimCursor] == ctx->atomic()[i]) {
+                    cout << "reference pointer prim is the same" << endl;
+                    passType.at(i) = tuple(false, true);
+                    referencePrimCursor++;
                 }
             }
-            if (!ctx->byvalueatomics.empty()) {
-                if (ctx->byvalueatomics[valueCursor] == ctx->atomic()[i]) {
-                    cout << "value pointer is the same" << endl;
-                    passType[i] = true;
-                    valueCursor++;
+            if (!ctx->byvalueatomicsprim.empty()) {
+                if (ctx->byvalueatomicsprim[valuePrimCursor] == ctx->atomic()[i]) {
+                    cout << "value pointer prim is the same" << endl;
+                    passType.at(i) = tuple(true, true);
+                    valuePrimCursor++;
+                }
+            }
+            if (!ctx->byreferenceatomicsstruct.empty()) {
+                if (ctx->byvalueatomicsstruct[referenceStructCursor] == ctx->atomic()[i]) {
+                    cout << "value pointer struct is the same" << endl;
+                    passType.at(i) = tuple(false, false);
+                    referenceStructCursor++;
+                }
+            }
+            if (!ctx->byvalueatomicsstruct.empty()) {
+                if (ctx->byvalueatomicsstruct[valueStructCursor] == ctx->atomic()[i]) {
+                    cout << "value pointer struct is the same" << endl;
+                    passType.at(i) = tuple(true, false);
+                    valueStructCursor++;
                 }
             }
         }
+
+        for (int i = 0; i < ctx->atomic().size(); i++) {
+            tuple<bool, bool> currentType = passType[i];
+
+            if (dynamic_cast<BabyCobolParser::IdentifierContext*>(ctx->atomic()[i]) != nullptr) {
+                // atomic is an item in the datatree. So either a field or record
+            } else {
+                // 0 == int, 1 == double, 2 == string.
+                int dataType = -1;
+                // atomic is a literal. So either an int, double or string
+                if (dynamic_cast<BabyCobolParser::IntLiteralContext*>(ctx->atomic()[i]) != nullptr) {
+                    dataType = 0;
+                    int value = any_cast<int>(visit(ctx->atomic()[i]));
+                    if (get<0>(currentType) && get<1>(currentType)) {
+                        // int
+                        auto v_t = llvm::Type::getInt64Ty(bcModule->getContext());
+                        auto v = llvm::ConstantInt::get(v_t, value, true);
+                        parameters.push_back(v);
+                    } else if (get<0>(currentType) && !get<1>(currentType)) {
+                        // wrap(int)
+
+                    } else if (!get<0>(currentType) && get<1>(currentType)) {
+                        // int*
+                        auto int64_t = llvm::IntegerType::getInt64Ty(bcModule->getContext());
+                        auto v_t = llvm::Type::getInt64PtrTy(bcModule->getContext());
+                        auto alloc = builder->CreateAlloca(v_t);
+                        llvm::Value* v = llvm::ConstantInt::get(int64_t, value, true);
+                        builder->CreateStore(v, alloc, false);
+                        parameters.push_back(alloc);
+                    } else if (!get<0>(currentType) && !get<1>(currentType)) {
+                        // wrap(int)*
+                    }
+                } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext*>(ctx->atomic()[i]) != nullptr) {
+                    dataType = 1;
+                    double value = any_cast<double>(visit(ctx->atomic()[i]));
+                    if (get<0>(currentType) && get<1>(currentType)) {
+                        // double
+                    } else if (get<0>(currentType) && !get<1>(currentType)) {
+                        // wrap(double)
+                    } else if (!get<0>(currentType) && get<1>(currentType)) {
+                        // double*
+                    } else if (!get<0>(currentType) && !get<1>(currentType)) {
+                        // wrap(double)*
+                    }
+                } else if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(ctx->atomic()[i]) != nullptr) {
+                    dataType = 2;
+                    string value = any_cast<string>(visit(ctx->atomic()[i]));
+                    if (get<0>(currentType) && get<1>(currentType)) {
+                        // string
+                    } else if (get<0>(currentType) && !get<1>(currentType)) {
+                        // wrap(string)
+                    } else if (!get<0>(currentType) && get<1>(currentType)) {
+                        // string*
+                    } else if (!get<0>(currentType) && !get<1>(currentType)) {
+                        // wrap(string)*
+                    }
+
+
+
+                    /** Example:
+                    if (get<1>(currentType)) {
+                        // AS Primitive, so use dataType (C++ primitives)
+                    } else {
+                        // AS Struct, so wrap in struct
+                    }
+
+                    if (get<0>(currentType)) {
+                        // BY Value
+                    } else {
+                        // BY Reference, so add *
+                    }
+                     */
+                } else {
+                    // TODO: Throw Compile Exception! We should never be in this code block!
+                    throw std::logic_error("We should never be in this code block!");
+                }
+
+            }
+        }
+
     }
 
-//    if (ctx->USING() != nullptr) {
-//        // Pass on these values
-//        for (BabyCobolParser::AtomicContext *atomic: ctx->byvalueatomics) {
-//            if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic) != nullptr) {
-//                cout << "IntLiteralContext" << endl;
-//                ints.push_back(
-//                        any_cast<int>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
-//            } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic) != nullptr) {
-//                cout << "StringLiteralContext" << endl;
-//                strings.push_back(any_cast<string>(
-//                        visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic))));
-//            } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
-//                // TODO
-//                cout << "IdentifierContext" << endl;
-//                visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
-//            }
-//        }
-//
-//        // Pass on these pointers
-//        for (BabyCobolParser::AtomicContext *atomic: ctx->byreferenceatomics) {
-//            if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic) != nullptr) {
-//                cout << "IntLiteralContext" << endl;
-//                intPointers.push_back(
-//                        any_cast<int *>(visitIntLiteral(dynamic_cast<BabyCobolParser::IntLiteralContext *>(atomic))));
-//            } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic) != nullptr) {
-//                cout << "StringLiteralContext" << endl;
-//                stringPointers.push_back(any_cast<string *>(
-//                        visitStringLiteral(dynamic_cast<BabyCobolParser::StringLiteralContext *>(atomic))));
-//            } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic) != nullptr) {
-//                // TODO
-//                cout << "IdentifierContext" << endl;
-//                visitIdentifier(dynamic_cast<BabyCobolParser::IdentifierContext *>(atomic));
-//            }
-//        }
-//    }
-//
-//
-//    cout << "strings.size(): " << strings.size() << endl;
-//    cout << "ints.size(): " << ints.size() << endl;
-//    cout << "stringPointers.size(): " << stringPointers.size() << endl;
-//    cout << "intPointers.size(): " << intPointers.size() << endl;
-//
-//    string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
-//    cout << functionName << endl;
-//
-//    if (ctx->RETURNING() != nullptr) {
-//        // TODO: return type is a value. So get the value
-//    } else if (ctx->RETURNINGBYREFERENCE() != nullptr) {
-//        // TODO: return type is a pointer. So get the value from the pointer
-//    }
-//
-//
-//    //create function call w/ no input
-//    llvm::Type* void_t = llvm::Type::getVoidTy(bcModule->getContext());
-//    llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, true);
-//    auto* new_function = new llvm::FunctionCallee();
-//    *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
-//
-//    builder->CreateCall(*new_function);
+
+
+
+
+
+
+    string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
+    cout << functionName << endl;
+
+    if (ctx->RETURNING() != nullptr) {
+        // TODO: return type is a value. So get the value
+    } else if (ctx->RETURNINGBYREFERENCE() != nullptr) {
+        // TODO: return type is a pointer. So get the value from the pointer
+    }
+
+    std::vector<llvm::Type*> param_types;
+    param_types.reserve(parameters.size());
+    transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
+
+    //create function call w/ no input
+    llvm::Type* void_t = llvm::Type::getVoidTy(bcModule->getContext());
+    llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, param_types, true);
+    auto* new_function = new llvm::FunctionCallee();
+    *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
+
+    builder->CreateCall(*new_function);
 
     return BabyCobolBaseVisitor::visitCallStatement(ctx);
 }

@@ -31,6 +31,8 @@ public:
 
     void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
 
+    static llvm::Type* getType(llvm::Value* value);
+
     std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override;
 
     std::any visitProgram(BabyCobolParser::ProgramContext *ctx) override;

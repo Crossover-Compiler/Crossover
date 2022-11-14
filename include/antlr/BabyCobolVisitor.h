@@ -127,6 +127,8 @@ public:
 
     virtual std::any visitIntLiteral(BabyCobolParser::IntLiteralContext *context) = 0;
 
+    virtual std::any visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *context) = 0;
+
     virtual std::any visitStringLiteral(BabyCobolParser::StringLiteralContext *context) = 0;
 
     virtual std::any visitIdentifier(BabyCobolParser::IdentifierContext *context) = 0;

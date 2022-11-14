@@ -231,6 +231,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) override {
     return visitChildren(ctx);
   }
