@@ -8,18 +8,24 @@
 #include <cstdint>
 #include <cstdlib>
 
-typedef struct Number {
+namespace bstd {
 
-    uint64_t value;
-    uint64_t scale;
-    uint8_t length;
-    bool isSigned = false;
-    bool positive = true;
+    /**
+     * todo: doc
+     */
+    typedef struct Number {
 
-    [[nodiscard]] int getSignedValue() const {
-        return positive ? value : (-1 * (int)value);
-    }
+        uint64_t value;
+        uint64_t scale;
+        uint8_t length;
+        bool isSigned = false;
+        bool positive = true;
 
-} Number;
+        [[nodiscard]] int getSignedValue() const {
+            return positive ? value : (-1 * (int) value);
+        }
+
+    } Number;
+}
 
 #endif //CROSSOVER_NUMBER_H

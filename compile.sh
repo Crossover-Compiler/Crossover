@@ -4,10 +4,10 @@
 mkdir -p out
 
 # build library
-clang++ -c lib/include/* lib/src/* -o out/lib.o
+clang++ -c lib/include/* lib/src/* out/lib.o
 
 # build specified files and link against library
-clang++ build/output.o out/lib.o ${@} out/exec
+clang++ build/output.o out/lib.o "${@}" out/exec
 
 # clean up files
 #rm out/lib.o

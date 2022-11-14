@@ -51,23 +51,22 @@ int main() {
 
     // init  llvm
     llvm::LLVMContext* llvmContext = new llvm::LLVMContext();
-    BCModule* llvmModule = new BCModule("module", *llvmContext);
+    BCModule* module = new BCModule("module", *llvmContext);
 
     llvm::FunctionType* FT = llvm::FunctionType::get(llvm::Type::getVoidTy(*llvmContext), false);
-    llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", llvmModule);
+    llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", module);
     // Run compiler
     llvm::BasicBlock* block = llvm::BasicBlock::Create(*llvmContext, "root_block", F);
 
 
-    llvm::IRBuilder<> builder(llvmModule->getContext());
-    builder.SetInsertPoint(block);
+    BCBuilder builder(module, block);
 
-    Visitor visitor(llvmModule, &builder);
+    Visitor visitor(module, &builder);
     visitor.visitProgram(tree);
 
     cout << "Finished Compiling!" << endl;
 
-    llvmModule->print(llvm::outs(), nullptr);
+    module->print(llvm::outs(), nullptr);
 
 
     // The following code allows us to compile the IR into C object files
@@ -79,7 +78,7 @@ int main() {
     InitializeAllAsmPrinters();
 
     auto TargetTriple = sys::getDefaultTargetTriple();
-    llvmModule->setTargetTriple(TargetTriple);
+    module->setTargetTriple(TargetTriple);
 
     std::string Error;
     auto Target = TargetRegistry::lookupTarget(TargetTriple, Error);
@@ -100,7 +99,7 @@ int main() {
     auto TheTargetMachine =
             Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
 
-    llvmModule->setDataLayout(TheTargetMachine->createDataLayout());
+    module->setDataLayout(TheTargetMachine->createDataLayout());
 
     auto Filename = "output.o";
     std::error_code EC;
@@ -119,7 +118,7 @@ int main() {
         return 1;
     }
 
-    pass.run(*llvmModule);
+    pass.run(*module);
     dest.flush();
 
     outs() << "Wrote " << Filename << "\n";

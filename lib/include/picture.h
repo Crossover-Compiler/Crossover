@@ -5,10 +5,15 @@
 #ifndef CROSSOVER_PICTURE_H
 #define CROSSOVER_PICTURE_H
 
-typedef struct Picture {
-    char* bytes;
-    char* mask;
-    uint8_t length;
-} Picture;
+#include <cinttypes>
+
+namespace bstd {
+
+    typedef struct Picture {
+        char *bytes;
+        char *mask;
+        uint8_t length;
+    } Picture;
+}
 
 #endif //CROSSOVER_PICTURE_H

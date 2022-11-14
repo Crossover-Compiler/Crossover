@@ -248,7 +248,7 @@ std::any Visitor::visitAdd(BabyCobolParser::AddContext *ctx) {
     for (int i = 0; i < ctx->atomic().size() - 1; i++) {
         current_id = "visitAdd_" + std::to_string(i);
         visit(ctx->atomic()[i]);
-        values["baseValue"] = builder->CreateAdd(values[current_id], values["baseValue"], "mAdd");
+        values["baseValue"] = builder->llvm::IRBuilderBase::CreateAdd(values[current_id], values["baseValue"], "mAdd");
     }
     return BabyCobolBaseVisitor::visitAdd(ctx);
 }
@@ -418,7 +418,7 @@ void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::Represe
             throw CompileException("No picture found in INT or INDENTIFIER");
         }
 
-        std::regex r ("S?Z*(A|X|V|9)*)S?");
+        std::regex r ("S?Z*(A|X|V|9)*S?");
         bool match = std::regex_match(pictureString, r);
 
 

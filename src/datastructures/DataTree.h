@@ -37,7 +37,7 @@ protected:
             level(level),
             next(),
             previous(nullptr),
-            picture(nullptr),
+            picture(std::string()),
             cardinality(-1),
             index(1),
             occurs(1),

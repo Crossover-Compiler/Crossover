@@ -23,10 +23,10 @@ private:
     vector<DataTree*> dataStructures;
     string current_id;
     BCModule* bcModule;
-    IRBuilder<>* builder;
+    BCBuilder* builder;
 
 public:
-    Visitor(BCModule* bcModule, IRBuilder<>* builder) : bcModule(bcModule), builder(builder), topLevel(-1) {}
+    Visitor(BCModule* bcModule, BCBuilder* builder) : bcModule(bcModule), builder(builder), topLevel(-1) {}
 
     void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
 

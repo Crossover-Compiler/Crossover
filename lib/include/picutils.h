@@ -5,6 +5,8 @@
 #ifndef CROSSOVER_PICUTILS_H
 #define CROSSOVER_PICUTILS_H
 
+#include "picture.h"
+
 namespace bstd {
 
     /**

@@ -3,19 +3,20 @@
 //
 
 #include "../include/picutils.h"
+#include <string>
 
-Picture* bstd::of(char* bytes, char* mask, uint8_t length) {
+bstd::Picture* bstd::of(char* bytes, char* mask, uint8_t length) {
     char* b = new char[length];
     char* m = new char[length];
     return new Picture {
-      .bytes = std::copy(bytes, bytes + length, b);
-      .mask = std::copy(mask, mask + length, m);
-      .length = length;
+      .bytes = std::copy(bytes, bytes + length, b),
+      .mask = std::copy(mask, mask + length, m),
+      .length = length
     };
 }
 
 
-Picture* bstd::assign(Picture* asignee, Picture* target) {
+bstd::Picture* bstd::assign(Picture* asignee, Picture* target) {
     // todo: implement
     return nullptr;
 }
