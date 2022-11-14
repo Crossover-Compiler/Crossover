@@ -116,4 +116,13 @@ namespace utils{
         // Close the file
         outputFile.close();
     }
+
+    bool presentInArgs(int argc, char** argv, string element){
+        for(int i = 0; i < argc; ++i){
+            if (argv[i] == element){
+                return true;
+            }
+        }
+        return false;
+    }
 }

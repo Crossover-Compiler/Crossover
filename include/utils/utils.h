@@ -27,6 +27,16 @@ namespace utils {
      * @param dataStructures
      */
     void generateStructs(vector<DataTree*> dataStructures);
+
+    /**
+     *
+     * check cli args for given element
+     * @param argc
+     * @param argv
+     * @param element
+     * @return
+     */
+    bool presentInArgs(int argc, char** argv, string element);
 };
 
 
