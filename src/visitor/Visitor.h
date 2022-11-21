@@ -147,7 +147,9 @@ public:
 
     std::any visitInt(BabyCobolParser::IntContext *ctx) override;
 
-    any visitCallStatement(BabyCobolParser::CallStatementContext *ctx) override;
+    std::any visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) override;
+
+    std::any visitCallStatement(BabyCobolParser::CallStatementContext *ctx) override;
 
     void reset();
 

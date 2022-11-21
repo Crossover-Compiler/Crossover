@@ -393,78 +393,10 @@ any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
     return value;
 }
 
-/**
- * ================
- * HELPER FUNCTIONS
- * ================
- */
-
-
-void Visitor::reset() {
-    for (DataTree* dataStructure : dataStructures) {
-        while (dataStructure->getPrevious() != nullptr) {
-            dataStructure = dataStructure->getPrevious();
-        }
-    }
-}
-
-void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture) {
-    if (picture != nullptr) {
-        // TODO: Check for valid regex
-        string pictureString;
-        if (picture->INT() != nullptr) {
-            pictureString = picture->INT()->getText();
-        } else if (picture->IDENTIFIER() != nullptr) {
-            pictureString = picture->IDENTIFIER()->getText();
-        } else {
-            throw CompileException("No picture found in INT or INDENTIFIER");
-        }
-
-        std::regex r ("S?Z*(A|X|V|9)*S?");
-        bool match = std::regex_match(pictureString, r);
-
-
-
-        if (match) {
-            cout << "Correct Picture: " << pictureString << endl;
-            // TODO: Set picture
-            dataTree->setPicture(pictureString);
-            dataTree->setCardinality(pictureString.size());
-            // TODO: Set default value if we want to
-        } else {
-            throw CompileException("Invalid PICTURE: " + pictureString);
-        }
-    }
-}
-
-
-vector<DataTree*> Visitor::getNodes(string path) {
-    reset();
-    vector<DataTree*> result;
-    for (auto d : dataStructures) {
-        vector<DataTree*> tempVec;
-        tempVec = d->getNodesFromPath(path, tempVec);
-        for (auto item: tempVec) {
-            result.push_back(item);
-        }
-    }
-    return result;
-}
-
-// JAVA-like split function for strings
-vector<string> Visitor::split (string s, string delimiter) {
-    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    string token;
-    vector<string> res;
-
-    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
-        token = s.substr (pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back (token);
-    }
-
-    res.push_back (s.substr (pos_start));
-    return res;
+any Visitor::visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) {
+    string s = ctx->getText();
+    replace(s.begin(), s.end(), ',', '.');
+    return stod(s);
 }
 
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
@@ -554,25 +486,62 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                     }
                 } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext*>(ctx->atomic()[i]) != nullptr) {
                     dataType = 1;
-                    double value = any_cast<double>(visit(ctx->atomic()[i]));
+                    auto value = any_cast<double>(visit(ctx->atomic()[i]));
                     if (get<0>(currentType) && get<1>(currentType)) {
                         // double
+                        auto v_t = llvm::Type::getDoubleTy(bcModule->getContext());
+                        auto v = llvm::ConstantFP::get(v_t, value);
+                        parameters.push_back(v);
                     } else if (get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(double)
                     } else if (!get<0>(currentType) && get<1>(currentType)) {
                         // double*
+                        auto double_t = llvm::Type::getDoubleTy(bcModule->getContext());
+                        auto v_t = llvm::Type::getDoublePtrTy(bcModule->getContext());
+                        auto alloc = builder->CreateAlloca(v_t);
+                        llvm::Value* v = llvm::ConstantFP::get(double_t, value);
+                        builder->CreateStore(v, alloc, false);
+                        parameters.push_back(alloc);
                     } else if (!get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(double)*
                     }
                 } else if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(ctx->atomic()[i]) != nullptr) {
                     dataType = 2;
-                    string value = any_cast<string>(visit(ctx->atomic()[i]));
+                    auto value = any_cast<string>(visit(ctx->atomic()[i]));
                     if (get<0>(currentType) && get<1>(currentType)) {
                         // string
+                        auto v_t = llvm::Type::getInt8Ty(bcModule->getContext());
+                        ArrayType* arrayType = ArrayType::get(v_t, value.size() + 1);
+                        auto alloc = builder->CreateAlloca(arrayType);
+
+                        auto charType = llvm::IntegerType::get(bcModule->getContext(), 8);
+                        std::vector<llvm::Constant *> chars(value.length());
+                        for(unsigned int i = 0; i < value.size(); i++) {
+                            chars[i] = llvm::ConstantInt::get(charType, value[i]);
+                        }
+                        chars.push_back(llvm::ConstantInt::get(charType, 0));
+
+                        llvm::Value* v = llvm::ConstantArray::get(arrayType, chars);
+                        builder->CreateStore(v, alloc, false);
+                        parameters.push_back(alloc);
                     } else if (get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(string)
                     } else if (!get<0>(currentType) && get<1>(currentType)) {
                         // string*
+                        auto v_t = llvm::Type::getInt8Ty(bcModule->getContext());
+                        ArrayType* arrayType = ArrayType::get(v_t, value.size() + 1);
+                        auto alloc = builder->CreateAlloca(arrayType);
+
+                        auto charType = llvm::IntegerType::get(bcModule->getContext(), 8);
+                        std::vector<llvm::Constant *> chars(value.length());
+                        for(unsigned int i = 0; i < value.size(); i++) {
+                            chars[i] = llvm::ConstantInt::get(charType, value[i]);
+                        }
+                        chars.push_back(llvm::ConstantInt::get(charType, 0));
+
+                        llvm::Value* v = llvm::ConstantArray::get(arrayType, chars);
+                        builder->CreateStore(v, alloc, false);
+                        parameters.push_back(alloc);
                     } else if (!get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(string)*
                     }
@@ -602,12 +571,6 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
     }
 
-
-
-
-
-
-
     string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
     cout << functionName << endl;
 
@@ -627,8 +590,83 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     auto* new_function = new llvm::FunctionCallee();
     *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
 
-    builder->CreateCall(*new_function);
+    llvm::ArrayRef<llvm::Value*> args = parameters;
+
+    builder->CreateCall(*new_function, args);
 
     return BabyCobolBaseVisitor::visitCallStatement(ctx);
 }
 
+/**
+ * ================
+ * HELPER FUNCTIONS
+ * ================
+ */
+
+
+void Visitor::reset() {
+    for (DataTree* dataStructure : dataStructures) {
+        while (dataStructure->getPrevious() != nullptr) {
+            dataStructure = dataStructure->getPrevious();
+        }
+    }
+}
+
+void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture) {
+    if (picture != nullptr) {
+        // TODO: Check for valid regex
+        string pictureString;
+        if (picture->INT() != nullptr) {
+            pictureString = picture->INT()->getText();
+        } else if (picture->IDENTIFIER() != nullptr) {
+            pictureString = picture->IDENTIFIER()->getText();
+        } else {
+            throw CompileException("No picture found in INT or INDENTIFIER");
+        }
+
+        std::regex r ("S?Z*(A|X|V|9)*S?");
+        bool match = std::regex_match(pictureString, r);
+
+
+
+        if (match) {
+            cout << "Correct Picture: " << pictureString << endl;
+            // TODO: Set picture
+            dataTree->setPicture(pictureString);
+            dataTree->setCardinality(pictureString.size());
+            // TODO: Set default value if we want to
+        } else {
+            throw CompileException("Invalid PICTURE: " + pictureString);
+        }
+    }
+}
+
+
+vector<DataTree*> Visitor::getNodes(string path) {
+    reset();
+    vector<DataTree*> result;
+    for (auto d : dataStructures) {
+        vector<DataTree*> tempVec;
+        tempVec = d->getNodesFromPath(path, tempVec);
+        for (auto item: tempVec) {
+            result.push_back(item);
+        }
+    }
+    return result;
+}
+
+// JAVA-like split function for strings
+vector<string> Visitor::split (string s, string delimiter) {
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    string token;
+    vector<string> res;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        token = s.substr (pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back (token);
+    }
+
+    res.push_back (s.substr (pos_start));
+    return res;
+}
