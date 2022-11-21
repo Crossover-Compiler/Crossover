@@ -184,9 +184,11 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
 
     for (int i = 0; i < ctx->atomic().size(); ++i) {
         if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            value += any_cast<string>(visit(ctx->atomic()[i]));
+            value += to_string(any_cast<int>(visit(ctx->atomic()[i])));;
         } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
             value += any_cast<string>(visit(ctx->atomic()[i]));
+        } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+            value += to_string(any_cast<double>(visit(ctx->atomic()[i])));
         } else {
             throw NotImplemented("Visitor:visitDisplay() Printing by identifier is not implemented");
         }
@@ -388,9 +390,12 @@ std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
 }
 
 any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
-    string value = ctx->INT()->getText();
-    values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
-    return value;
+    // TODO: This code might be useful somewhere:
+    // string value = ctx->INT()->getText();
+    // values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
+    // return value;
+
+    return stoi(ctx->getText());
 }
 
 any Visitor::visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) {
@@ -400,15 +405,6 @@ any Visitor::visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) {
 }
 
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
-    // Literals in the using clause
-    vector<string> strings;
-    vector<string*> stringPointers;
-    vector<int> ints;
-    vector<int*> intPointers;
-
-    // try to get the order from here
-    // TODO: Not sure about this boolean vector. But the final implementation depends of datadtypes we can send and receive
-
     // True, True if -> BY VALUE, AS PRIMITIVE
     // False, False if -> BY REFERENCE, AS STRUCT
     vector<tuple<bool,bool>> passType(ctx->atomic().size());
@@ -420,33 +416,27 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
         int referencePrimCursor = 0;
         int valueStructCursor = 0;
         int referenceStructCursor = 0;
-        cout << "size: " << ctx->atomic().size() << endl;
         for (int i = 0; i < ctx->atomic().size(); i++) {
-            cout << "I am here. i: " << i << endl;
             if (!ctx->byreferenceatomicsprim.empty()) {
                 if (ctx->byreferenceatomicsprim[referencePrimCursor] == ctx->atomic()[i]) {
-                    cout << "reference pointer prim is the same" << endl;
                     passType.at(i) = tuple(false, true);
                     referencePrimCursor++;
                 }
             }
             if (!ctx->byvalueatomicsprim.empty()) {
                 if (ctx->byvalueatomicsprim[valuePrimCursor] == ctx->atomic()[i]) {
-                    cout << "value pointer prim is the same" << endl;
                     passType.at(i) = tuple(true, true);
                     valuePrimCursor++;
                 }
             }
             if (!ctx->byreferenceatomicsstruct.empty()) {
                 if (ctx->byvalueatomicsstruct[referenceStructCursor] == ctx->atomic()[i]) {
-                    cout << "value pointer struct is the same" << endl;
                     passType.at(i) = tuple(false, false);
                     referenceStructCursor++;
                 }
             }
             if (!ctx->byvalueatomicsstruct.empty()) {
                 if (ctx->byvalueatomicsstruct[valueStructCursor] == ctx->atomic()[i]) {
-                    cout << "value pointer struct is the same" << endl;
                     passType.at(i) = tuple(true, false);
                     valueStructCursor++;
                 }
