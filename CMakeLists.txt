@@ -63,9 +63,6 @@ add_executable(output main.cpp
         include/ir/bcmodule.h
         include/antlr/BabyCobolParser.cpp
         src/Exceptions/CompileException.h
-        src/lib/arithmetic.cpp
-        include/lib/arithmetic.h
-        include/lib/number.h
         src/datastructures/Field.cpp
         src/datastructures/Field.h
         src/datastructures/Record.cpp
