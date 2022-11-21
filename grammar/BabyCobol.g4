@@ -39,6 +39,7 @@ statement       :
                 |   gotoStatement
                 |   signal
                 |   alter
+                |   callStatement
                 );
 
 label           :   IDENTIFIER;
@@ -58,6 +59,26 @@ loop            :   LOOP loopExpression* END;
 gotoStatement   :   GO TO name;
 signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
+callStatement   :   CALL (FUNCTIONNAME OF)? program_name=IDENTIFIER
+                        (USING
+                            (
+                                (
+                                    (BYVALUE byvalueatomicsprim+=atomic+ AS PRIMITIVE) |
+                                    (BYREFERENCE byreferenceatomicsprim+=atomic+ AS PRIMITIVE) |
+                                    (byvalueatomicsprim+=atomic+ AS PRIMITIVE) |
+
+                                    (BYVALUE byvalueatomicsstruct+=atomic+ AS STRUCT) |
+                                    (BYREFERENCE byreferenceatomicsstruct+=atomic+ AS STRUCT) |
+                                    (byvalueatomicsstruct+=atomic+ AS STRUCT) |
+
+                                    (BYVALUE byvalueatomicsprim+=atomic+) |
+                                    (BYREFERENCE byreferenceatomicsprim+=atomic+) |
+                                    (byvalueatomicsprim+=atomic+)
+
+                                )
+                            )+
+                        )?
+                        ((RETURNING | RETURNINGBYREFERENCE) returning=IDENTIFIER)?; // TODO: Test if the identifiers and literals are added to the lists correctly
 
 anyExpression   :   arithmeticExpression
                 |   stringExpression
@@ -113,17 +134,20 @@ whenBlock       :   WHEN anyExpression+ statement+      #whenAnyExpression
                 ;
 
 atomic          :   int                         #intLiteral
+                |   DOUBLE                      #doubleLiteral
                 |   LITERAL                     #stringLiteral
                 |   identifiers                 #identifier
                 ;
+//program_name    : IDENTIFIER;
 
 identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
 
 int             :   INT;
 
 
-
 // Keywords & symbol names
+STRUCT: 'STRUCT';
+PRIMITIVE: 'PRIMITIVE';
 IDENTIFICATION: 'IDENTIFICATION';
 DIVISION:   'DIVISION';
 PROCEDURE:  'PROCEDURE';
@@ -181,15 +205,19 @@ ONERROR:    'ON ERROR';
 OFF:        'OFF';
 ALTER:      'ALTER';
 PROCEED:    'PROCEED';
-
+CALL:       'CALL';
+RETURNING:  'RETURNING';
+BYVALUE:    'BY VALUE';
+BYREFERENCE:'BY REFERENCE';
+RETURNINGBYREFERENCE: RETURNING BYREFERENCE;
+USING:      'USING';
+AS:         'AS';
 
 COMMENTLINE     :   '*' WS '\n' -> skip;
 WS              :   [ \r\n\t\f]+ -> skip;
+FUNCTIONNAME    :   '\''IDENTIFIER'\'';
 INT             : '-'? [0-9]+;
+DOUBLE          :   ('-'|'+')? INT ',' INT;
 LITERAL         :   '"' ~'"'+ '"'; // Any char except for "
 DOT             :   '.';
 IDENTIFIER      : [a-zA-Z0-9]+ ([-_]+ [a-zA-Z0-9]+)*;
-
-
-
-

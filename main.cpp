@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     cout << "Starting Compiler..." << endl;
 
     ifstream stream;
-    stream.open("../test/composite.txt");
+    stream.open("../test/callPrimitiveLiterals.txt");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);

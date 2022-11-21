@@ -31,6 +31,8 @@ public:
 
     void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
 
+    static llvm::Type* getType(llvm::Value* value);
+
     std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override;
 
     std::any visitProgram(BabyCobolParser::ProgramContext *ctx) override;
@@ -145,12 +147,15 @@ public:
 
     std::any visitInt(BabyCobolParser::IntContext *ctx) override;
 
+    std::any visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) override;
+
+    std::any visitCallStatement(BabyCobolParser::CallStatementContext *ctx) override;
+
     void reset();
 
     vector<DataTree*> getNodes(string path);
 
     vector<string> split(string s, string delimiter);
-
 };
 
 
