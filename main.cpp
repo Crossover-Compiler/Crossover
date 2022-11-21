@@ -1,6 +1,7 @@
 #include <iostream>
 #include <csignal>
 #include "src/visitor/Visitor.h"
+#include "include/utils/utils.h"
 #include "include/antlr/BabyCobolParser.h"
 #include "include/antlr/BabyCobolLexer.h"
 #include "antlr4-runtime.h"
@@ -31,16 +32,23 @@
 
 
 
+
 using namespace std;
 using namespace antlr4;
 using namespace llvm;
 using namespace llvm::sys;
+using namespace utils;
 
-int main() {
+// TODO: pls move me to somewhere sensible
+
+
+
+
+int main(int argc, char **argv) {
     cout << "Starting Compiler..." << endl;
 
     ifstream stream;
-    stream.open("testProgram.txt");
+    stream.open("../test/picture.txt");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -54,7 +62,13 @@ int main() {
     BCModule* llvmModule = new BCModule("module", *llvmContext);
 
     llvm::FunctionType* FT = llvm::FunctionType::get(llvm::Type::getVoidTy(*llvmContext), false);
-    llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", llvmModule);
+    llvm::Function* F;
+    if(presentInArgs(argc, argv, "-not-main")){
+        F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "procedureDivision", llvmModule);
+    } else{
+        F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", llvmModule);
+    }
+
     // Run compiler
     llvm::BasicBlock* block = llvm::BasicBlock::Create(*llvmContext, "root_block", F);
 
@@ -126,7 +140,9 @@ int main() {
 
 //TODO: invoke gcc or clang++ here to link the object files
 
-
+    if (presentInArgs(argc, argv,"-generate-structs")) {
+        generateStructs(visitor.dataStructures);
+    }
 
     return 0;
 }

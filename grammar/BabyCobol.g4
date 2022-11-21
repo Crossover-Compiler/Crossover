@@ -6,9 +6,11 @@ identification  :   IDENTIFICATION DIVISION DOT (name DOT value DOT)*;
 name            :   IDENTIFIER;
 value           :   LITERAL;
 
-data            :   DATA DIVISION variable*;
-variable        :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers)? (OCCURS int TIMES)? DOT;
-level           :   int;
+data            :   DATA DIVISION line*;
+line            :   (record | field);
+record          :   level IDENTIFIER DOT;
+field           :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers) (OCCURS int TIMES)? DOT;
+level           :   int; // todo: should be exactly two numbers
 representation  :   (NINE | X); // NOTE: This makes it impossible to use these as variable names
 
 procedure       :   PROCEDURE DIVISION DOT sentence* paragraph+;

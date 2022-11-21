@@ -11,6 +11,7 @@ class BCModule : public llvm::Module {
 
 private:
     llvm::FunctionCallee* printf_func;
+    llvm::StructType* numberStructType;
 
 private:
 
@@ -32,6 +33,10 @@ public:
      * @return llvm::FunctionCallee* 
      */
     llvm::FunctionCallee* getPrintf();
+
+    llvm::StructType* getNumberStructType();
+
+    llvm::FunctionCallee* getPrintNumber();
 
 
 //    perhaps not even needed

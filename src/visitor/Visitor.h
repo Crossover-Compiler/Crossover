@@ -7,6 +7,7 @@
 
 #include "../../include/antlr/BabyCobolBaseVisitor.h"
 #include "../../include/ir/bcmodule.h"
+#include "../datastructures/DataTree.h"
 #include <llvm/IR/IRBuilder.h>
 
 using namespace llvm;
@@ -17,12 +18,18 @@ class Visitor: public BabyCobolBaseVisitor {
 private:
     vector<std::string> compiledVector;
     map<string, Value*> values;
+    int topLevel;
+    DataTree* root;
     string current_id;
     BCModule* bcModule;
     IRBuilder<>* builder;
 
 public:
-    Visitor(BCModule* bcModule, IRBuilder<>* builder) : bcModule(bcModule), builder(builder) {}
+    vector<DataTree*> dataStructures;
+
+    Visitor(BCModule* bcModule, IRBuilder<>* builder) : bcModule(bcModule), builder(builder), topLevel(-1) {}
+
+    void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
 
     std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override;
 
@@ -34,7 +41,11 @@ public:
 
     std::any visitData(BabyCobolParser::DataContext *ctx) override;
 
-    std::any visitVariable(BabyCobolParser::VariableContext *ctx) override;
+    std::any visitLine(BabyCobolParser::LineContext *ctx) override;
+
+    std::any visitField(BabyCobolParser::FieldContext *ctx) override;
+
+    std::any visitRecord(BabyCobolParser::RecordContext *ctx) override;
 
     std::any visitLevel(BabyCobolParser::LevelContext *ctx) override;
 
@@ -132,7 +143,14 @@ public:
 
     std::any visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) override;
 
-    any visitInt(BabyCobolParser::IntContext *ctx) override;
+    std::any visitInt(BabyCobolParser::IntContext *ctx) override;
+
+    void reset();
+
+    vector<DataTree*> getNodes(string path);
+
+    vector<string> split(string s, string delimiter);
+
 };
 
 
