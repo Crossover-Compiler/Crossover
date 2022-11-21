@@ -13,18 +13,20 @@ class  BabyCobolParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, IDENTIFICATION = 14, 
-    DIVISION = 15, PROCEDURE = 16, DATA = 17, DISPLAY = 18, WITH = 19, NO = 20, 
-    ADVANCING = 21, STOP = 22, MOVE = 23, TO = 24, SUBTRACT = 25, FROM = 26, 
-    GIVING = 27, MULTIPLY = 28, BY = 29, PERFORM = 30, TIMES = 31, IF = 32, 
-    THEN = 33, ELSE = 34, END = 35, ACCEPT = 36, ADD = 37, DIVIDE = 38, 
-    INTO = 39, EVALUATE = 40, WHEN = 41, OTHER = 42, TRUE = 43, FALSE = 44, 
-    NOT = 45, OR = 46, AND = 47, XOR = 48, NEXT = 49, SENTENCE = 50, REMAINDER = 51, 
-    LOOP = 52, VARYING = 53, WHILE = 54, UNTIL = 55, OF = 56, THROUGH = 57, 
-    PICTURE = 58, IS = 59, LIKE = 60, OCCURS = 61, GO = 62, SPACES = 63, 
-    HIGH = 64, LOW = 65, SIGNAL = 66, ONERROR = 67, OFF = 68, ALTER = 69, 
-    PROCEED = 70, COMMENTLINE = 71, WS = 72, INT = 73, LITERAL = 74, DOT = 75, 
-    IDENTIFIER = 76
+    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, STRUCT = 14, 
+    PRIMITIVE = 15, IDENTIFICATION = 16, DIVISION = 17, PROCEDURE = 18, 
+    DATA = 19, DISPLAY = 20, WITH = 21, NO = 22, ADVANCING = 23, STOP = 24, 
+    MOVE = 25, TO = 26, SUBTRACT = 27, FROM = 28, GIVING = 29, MULTIPLY = 30, 
+    BY = 31, PERFORM = 32, TIMES = 33, IF = 34, THEN = 35, ELSE = 36, END = 37, 
+    ACCEPT = 38, ADD = 39, DIVIDE = 40, INTO = 41, EVALUATE = 42, WHEN = 43, 
+    OTHER = 44, TRUE = 45, FALSE = 46, NOT = 47, OR = 48, AND = 49, XOR = 50, 
+    NEXT = 51, SENTENCE = 52, REMAINDER = 53, LOOP = 54, VARYING = 55, WHILE = 56, 
+    UNTIL = 57, OF = 58, THROUGH = 59, PICTURE = 60, IS = 61, LIKE = 62, 
+    OCCURS = 63, GO = 64, SPACES = 65, HIGH = 66, LOW = 67, SIGNAL = 68, 
+    ONERROR = 69, OFF = 70, ALTER = 71, PROCEED = 72, CALL = 73, RETURNING = 74, 
+    BYVALUE = 75, BYREFERENCE = 76, RETURNINGBYREFERENCE = 77, USING = 78, 
+    AS = 79, COMMENTLINE = 80, WS = 81, FUNCTIONNAME = 82, INT = 83, DOUBLE = 84, 
+    LITERAL = 85, DOT = 86, IDENTIFIER = 87
   };
 
   enum {
@@ -35,11 +37,11 @@ public:
     RuleMove = 17, RuleSubtract = 18, RuleMultiply = 19, RulePerform = 20, 
     RuleIfStatement = 21, RuleAccept = 22, RuleAdd = 23, RuleDivide = 24, 
     RuleEvaluate = 25, RuleNextSentence = 26, RuleLoop = 27, RuleGotoStatement = 28, 
-    RuleSignal = 29, RuleAlter = 30, RuleAnyExpression = 31, RuleArithmeticExpression = 32, 
-    RuleStringExpression = 33, RuleBooleanExpression = 34, RuleLoopExpression = 35, 
-    RuleContractedBooleanPart = 36, RuleComparisonOp = 37, RuleBooleanOp = 38, 
-    RuleArithmeticOp = 39, RuleWhenBlock = 40, RuleAtomic = 41, RuleIdentifiers = 42, 
-    RuleInt = 43
+    RuleSignal = 29, RuleAlter = 30, RuleCallStatement = 31, RuleAnyExpression = 32, 
+    RuleArithmeticExpression = 33, RuleStringExpression = 34, RuleBooleanExpression = 35, 
+    RuleLoopExpression = 36, RuleContractedBooleanPart = 37, RuleComparisonOp = 38, 
+    RuleBooleanOp = 39, RuleArithmeticOp = 40, RuleWhenBlock = 41, RuleAtomic = 42, 
+    RuleIdentifiers = 43, RuleInt = 44
   };
 
   explicit BabyCobolParser(antlr4::TokenStream *input);
@@ -90,6 +92,7 @@ public:
   class GotoStatementContext;
   class SignalContext;
   class AlterContext;
+  class CallStatementContext;
   class AnyExpressionContext;
   class ArithmeticExpressionContext;
   class StringExpressionContext;
@@ -333,6 +336,7 @@ public:
     GotoStatementContext *gotoStatement();
     SignalContext *signal();
     AlterContext *alter();
+    CallStatementContext *callStatement();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -652,6 +656,45 @@ public:
   };
 
   AlterContext* alter();
+
+  class  CallStatementContext : public antlr4::ParserRuleContext {
+  public:
+    antlr4::Token *program_name = nullptr;
+    BabyCobolParser::AtomicContext *atomicContext = nullptr;
+    std::vector<AtomicContext *> byvalueatomicsprim;
+    std::vector<AtomicContext *> byreferenceatomicsprim;
+    std::vector<AtomicContext *> byvalueatomicsstruct;
+    std::vector<AtomicContext *> byreferenceatomicsstruct;
+    antlr4::Token *returning = nullptr;
+    CallStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *CALL();
+    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
+    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
+    antlr4::tree::TerminalNode *FUNCTIONNAME();
+    antlr4::tree::TerminalNode *OF();
+    antlr4::tree::TerminalNode *USING();
+    antlr4::tree::TerminalNode *RETURNING();
+    antlr4::tree::TerminalNode *RETURNINGBYREFERENCE();
+    std::vector<antlr4::tree::TerminalNode *> BYVALUE();
+    antlr4::tree::TerminalNode* BYVALUE(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> AS();
+    antlr4::tree::TerminalNode* AS(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> PRIMITIVE();
+    antlr4::tree::TerminalNode* PRIMITIVE(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> BYREFERENCE();
+    antlr4::tree::TerminalNode* BYREFERENCE(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> STRUCT();
+    antlr4::tree::TerminalNode* STRUCT(size_t i);
+    std::vector<AtomicContext *> atomic();
+    AtomicContext* atomic(size_t i);
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  CallStatementContext* callStatement();
 
   class  AnyExpressionContext : public antlr4::ParserRuleContext {
   public:
@@ -1020,6 +1063,15 @@ public:
     IntLiteralContext(AtomicContext *ctx);
 
     IntContext *int_();
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  DoubleLiteralContext : public AtomicContext {
+  public:
+    DoubleLiteralContext(AtomicContext *ctx);
+
+    antlr4::tree::TerminalNode *DOUBLE();
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
