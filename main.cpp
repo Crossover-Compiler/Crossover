@@ -67,6 +67,8 @@ int main() {
     string name = string("test_pic");
     auto pic_val = builder.CreatePicture(pic, name);
     builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
+    // print to test
+    std::cout << bstd::picutils::to_cstr(pic) << std::endl;
 
     builder.CreateRetVoid();
     cout << "Finished Compiling!" << endl;

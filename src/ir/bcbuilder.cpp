@@ -67,18 +67,18 @@ llvm::Value *BCBuilder::CreatePicture(bstd::Picture* picture, std::string &name,
     // picture struct types
     llvm::Type* int8_t = llvm::IntegerType::getInt8Ty(this->getContext());
     llvm::Type* int8ptr_t = llvm::IntegerType::getInt8PtrTy(this->getContext());
-    llvm::ArrayType* char_array_type = llvm::ArrayType::get(int8ptr_t, picture->length);
+    llvm::ArrayType* char_array_type = llvm::ArrayType::get(int8_t, picture->length);
 
     // Create instance of Picture struct
-    llvm::ArrayRef<llvm::Type*> picture_struct_types = {
+    llvm::ArrayRef<llvm::Type*>* picture_struct_types = new llvm::ArrayRef(new llvm::Type*[]{
             char_array_type,// bytes
             char_array_type,// mask
             int8_t,         // length
-    };
-    llvm::StructType* picture_struct_type = llvm::StructType::create(this->getContext(), picture_struct_types, "Struct.Number");
+    }, 3);
+    llvm::StructType* picture_struct_type = llvm::StructType::create(this->getContext(), *picture_struct_types, "Struct." + name);
 
     llvm::Value *alloc;
-    if (global) {
+    if (global || true) {
         // we should allocate global memory
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(picture_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, picture_struct_type, false,
@@ -89,7 +89,7 @@ llvm::Value *BCBuilder::CreatePicture(bstd::Picture* picture, std::string &name,
         alloc = this->CreateAlloca(picture_struct_type, nullptr, "tmp" + name);
     }
 
-    std::vector<llvm::Value *> indices(6);
+    std::vector<llvm::Value *> indices(4);
     indices[0] = asConstant(0);
     indices[1] = asConstant(0);
     indices[2] = asConstant(1);
@@ -119,7 +119,7 @@ llvm::Value *BCBuilder::CreatePicture(bstd::Picture* picture, std::string &name,
     // store "bytes" field of struct
     llvm::Value* mask_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[2]}, "maskPtr");
     llvm::Value* mask_val = llvm::ConstantArray::get(char_array_type, mask);
-    this->CreateStore(mask_val, bytes_ptr);
+    this->CreateStore(mask_val, mask_ptr);
 
     // store "length" field of struct
     llvm::Value *length_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[3]}, "lengthPtr");

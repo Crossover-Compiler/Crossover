@@ -5,16 +5,30 @@
 #include "../include/picutils.h"
 #include <string>
 
+/**
+ * Shallow copy of soure array to target array.
+ * @tparam T The array element type.
+ * @param source
+ * @param target
+ * @param length
+ * @return
+ */
+template <typename T> T* copy(T* source, T* target, uint length) {
+    for (int i = 0; i < length; ++i) {
+        target[i] = source[i];
+    }
+    return target;
+}
+
 bstd::Picture* bstd::picutils::of(char* bytes, char* mask, uint8_t length) {
     char* b = new char[length];
     char* m = new char[length];
     return new Picture {
-      .bytes = std::copy(bytes, bytes + length, b),
-      .mask = std::copy(mask, mask + length, m),
+      .bytes = copy(bytes, b, length),
+      .mask = copy(mask, m, length),
       .length = length
     };
 }
-
 
 bstd::Picture* bstd::picutils::assign(Picture* asignee, Picture* target) {
     // todo: implement
