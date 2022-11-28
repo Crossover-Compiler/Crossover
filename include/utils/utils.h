@@ -37,6 +37,14 @@ namespace utils {
      * @return
      */
     bool presentInArgs(int argc, char** argv, string element);
+
+    /**
+     * run system command and get result in an std::string
+     *
+     * @param cmd
+     * @return
+     */
+    std::string exec(const char* cmd);
 };
 
 
