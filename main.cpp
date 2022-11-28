@@ -41,9 +41,10 @@ using namespace utils;
 // TODO: pls move me to somewhere sensible
 
 
-
+#include "lib/include/numutils.h"
 
 int main(int argc, char **argv) {
+
     cout << "Starting Compiler..." << endl;
 
     ifstream stream;
