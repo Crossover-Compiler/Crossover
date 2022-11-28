@@ -58,6 +58,20 @@ namespace utils {
 
 
 
+    /**
+     * JAVA-like split function for strings
+     * @param s
+     * @param delimiter
+     * @return
+     */
+    vector<string> split (string s, string delimiter);
+
+    /**
+     * Extract global and local text symbols from nm output
+     * @param input
+     * @return
+     */
+    vector<string> extractTextSymbols(string input);
 };
 
 

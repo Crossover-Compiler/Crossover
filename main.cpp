@@ -46,6 +46,21 @@ using namespace utils;
 int main(int argc, char **argv) {
     cout << "Starting Compiler..." << endl;
 
+    // build external symbols map
+
+    vector<string> externalFiles = utils::getArgumentParams(argc, argv, "--external");
+    map<string,vector<string>> extTable;
+    for (auto & element : externalFiles) {
+        string execCommand = "nm --demangle ";
+        string nmOutput = exec(execCommand.append(element));
+        vector<string> textSymbols = extractTextSymbols(nmOutput); // gather all T and t
+        // TODO element is the input we receive probably need a function that extracts program names from paths
+        // e.g. ../helloWorld.o ===> helloWorld
+        extTable.insert({element, textSymbols});
+    }
+    // end build external symbol map
+
+
     ifstream stream;
     stream.open("../test/callPrimitiveLiterals.txt");
     ANTLRInputStream input(stream);
