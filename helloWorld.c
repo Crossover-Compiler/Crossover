@@ -1,6 +1,4 @@
-#include <iostream>
-extern "C" {
-
+#include <stdio.h>
 /**
     IDENTIFICATION DIVISION.
     PROGRAM-ID. "GAP01".
@@ -10,11 +8,12 @@ extern "C" {
  */
 
 void bruh(int int1, int* int2, double double1, double* double2, char* string1, char* string2) {
-    std::cout << "bruh." << std::endl;
-    std::cout << int1 << std::endl;
-    std::cout << int2 << " " << *int2 << std::endl;
-    std::cout << double1 << std::endl;
-    std::cout << double2 << " " << *double2 << std::endl;
-    std::cout << string1 << " " << string2 << std::endl;
-}
+    printf("bruh\n");
+    printf("%i\n" ,int1);
+    printf("%p %i\n", int2, *int2);
+//    printf("%i\n", *int2);
+    printf("%f\n", double1);
+    printf("%p %f\n", double2, *double2);
+//    printf("%f\n", *double2);
+    printf("%s %s", string1, string2);
 }

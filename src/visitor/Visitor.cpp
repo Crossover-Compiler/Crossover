@@ -15,8 +15,10 @@
 #include "../Exceptions/CompileException.h"
 #include "../datastructures/Field.h"
 #include "../datastructures/Record.h"
+#include "../../include/utils/utils.h"
 
 using namespace std;
+using namespace utils;
 
 llvm::Type* Visitor::getType(llvm::Value* value) {
     return value->getType();
@@ -574,10 +576,22 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     param_types.reserve(parameters.size());
     transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
 
-    //create function call w/ no input
+    //create function call w/ no output (void)
+    string programName = ctx->program_name->getText();
+
     llvm::Type* void_t = llvm::Type::getVoidTy(bcModule->getContext());
     llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, param_types, true);
     auto* new_function = new llvm::FunctionCallee();
+
+    //Todo this is a POC remove this
+
+    // execute nm -programName-.o check if it is in the symbol table
+    string execCommand = "nm --demangle ";
+    string programSymbols = exec(execCommand.append(programName.append(".o")));
+
+    //end
+
+
     *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
 
     llvm::ArrayRef<llvm::Value*> args = parameters;

@@ -14,7 +14,7 @@ using namespace std;
 
 namespace utils {
     /**
-     * auxilliary function used to generate nested substructs recusively
+     * auxilliary function used to generate nested substructs recursively
      * @param ancestorsPtr
      * @param structure
      * @return the string of structs
@@ -44,7 +44,20 @@ namespace utils {
      * @param cmd
      * @return
      */
-    std::string exec(const char* cmd);
+    string exec(string cmdstr);
+
+     /**
+      * check parameters for given argument
+      *
+      * @param argc
+      * @param argv
+      * @param arg
+      * @return
+      */
+    vector<string> getArgumentParams(int argc, char** argv, string arg);
+
+
+
 };
 
 

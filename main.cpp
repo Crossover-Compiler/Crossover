@@ -143,12 +143,13 @@ int main(int argc, char **argv) {
 
     outs() << "Wrote " << Filename << "\n";
 
-//TODO: invoke gcc or clang++ here to link the object files
+
 
     if (presentInArgs(argc, argv,"-generate-structs")) {
         generateStructs(visitor.dataStructures);
     }
 
+    //TODO: invoke gcc or clang++ here to link the object files
     return 0;
 }
 
