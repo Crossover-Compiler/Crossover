@@ -659,6 +659,7 @@ public:
 
   class  CallStatementContext : public antlr4::ParserRuleContext {
   public:
+    antlr4::Token *function_name = nullptr;
     antlr4::Token *program_name = nullptr;
     BabyCobolParser::AtomicContext *atomicContext = nullptr;
     std::vector<AtomicContext *> byvalueatomicsprim;
@@ -671,7 +672,6 @@ public:
     antlr4::tree::TerminalNode *CALL();
     std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
     antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
-    antlr4::tree::TerminalNode *FUNCTIONNAME();
     antlr4::tree::TerminalNode *OF();
     antlr4::tree::TerminalNode *USING();
     antlr4::tree::TerminalNode *RETURNING();

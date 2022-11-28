@@ -189,3 +189,11 @@ vector<string> DataTree::split (string s, string delimiter) {
     res.push_back (s.substr (pos_start));
     return res;
 }
+
+DataType DataTree::getPrimitiveType() const {
+    return primitiveType;
+}
+
+void DataTree::setPrimitiveType(DataType primitiveType) {
+    DataTree::primitiveType = primitiveType;
+}

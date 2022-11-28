@@ -17,13 +17,14 @@
 class Record;
 
 using namespace std;
-enum class DataType {NINE, X, UNDEFINED};
+enum class DataType {INT, DOUBLE, STRING, UNDEFINED};
 constexpr const char* dataTypeToString(DataType dt) noexcept
 {
     switch (dt)
     {
-        case DataType::NINE: return "NINE";
-        case DataType::X: return "X";
+        case DataType::INT: return "INT";
+        case DataType::DOUBLE: return "DOUBLE";
+        case DataType::STRING: return "STRING";
         case DataType::UNDEFINED: return "UNDEFINED";
         default: throw std::invalid_argument("Unimplemented item");
     }
@@ -38,6 +39,7 @@ protected:
             next(),
             previous(nullptr),
             picture(std::string()),
+            primitiveType(DataType::UNDEFINED),
             cardinality(-1),
             index(1),
             occurs(1),
@@ -50,12 +52,18 @@ protected:
     int level;
     string value;
     string picture;
+    DataType primitiveType;
     int cardinality;
     int index;
     int occurs;
     DataTree* like;
 
+
 public:
+
+    DataType getPrimitiveType() const;
+
+    void setPrimitiveType(DataType primitiveType);
 
     map<DataTree*, int> getLeaves(map<DataTree*, int> result, int childOrder);
 

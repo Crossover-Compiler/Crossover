@@ -59,7 +59,7 @@ loop            :   LOOP loopExpression* END;
 gotoStatement   :   GO TO name;
 signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
-callStatement   :   CALL (FUNCTIONNAME OF)? program_name=IDENTIFIER
+callStatement   :   CALL (function_name=IDENTIFIER OF)? program_name=IDENTIFIER
                         (USING
                             (
                                 (
@@ -213,7 +213,7 @@ RETURNINGBYREFERENCE: RETURNING BYREFERENCE;
 USING:      'USING';
 AS:         'AS';
 
-COMMENTLINE     :   '*' WS '\n' -> skip;
+
 WS              :   [ \r\n\t\f]+ -> skip;
 FUNCTIONNAME    :   '\''IDENTIFIER'\'';
 INT             : '-'? [0-9]+;
@@ -221,3 +221,4 @@ DOUBLE          :   ('-'|'+')? INT ',' INT;
 LITERAL         :   '"' ~'"'+ '"'; // Any char except for "
 DOT             :   '.';
 IDENTIFIER      : [a-zA-Z0-9]+ ([-_]+ [a-zA-Z0-9]+)*;
+COMMENTLINE     :   '*' ~[\r\n]* -> skip;

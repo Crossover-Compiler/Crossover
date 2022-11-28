@@ -216,7 +216,7 @@ void babycobolParserInitialize() {
   	0,0,342,345,3,28,14,0,343,345,5,70,0,0,344,342,1,0,0,0,344,343,1,0,0,
   	0,345,346,1,0,0,0,346,347,5,69,0,0,347,59,1,0,0,0,348,349,5,71,0,0,349,
   	350,3,28,14,0,350,351,5,26,0,0,351,352,5,72,0,0,352,353,5,26,0,0,353,
-  	354,3,28,14,0,354,61,1,0,0,0,355,358,5,73,0,0,356,357,5,82,0,0,357,359,
+  	354,3,28,14,0,354,61,1,0,0,0,355,358,5,73,0,0,356,357,5,87,0,0,357,359,
   	5,58,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,360,1,0,0,0,360,437,5,87,
   	0,0,361,433,5,78,0,0,362,364,5,75,0,0,363,365,3,84,42,0,364,363,1,0,0,
   	0,365,366,1,0,0,0,366,364,1,0,0,0,366,367,1,0,0,0,367,368,1,0,0,0,368,
@@ -3112,10 +3112,6 @@ tree::TerminalNode* BabyCobolParser::CallStatementContext::IDENTIFIER(size_t i) 
   return getToken(BabyCobolParser::IDENTIFIER, i);
 }
 
-tree::TerminalNode* BabyCobolParser::CallStatementContext::FUNCTIONNAME() {
-  return getToken(BabyCobolParser::FUNCTIONNAME, 0);
-}
-
 tree::TerminalNode* BabyCobolParser::CallStatementContext::OF() {
   return getToken(BabyCobolParser::OF, 0);
 }
@@ -3213,12 +3209,17 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
     setState(358);
     _errHandler->sync(this);
 
-    _la = _input->LA(1);
-    if (_la == BabyCobolParser::FUNCTIONNAME) {
+    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 34, _ctx)) {
+    case 1: {
       setState(356);
-      match(BabyCobolParser::FUNCTIONNAME);
+      antlrcpp::downCast<CallStatementContext *>(_localctx)->function_name = match(BabyCobolParser::IDENTIFIER);
       setState(357);
       match(BabyCobolParser::OF);
+      break;
+    }
+
+    default:
+      break;
     }
     setState(360);
     antlrcpp::downCast<CallStatementContext *>(_localctx)->program_name = match(BabyCobolParser::IDENTIFIER);
