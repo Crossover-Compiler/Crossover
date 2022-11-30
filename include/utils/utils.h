@@ -72,6 +72,14 @@ namespace utils {
      * @return
      */
     vector<string> extractTextSymbols(string input);
+
+
+    /**
+     * Extract program name from program path
+     * @param input
+     * @return
+     */
+    string extractProgramNameFromPath(string path);
 };
 
 

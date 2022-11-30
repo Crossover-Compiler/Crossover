@@ -46,17 +46,15 @@ using namespace utils;
 int main(int argc, char **argv) {
     cout << "Starting Compiler..." << endl;
 
-    // build external symbols map
-
+    // build external symbol map
     vector<string> externalFiles = utils::getArgumentParams(argc, argv, "--external");
     map<string,vector<string>> extTable;
     for (auto & element : externalFiles) {
         string execCommand = "nm --demangle ";
         string nmOutput = exec(execCommand.append(element));
         vector<string> textSymbols = extractTextSymbols(nmOutput); // gather all T and t
-        // TODO element is the input we receive probably need a function that extracts program names from paths
-        // e.g. ../helloWorld.o ===> helloWorld
-        extTable.insert({element, textSymbols});
+        string programName = extractProgramNameFromPath(element); // get program name from the input
+        extTable.insert({programName, textSymbols});
     }
     // end build external symbol map
 
@@ -165,6 +163,7 @@ int main(int argc, char **argv) {
     }
 
     //TODO: invoke gcc or clang++ here to link the object files
+    //exec("clang++ output.o");
     return 0;
 }
 
