@@ -11,7 +11,8 @@
 namespace bstd {
 
     /**
-     * todo: doc
+     * length: The number of digits in the fixed point. IE:: PICTURE 999 has length 3. PICTURE 99V9 also has length 3.
+     * scale: The number of digits after the decimal point. IE:: PICTURE 999 has scale 0. PICTURE 99V9 has scale 1.
      */
     typedef struct Number {
 

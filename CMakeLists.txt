@@ -69,6 +69,6 @@ add_executable(output main.cpp
         src/datastructures/Record.h
         include/utils/utils.h
         src/utils/utils.cpp
-        src/Exceptions/CompileException.h lib/src/arithmetic.cpp lib/include/arithmetic.h lib/include/number.h src/datastructures/Field.cpp src/datastructures/Field.h src/datastructures/Record.cpp src/datastructures/Record.h lib/include/picutils.h lib/include/picture.h lib/src/picutils.cpp include/ir/bcbuilder.h src/ir/bcbuilder.cpp)
+        src/Exceptions/CompileException.h lib/src/arithmetic.cpp lib/include/arithmetic.h lib/include/number.h src/datastructures/Field.cpp src/datastructures/Field.h src/datastructures/Record.cpp src/datastructures/Record.h lib/include/picutils.h lib/include/picture.h lib/src/picutils.cpp include/ir/bcbuilder.h src/ir/bcbuilder.cpp lib/include/numutils.h lib/src/numutils.cpp)
 llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
 target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)
