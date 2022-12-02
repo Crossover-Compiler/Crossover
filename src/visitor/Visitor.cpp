@@ -583,8 +583,17 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, param_types, true);
     auto* new_function = new llvm::FunctionCallee();
 
+    vector<string> programFunctions;
+    if(extTable->find(programName) != extTable->end()){
+        programFunctions = extTable->find(programName)->second;
+    } else {
+        auto format = "No program named %s provided.";
+        auto size = std::snprintf(nullptr, 0, format, programName.c_str());
+        std::string errormessage(size + 1, '\0');
+        std::sprintf(&errormessage[0], format, programName.c_str());
+        throw CompileException(errormessage);
+    }
 
-    vector<string> programFunctions = extTable->find(programName)->second;
     if(std::find(programFunctions.begin(), programFunctions.end(), functionName) == programFunctions.end()){
         auto format = "No function named %s found in program %s.";
         auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
