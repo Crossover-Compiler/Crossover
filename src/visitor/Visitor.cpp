@@ -564,7 +564,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     }
 
     string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
-    cout << functionName << endl;
+//    cout << functionName << endl;
 
     if (ctx->RETURNING() != nullptr) {
         // TODO: return type is a value. So get the value
@@ -583,14 +583,15 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, param_types, true);
     auto* new_function = new llvm::FunctionCallee();
 
-    //Todo this is a POC remove this
 
-    // execute nm -programName-.o check if it is in the symbol table
-    string execCommand = "nm --demangle ";
-    string programSymbols = exec(execCommand.append(programName.append(".o")));
-
-    //end
-
+    vector<string> programFunctions = extTable->find(programName)->second;
+    if(std::find(programFunctions.begin(), programFunctions.end(), functionName) == programFunctions.end()){
+        auto format = "No function named %s found in program %s.";
+        auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
+        std::string errormessage(size + 1, '\0');
+        std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
+        throw CompileException(errormessage);
+    }
 
     *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
 

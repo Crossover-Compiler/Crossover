@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
     BCBuilder builder(module, block);
 
-    Visitor visitor(module, &builder);
+    Visitor visitor(module, &builder, &extTable);
     visitor.visitProgram(tree);
 
     // test number print
