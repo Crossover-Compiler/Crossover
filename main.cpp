@@ -47,6 +47,19 @@ int main(int argc, char **argv) {
 
     cout << "Starting Compiler..." << endl;
 
+    // build external symbol map
+    vector<string> externalFiles = utils::getArgumentParams(argc, argv, "--external");
+    map<string,vector<string>> extTable;
+    for (auto & element : externalFiles) {
+        string execCommand = "nm --demangle ";
+        string nmOutput = exec(execCommand.append(element));
+        vector<string> textSymbols = extractTextSymbols(nmOutput); // gather all T and t
+        string programName = extractProgramNameFromPath(element); // get program name from the input
+        extTable.insert({programName, textSymbols});
+    }
+    // end build external symbol map
+
+
     ifstream stream;
     stream.open("../test/callPrimitiveLiterals.txt");
     ANTLRInputStream input(stream);
@@ -73,7 +86,7 @@ int main(int argc, char **argv) {
 
     BCBuilder builder(module, block);
 
-    Visitor visitor(module, &builder);
+    Visitor visitor(module, &builder, &extTable);
     visitor.visitProgram(tree);
 
     // test number print
@@ -144,12 +157,14 @@ int main(int argc, char **argv) {
 
     outs() << "Wrote " << Filename << "\n";
 
-//TODO: invoke gcc or clang++ here to link the object files
+
 
     if (presentInArgs(argc, argv,"-generate-structs")) {
         generateStructs(visitor.dataStructures);
     }
 
+    //TODO: invoke gcc or clang++ here to link the object files
+    //exec("clang++ output.o");
     return 0;
 }
 

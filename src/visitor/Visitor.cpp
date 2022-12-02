@@ -15,8 +15,10 @@
 #include "../Exceptions/CompileException.h"
 #include "../datastructures/Field.h"
 #include "../datastructures/Record.h"
+#include "../../include/utils/utils.h"
 
 using namespace std;
+using namespace utils;
 
 llvm::Type* Visitor::getType(llvm::Value* value) {
     return value->getType();
@@ -562,7 +564,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     }
 
     string functionName = ctx->FUNCTIONNAME()->getText().substr(1, ctx->FUNCTIONNAME()->getText().size() - 2);
-    cout << functionName << endl;
+//    cout << functionName << endl;
 
     if (ctx->RETURNING() != nullptr) {
         // TODO: return type is a value. So get the value
@@ -574,10 +576,32 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     param_types.reserve(parameters.size());
     transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
 
-    //create function call w/ no input
+    //create function call w/ no output (void)
+    string programName = ctx->program_name->getText();
+
     llvm::Type* void_t = llvm::Type::getVoidTy(bcModule->getContext());
     llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, param_types, true);
     auto* new_function = new llvm::FunctionCallee();
+
+    vector<string> programFunctions;
+    if(extTable->find(programName) != extTable->end()){
+        programFunctions = extTable->find(programName)->second;
+    } else {
+        auto format = "No program named %s provided.";
+        auto size = std::snprintf(nullptr, 0, format, programName.c_str());
+        std::string errormessage(size + 1, '\0');
+        std::sprintf(&errormessage[0], format, programName.c_str());
+        throw CompileException(errormessage);
+    }
+
+    if(std::find(programFunctions.begin(), programFunctions.end(), functionName) == programFunctions.end()){
+        auto format = "No function named %s found in program %s.";
+        auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
+        std::string errormessage(size + 1, '\0');
+        std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
+        throw CompileException(errormessage);
+    }
+
     *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
 
     llvm::ArrayRef<llvm::Value*> args = parameters;

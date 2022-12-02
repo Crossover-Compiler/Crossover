@@ -125,4 +125,84 @@ namespace utils{
         }
         return false;
     }
+
+    // function from:
+    // https://stackoverflow.com/questions/478898/how-do-i-execute-a-command-and-get-the-output-of-the-command-within-c-using-po
+    std::string exec(string cmdstr) {
+        std::array<char, 128> buffer;
+        std::string result;
+        const char* cmd = cmdstr.c_str();
+        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+        if (!pipe) {
+            throw std::runtime_error("popen() failed!");
+        }
+        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+            result += buffer.data();
+        }
+        return result;
+    }
+
+    vector<string> getArgumentParams(int argc, char** argv, string arg){
+        vector<string> result;
+        bool argSeen = false;
+        for(int i = 0; i < argc; ++i){
+            std::string current = argv[i];
+            if (argv[i] == arg){
+                argSeen = true;
+            }
+            else if (argSeen && current.rfind("--", 0) != 0 && current.rfind("-", 0) != 0){
+                result.push_back(current);
+            }
+        }
+        return result;
+    };
+
+    vector<string> split (string s, string delimiter) {
+        size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+        string token;
+        vector<string> res;
+
+        while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+            token = s.substr (pos_start, pos_end - pos_start);
+            pos_start = pos_end + delim_len;
+            res.push_back (token);
+        }
+        res.push_back (s.substr (pos_start));
+        return res;
+    }
+
+    vector<string> extractTextSymbols(string input){
+        //filter on things that have either t or T
+        vector<string> completeTable = split(input, "\n");
+        vector<string> result;
+        for (auto & element : completeTable) {
+            if (element.find(" T ") != std::string::npos) {
+                result.push_back(element.substr(element.find(" T ") + 3));
+            } else if ((element.find(" t ") != std::string::npos)){
+                result.push_back(element.substr(element.find(" t ") + 3));
+            }
+        }
+        return result;
+    }
+
+    string extractProgramNameFromPath(string path){
+        if(path.find('/') == std::string::npos){
+            string result = path.substr(0, path.length()-2);
+            return result;
+        } else{
+            bool encounteredForwardslash = false;
+            for (int i = path.length() - 1; i >= 0; i--){
+                char currentChar = path[i];
+                if (std::strcmp(&currentChar, "/") == 0){
+                    encounteredForwardslash = true;
+                }
+                if (encounteredForwardslash){
+                    string filename = path.substr(i);
+                    string result = filename.substr(i-1 ,filename.length()-3);
+                    return result;
+                }
+            }
+        }
+    }
+
 }
