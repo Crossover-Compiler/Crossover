@@ -163,8 +163,15 @@ int main(int argc, char **argv) {
         generateStructs(visitor.dataStructures);
     }
 
-    //TODO: invoke gcc or clang++ here to link the object files
-    //exec("clang++ output.o");
+    //TODO: link library too
+    cout << "Linking objects and creating executable";
+
+    string linkCommand = "clang -o exec output.o";
+    for (auto & element : externalFiles) {
+        linkCommand.append(" ");
+        linkCommand.append(element);
+    }
+    exec(linkCommand);
     return 0;
 }
 
