@@ -89,14 +89,14 @@ int main(int argc, char **argv) {
     Visitor visitor(module, &builder, &extTable);
     visitor.visitProgram(tree);
 
-    // test number print
-    bstd::Picture* pic = bstd::picutils::of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);
-
-    string name = string("test_pic");
-    auto pic_val = builder.CreatePicture(pic, name);
-    builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
-    // print to test
-    std::cout << bstd::picutils::to_cstr(pic) << std::endl;
+//    // test number print
+//    bstd::Picture* pic = bstd::picutils::of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);
+//
+//    string name = string("test_pic");
+//    auto pic_val = builder.CreatePicture(pic, name);
+//    builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
+//    // print to test
+//    std::cout << bstd::picutils::to_cstr(pic) << std::endl;
 
     builder.CreateRetVoid();
     cout << "Finished Compiling!" << endl;
@@ -163,14 +163,21 @@ int main(int argc, char **argv) {
         generateStructs(visitor.dataStructures);
     }
 
-    //TODO: link library too
-    cout << "Linking objects and creating executable";
+    cout << "Compiling BabyCobol Standard Library" << endl;
+    exec("mkdir -p out/lib");
+    exec("cd out/lib || exit 1");
+    exec("clang++ -stdlib=libc++ -c --include-directory ../lib/include/ ../lib/src/*.cpp");
+    exec("ar cr libbstd.a *.o");
 
-    string linkCommand = "clang -o exec output.o";
+    string linkCommand = "clang --for-linker=-Lout/lib/,-lbstd -o exec output.o";
+
+    cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {
         linkCommand.append(" ");
         linkCommand.append(element);
     }
+
+    cout << "Compilation complete.";
     exec(linkCommand);
     return 0;
 }

@@ -635,7 +635,7 @@ void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::Represe
         } else if (picture->IDENTIFIER() != nullptr) {
             pictureString = picture->IDENTIFIER()->getText();
         } else {
-            throw CompileException("No picture found in INT or INDENTIFIER");
+            throw CompileException("No picture found in INT or IDENTIFIER");
         }
 
         std::regex r ("S?Z*(A|X|V|9)*S?");
