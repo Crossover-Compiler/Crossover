@@ -2,6 +2,7 @@
 // Created by manta on 11/10/22.
 //
 
+#include <iostream>
 #include "../../include/ir/bcbuilder.h"
 
 llvm::Constant *BCBuilder::asConstant(int n) {
@@ -13,6 +14,7 @@ llvm::Value *BCBuilder::CreateNumber(bstd::Number *number, std::string &name, bo
     // Create instance of Number struct
     llvm::StructType *number_struct_type = module->getNumberStructType();
     llvm::Value *alloc;
+
     if (global) {
         // we should allocate global memory
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(number_struct_type);

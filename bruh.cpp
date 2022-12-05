@@ -1,4 +1,5 @@
 #include <iostream>
+#include "lib/include/number.h"
 extern "C" {
 
 /**
@@ -21,12 +22,12 @@ extern "C" {
         CALL 'bruh' OF helloWorld USING C BY REFERENCE D BY VALUE E BY REFERENCE F BY VALUE G BY REFERENCE H.
    */
 
-void bruh(int int1, int* int2, double double1, double* double2, char* string1, char* string2) {
+void bruh(int int1, int* int2) {
     std::cout << "call-datadiv-primitives" << std::endl;
     std::cout << int1 << std::endl;
     std::cout << int2 << " " << *int2 << std::endl;
-    std::cout << double1 << std::endl;
-    std::cout << double2 << " " << *double2 << std::endl;
-    std::cout << string1 << " " << string2 << std::endl;
+//    std::cout << double1 << std::endl;
+//    std::cout << double2 << " " << *double2 << std::endl;
+//    std::cout << string1 << " " << string2 << std::endl;
 }
 }

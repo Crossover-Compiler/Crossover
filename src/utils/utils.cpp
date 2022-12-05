@@ -33,6 +33,7 @@ namespace utils{
                 ancestors.append(subtreeptr->getName());
                 result.insert(0, generateSubStruct(&ancestors ,subtreeptr)); // generate substructs recursively and prepend to result
             } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
+                Field* subtreeptr = dynamic_cast<Field*>(subtreeptr);
                 //Todo expand later when more fields other than numeric
                 result.append("Number* ");
                 result.append(subtreeptr->getName());
@@ -85,6 +86,7 @@ namespace utils{
                         currentPath.append(subtreeptr->getName());
                         middleLines.append(generateSubStruct(&currentPath, subtreeptr));
                     } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
+                        Field* subtreeptr = dynamic_cast<Field*>(subtreeptr);
                         //Todo expand later when more fields other than numeric
                         lastLines.append("Number* ");
                         lastLines.append(subtreeptr->getName());
@@ -98,6 +100,7 @@ namespace utils{
                 lastLines.append("_t;\n\n");
             }
             else if(dynamic_cast<Field*>(treeptr) != nullptr){
+                Field* treeptr = dynamic_cast<Field*>(treeptr);
                 //Todo expand later when more fields other than numeric
                 lastLines.append("Number* ");
                 lastLines.append(treeptr->getName());

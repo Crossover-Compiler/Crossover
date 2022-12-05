@@ -18,6 +18,8 @@ public:
     static llvm::Type* getType(llvm::Value *value);
 
     llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, Record* record) override;
+
+    string toString();
 };
 
 

@@ -4,6 +4,8 @@
 
 #include <algorithm>
 #include "DataTree.h"
+#include "Field.h"
+#include "../Exceptions/CompileException.h"
 
 using namespace std;
 
@@ -23,62 +25,30 @@ using namespace std;
         return (level == dataTree->getLevel() && name == dataTree->getName());
     }
 
-    bool DataTree::isRecord() {
+vector<DataTree*> DataTree::getNodesWithOccurs(vector<DataTree*> result) {
+    if (occurs > 1) {
+        result.push_back(this);
+    }
+
+    for (auto c: next) {
+        c->getNodesWithOccurs(result);
+    }
+    return result;
+}
+
+vector<DataTree*> DataTree::getNodesWithLikes(vector<DataTree*> result) {
+    if (like != nullptr) {
+        result.push_back(this);
+    }
+
+    for (auto c: next) {
+        c->getNodesWithLikes(result);
+    }
+    return result;
+}
+
+bool DataTree::isRecord() {
         return !next.empty();
-    }
-
-    DataTree* DataTree::getLike() {
-        return like;
-    }
-
-    void DataTree::setLike(DataTree* like) {
-        this->like = like;
-    }
-
-    int DataTree::getOccurs() {
-        return occurs;
-    }
-
-    void DataTree::setOccurs(int occurs) {
-        this->occurs = occurs;
-    }
-
-    vector<DataTree*> DataTree::getNodesWithOccurs(vector<DataTree*> result) {
-        if (occurs > 1) {
-            result.push_back(this);
-        }
-
-        for (auto c: next) {
-            c->getNodesWithOccurs(result);
-        }
-        return result;
-    }
-
-    vector<DataTree*> DataTree::getNodesWithLikes(vector<DataTree*> result) {
-        if (like != nullptr) {
-            result.push_back(this);
-        }
-
-        for (auto c: next) {
-            c->getNodesWithLikes(result);
-        }
-        return result;
-    }
-
-    void DataTree::setIndex(int index) {
-        this->index = index;
-    }
-
-    int DataTree::getIndex() {
-        return index;
-    }
-
-    void DataTree::setPicture(string picture) {
-        this->picture = picture;
-    }
-
-    string DataTree::getPicture() {
-        return picture;
     }
 
     void DataTree::addNext(DataTree* dataTree) {
@@ -111,24 +81,8 @@ using namespace std;
         return level;
     }
 
-    string DataTree::getValue() {
-        return value;
-    }
-
-    void DataTree::setValue(string value) {
-        this->value = value;
-    }
-
     string DataTree::getName() {
         return name;
-    }
-
-    int DataTree::getCardinality() {
-        return cardinality;
-    }
-
-    void DataTree::setCardinality(int cardinality) {
-        this->cardinality = cardinality;
     }
 
     void DataTree::resetNode() {
@@ -141,8 +95,13 @@ using namespace std;
     }
 
     string DataTree::toString() {
-//        string result = to_string(level) + " " + value + " " + name + " " + dataTypeToString(picture) + "\n";
-        string result = to_string(level) + " " + value + " " + name + " " + picture + "\n";
+
+        string result;
+        if (dynamic_cast<Field*>(this) != nullptr) {
+            result += dynamic_cast<Field*>(this)->toString();
+        } else if (dynamic_cast<Field*>(this) != nullptr) {
+            result += dynamic_cast<Record*>(this)->toString();
+        }
         for (auto i: next) {
             result += i->toString();
         }
@@ -190,10 +149,35 @@ vector<string> DataTree::split (string s, string delimiter) {
     return res;
 }
 
-DataType DataTree::getPrimitiveType() const {
-    return primitiveType;
+llvm::Value *DataTree::getLlvmValue() {
+    return llvm_value;
 }
 
-void DataTree::setPrimitiveType(DataType primitiveType) {
-    DataTree::primitiveType = primitiveType;
+void DataTree::setLlvmValue(llvm::Value *llvm_value) {
+    this->llvm_value = llvm_value;
 }
+
+DataTree *DataTree::findDataTreeByName(string name) {
+    if (this->name == name) {
+        return this;
+    } else if (!next.empty()) {
+        int resultsAmount = 0;
+        DataTree* result = nullptr;
+        for (DataTree* dt:next) {
+            DataTree* tempResult = dt->findDataTreeByName(name);
+             if (tempResult != nullptr) {
+                 resultsAmount++;
+                 result = tempResult;
+             }
+        }
+
+        if (resultsAmount > 1) {
+            throw CompileException("Insufficient Qualification! Found multiple DataTree items with name: " + name);
+        }
+        return result;
+    } else {
+        return nullptr;
+    }
+}
+
+
