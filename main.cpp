@@ -76,13 +76,13 @@ int main(int argc, char **argv) {
     visitor.visitProgram(tree);
 
     // test number print
-    bstd::Picture* pic = bstd::picutils::of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);
+    bstd_Picture* pic = bstd_picutils_of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);
 
     string name = string("test_pic");
     auto pic_val = builder.CreatePicture(pic, name);
     builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
     // print to test
-    std::cout << bstd::picutils::to_cstr(pic) << std::endl;
+    std::cout << bstd_picutils_to_cstr(pic) << std::endl;
 
     builder.CreateRetVoid();
     cout << "Finished Compiling!" << endl;

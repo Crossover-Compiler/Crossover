@@ -5,7 +5,7 @@ mkdir -p out/lib
 
 # build library
 cd out/lib || exit 1
-clang++ -c --include-directory ../../lib/include/ ../../lib/src/*.cpp
+clang -c --include-directory ../../lib/include/ ../../lib/src/*
 # make static library
 ar cr libbstd.a *.o
 cd ../..

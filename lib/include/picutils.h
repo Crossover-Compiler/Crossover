@@ -7,42 +7,36 @@
 
 #include "picture.h"
 
-namespace bstd {
-    namespace picutils {
+ /**
+* todo: doc. Make sure it copies the arrays!
+* @param bytes
+* @param mask
+* @param length
+* @return
+*/
+bstd_Picture *bstd_picutils_of(char *bytes, char *mask, uint8_t length);
 
-        /**
-        * todo: doc. Make sure it copies the arrays!
-        * @param bytes
-        * @param mask
-        * @param length
-        * @return
-        */
-        Picture *of(char *bytes, char *mask, uint8_t length);
+/**
+* todo: doc. assigns picture to another
+* @param asignee
+* @param target
+* @return
+*/
+bstd_Picture *bstd_picutils_assign(bstd_Picture *asignee, bstd_Picture *target);
 
-        /**
-        * todo: doc. assigns picture to another
-        * @param asignee
-        * @param target
-        * @return
-        */
-        Picture *assign(Picture *asignee, Picture *target);
+/**
+* todo: doc
+* @param picture
+* @return
+*/
+char *bstd_picutils_to_cstr(bstd_Picture *picture);
 
-        /**
-        * todo: doc
-        * @param picture
-        * @return
-        */
-        char *to_cstr(Picture *picture);
-
-        /**
-        * todo: doc
-        * @param c
-        * @param mask
-        * @return
-        */
-        char mask_char(char c, char mask);
-
-    }
-}
+/**
+* todo: doc
+* @param c
+* @param mask
+* @return
+*/
+char bstd_picutils_mask_char(char c, char mask);
 
 #endif //CROSSOVER_PICUTILS_H

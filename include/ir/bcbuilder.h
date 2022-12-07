@@ -23,7 +23,7 @@ public:
      * @param number
      * @return
      */
-    llvm::Value* CreateNumber(bstd::Number* number, std::string& name, bool global = false);
+    llvm::Value* CreateNumber(bstd_Number* number, std::string& name, bool global = false);
 
     /**
      * todo: doc
@@ -32,7 +32,7 @@ public:
      * @param global
      * @return
      */
-    llvm::Value* CreatePicture(bstd::Picture* picture, std::string &name, bool global = false);
+    llvm::Value* CreatePicture(bstd_Picture* picture, std::string &name, bool global = false);
 
     /**
      * todo: doc
@@ -40,7 +40,7 @@ public:
      * @param rhs
      * @return
      */
-    llvm::Value* CreateAdd(bstd::Number* lhs, bstd::Number* rhs);
+    llvm::Value* CreateAdd(bstd_Number* lhs, bstd_Number* rhs);
 
     /**
      * todo: doc

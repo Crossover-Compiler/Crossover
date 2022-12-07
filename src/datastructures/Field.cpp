@@ -12,7 +12,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, Record* reco
     bool isSigned = false; // todo: have include "signed" in grammar!
     bool positive = true;
 
-    return builder->CreateNumber(new bstd::Number{
+    return builder->CreateNumber(new bstd_Number{
         .value = value,
         .scale = scale,
         .length = length,

@@ -5,27 +5,20 @@
 #ifndef CROSSOVER_NUMBER_H
 #define CROSSOVER_NUMBER_H
 
-#include <cstdint>
-#include <cstdlib>
+#include <stdint.h>
+#include <stdbool.h>
 
-namespace bstd {
+/**
+ * todo: doc
+ */
+typedef struct bstd_Number {
 
-    /**
-     * todo: doc
-     */
-    typedef struct Number {
+    uint64_t value;
+    uint64_t scale;
+    uint8_t length;
+    bool isSigned;
+    bool positive;
 
-        uint64_t value;
-        uint64_t scale;
-        uint8_t length;
-        bool isSigned = false;
-        bool positive = true;
-
-        [[nodiscard]] int getSignedValue() const {
-            return positive ? value : (-1 * (int) value);
-        }
-
-    } Number;
-}
+} bstd_Number;
 
 #endif //CROSSOVER_NUMBER_H

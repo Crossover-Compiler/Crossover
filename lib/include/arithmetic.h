@@ -7,14 +7,8 @@
 
 #include "number.h"
 
-extern "C" {
+bstd_Number *bstd_add(bstd_Number *lhs, bstd_Number *rhs);
 
-namespace bstd {
-
-    Number *add(Number *lhs, Number *rhs);
-
-}
-
-}
+int bstd_tosigned(bstd_Number* n);
 
 #endif //CROSSOVER_ARITHMETIC_H

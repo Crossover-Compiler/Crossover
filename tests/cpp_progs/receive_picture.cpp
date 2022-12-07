@@ -6,9 +6,9 @@
 #include "iostream"
 
 extern "C" {
-    void printPicture(bstd::Picture*);
+    void printPicture(bstd_Picture*);
 }
 
-void printPicture(bstd::Picture* picture) {
-    std::cout << bstd::picutils::to_cstr(picture) << std::endl;
+void printPicture(bstd_Picture* picture) {
+    std::cout << bstd_picutils_to_cstr(picture) << std::endl;
 }
