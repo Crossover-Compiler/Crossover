@@ -7,6 +7,7 @@ void BCModule::initialize() {
     llvm::Type* int8ptr_t = llvm::Type::getInt8PtrTy(this->getContext());
 
     llvm::Type* int8_t = llvm::Type::getInt8Ty(this->getContext());
+    llvm::Type* int8_ptr_type = llvm::PointerType::getInt8PtrTy(this->getContext());
     llvm::Type* int32_t = llvm::Type::getInt32Ty(this->getContext());
     llvm::Type* int64_t = llvm::Type::getInt64Ty(this->getContext());
     llvm::Type* int1_t = llvm::Type::getInt1Ty(this->getContext());
@@ -26,6 +27,14 @@ void BCModule::initialize() {
             int1_t,  // positive
     };
     this->numberStructType = llvm::StructType::create(this->getContext(), number_struct_types, "Struct.Number");
+
+    // picture struct types
+    llvm::ArrayRef<llvm::Type*> picture_struct_types = {
+            int8_ptr_type,  // bytes
+            int8_ptr_type,  // mask
+            int8_t,         // length
+    };
+    this->picture_struct_type = llvm::StructType::create(this->getContext(), picture_struct_types, "Struct.Picture");
 }
 
 llvm::FunctionCallee* BCModule::getPrintf() {
@@ -34,6 +43,10 @@ llvm::FunctionCallee* BCModule::getPrintf() {
 
 llvm::StructType* BCModule::getNumberStructType() {
     return this->numberStructType;
+}
+
+llvm::StructType* BCModule::getPictureStructType() {
+    return this->picture_struct_type;
 }
 
 llvm::FunctionCallee* BCModule::getPrintNumber() {
@@ -48,11 +61,10 @@ llvm::FunctionCallee* BCModule::getPrintNumber() {
     return f;
 }
 
-llvm::FunctionCallee* BCModule::getPrintPicture() {
+llvm::FunctionCallee* BCModule::getPrintPicture(bstd::Picture* picture) {
 
     auto r_type = llvm::Type::getVoidTy(this->getContext());
-    auto ptr_ty = llvm::PointerType::get(this->getContext(), 4);
-    llvm::FunctionType* f_type = llvm::FunctionType::get(r_type, ptr_ty, false);
+    llvm::FunctionType* f_type = llvm::FunctionType::get(r_type, this->picture_struct_type, false);
 
     auto f = new llvm::FunctionCallee();
 
@@ -61,9 +73,33 @@ llvm::FunctionCallee* BCModule::getPrintPicture() {
     return f;
 }
 
+llvm::FunctionCallee* BCModule::getPrintPicture() {
+
+    auto r_type = llvm::Type::getVoidTy(this->getContext());
+//    auto ptr_ty = llvm::PointerType::get(this->getContext(), 4);
+    llvm::FunctionType* f_type = llvm::FunctionType::get(r_type, this->picture_struct_type, false);
+
+    auto f = new llvm::FunctionCallee();
+
+    *(f) = this->getOrInsertFunction("printPicture", f_type);
+
+    return f;
+}
+
+llvm::FunctionCallee* BCModule::getPrintPicturePtr() {
+
+    auto r_type = llvm::Type::getVoidTy(this->getContext());
+    auto ptr_ty = llvm::PointerType::get(this->getContext(), 4);
+    llvm::FunctionType* f_type = llvm::FunctionType::get(r_type, ptr_ty, false);
+
+    auto f = new llvm::FunctionCallee();
+
+    *(f) = this->getOrInsertFunction("printPicturePtr", f_type);
+
+    return f;
+}
+
 llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, float defaultValue) {
-
-
 
     llvm::Value* v = this->getGlobalVariable(identifier);
 

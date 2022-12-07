@@ -6,7 +6,7 @@
 
 llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, Record* record) {
 
-    uint64_t value = std::stoi(this->picture);
+    uint64_t value = 0;
     uint64_t scale = 0; // todo: add to grammar
     uint8_t length = 0;
     bool isSigned = false; // todo: have include "signed" in grammar!

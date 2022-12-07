@@ -117,7 +117,7 @@ function(antlr4_generate
   endif ()
 
   if ( (ARGC GREATER_EQUAL 8 ) AND (NOT ${ARGV7} STREQUAL "") )
-    set(Antlr4_LibOption "-lib;${ARGV7}")
+    set(Antlr4_LibOption "-lib_old;${ARGV7}")
 
     list( APPEND Antlr4_GeneratorStatusMessage " using Library ${ARGV7}" )
   else()

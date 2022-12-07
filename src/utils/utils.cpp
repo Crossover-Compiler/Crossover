@@ -53,7 +53,7 @@ namespace utils{
 
         string firstLines = "// Generated with Crossover\n"
                             "\n// ***"
-                            "\n// Include lib files here"
+                            "\n// Include lib_old files here"
                             "\n// ***"
                             "\n";
 

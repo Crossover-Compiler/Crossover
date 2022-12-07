@@ -2,6 +2,7 @@
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/IR/IRBuilder.h"
+#include "../../lib/include/picture.h"
 
 
 #ifndef BCMODULE_H
@@ -12,7 +13,7 @@ class BCModule : public llvm::Module {
 private:
     llvm::FunctionCallee* printf_func;
     llvm::StructType* numberStructType;
-    llvm::StructType* pictureStructType;
+    llvm::StructType* picture_struct_type;
 
 private:
 
@@ -24,7 +25,7 @@ private:
 
 public:
 
-    BCModule(llvm::StringRef ModuleID, llvm::LLVMContext& C) : llvm::Module(ModuleID, C), printf_func(nullptr), numberStructType(nullptr), pictureStructType(nullptr) {
+    BCModule(llvm::StringRef ModuleID, llvm::LLVMContext& C) : llvm::Module(ModuleID, C), printf_func(nullptr), numberStructType(nullptr), picture_struct_type(nullptr) {
         initialize();
     };
 
@@ -38,7 +39,7 @@ public:
      * todo: doc
      * @return
      */
-    llvm::StructType* getPictureStructType(uint8_t length);
+    llvm::StructType* getPictureStructType();
 
     /**
      * @brief Gets a reference to the IR printf function
@@ -57,7 +58,9 @@ public:
      * todo: doc
      * @return
      */
+    llvm::FunctionCallee* getPrintPicture(bstd::Picture* picture);
     llvm::FunctionCallee* getPrintPicture();
+    llvm::FunctionCallee* getPrintPicturePtr();
 
     /**
      * @brief Gets the Value corresponding to the specified identifier. If a corresponding Value does not exist, it is created, and its formatting is inferred.
