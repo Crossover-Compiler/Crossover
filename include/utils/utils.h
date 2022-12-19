@@ -14,7 +14,7 @@ using namespace std;
 
 namespace utils {
     /**
-     * auxilliary function used to generate nested substructs recusively
+     * auxilliary function used to generate nested substructs recursively
      * @param ancestorsPtr
      * @param structure
      * @return the string of structs
@@ -37,6 +37,49 @@ namespace utils {
      * @return
      */
     bool presentInArgs(int argc, char** argv, string element);
+
+    /**
+     * run system command and get result in an std::string
+     *
+     * @param cmd
+     * @return
+     */
+    string exec(string cmdstr);
+
+     /**
+      * check parameters for given argument
+      *
+      * @param argc
+      * @param argv
+      * @param arg
+      * @return
+      */
+    vector<string> getArgumentParams(int argc, char** argv, string arg);
+
+
+
+    /**
+     * JAVA-like split function for strings
+     * @param s
+     * @param delimiter
+     * @return
+     */
+    vector<string> split (string s, string delimiter);
+
+    /**
+     * Extract global and local text symbols from nm output
+     * @param input
+     * @return
+     */
+    vector<string> extractTextSymbols(string input);
+
+
+    /**
+     * Extract program name from program path
+     * @param input
+     * @return
+     */
+    string extractProgramNameFromPath(string path);
 };
 
 

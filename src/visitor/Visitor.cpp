@@ -16,10 +16,12 @@
 #include "../Exceptions/CompileException.h"
 #include "../datastructures/Field.h"
 #include "../datastructures/Record.h"
+#include "../../include/utils/utils.h"
 
 using namespace std;
+using namespace utils;
 
-llvm::Type *Visitor::getType(llvm::Value *value) {
+llvm::Type* Visitor::getType(llvm::Value* value) {
     return value->getType();
 }
 
@@ -56,11 +58,10 @@ std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
 
     reset();
 
-    std::vector<llvm::Value *> values;
+    std::vector<llvm::Value*> values;
     // compile the data division
-    for (DataTree *tree: dataStructures) {
-        // TODO: stoi is invalid here. Add switch to find out which type should be codegen'ed
-        llvm::Value *v = tree->codegen(builder, bcModule, false);
+    for (DataTree* tree: dataStructures) {
+        llvm::Value* v = tree->codegen(builder, bcModule, false);
         tree->setLlvmValue(v);
         values.push_back(v);
     }
@@ -112,8 +113,7 @@ std::any Visitor::visitField(BabyCobolParser::FieldContext *ctx) {
         root = child;
 
     } else if (level < topLevel) {
-        string exceptionString =
-                "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
+        string exceptionString = "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
         throw CompileException(exceptionString);
     }
 
@@ -134,7 +134,7 @@ std::any Visitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
         dataStructures.push_back(root);
 
     } else if (level > topLevel) {
-        DataTree *child = new Record(identifier, level);
+        DataTree* child = new Record(identifier, level);
 
         while (root != nullptr && root->getLevel() >= level) {
             root = root->getPrevious();
@@ -149,9 +149,8 @@ std::any Visitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
             root = child;
         }
 
-    } else if (level < topLevel) {
-        string exceptionString =
-                "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
+    } else if(level < topLevel) {
+        string exceptionString = "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
         throw CompileException(exceptionString);
     }
 
@@ -206,14 +205,14 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
         i++;
     }
 
-    std::vector<llvm::Value *> outputValues;
+    std::vector<llvm::Value*> outputValues;
     outputValues.reserve(value.size());
 
-    llvm::FunctionCallee *printf_func = bcModule->getPrintf();
+    llvm::FunctionCallee* printf_func = bcModule->getPrintf();
 
     bool nextLine = ctx->ADVANCING() == nullptr;
-    llvm::Value *raw = builder->CreateGlobalStringPtr(value);
-    llvm::Value *strPtr;
+    llvm::Value* raw = builder->CreateGlobalStringPtr(value);
+    llvm::Value* strPtr;
     if (nextLine) {
         // create a printf call for every operand
         strPtr = builder->CreateGlobalStringPtr("%s\r\n");
@@ -221,7 +220,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
         strPtr = builder->CreateGlobalStringPtr("%s");
     }
 
-    llvm::ArrayRef<llvm::Value *> aref = {strPtr, raw};
+    llvm::ArrayRef<llvm::Value*> aref = { strPtr, raw };
     builder->CreateCall(*printf_func, aref);
 
     return 0;
@@ -590,7 +589,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     }
 
     string functionName = ctx->function_name->getText();
-    cout << functionName << endl;
+//    cout << functionName << endl;
 
     if (ctx->RETURNING() != nullptr) {
         // TODO: return type is a value. So get the value
@@ -598,17 +597,39 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
         // TODO: return type is a pointer. So get the value from the pointer
     }
 
-    std::vector<llvm::Type *> param_types;
+    std::vector<llvm::Type*> param_types;
     param_types.reserve(parameters.size());
     transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
 
-    //create function call w/ no input
-    llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
-    llvm::FunctionType *new_function_types = llvm::FunctionType::get(void_t, param_types, true);
-    auto *new_function = new llvm::FunctionCallee();
+    //create function call w/ no output (void)
+    string programName = ctx->program_name->getText();
+
+    llvm::Type* void_t = llvm::Type::getVoidTy(bcModule->getContext());
+    llvm::FunctionType* new_function_types = llvm::FunctionType::get(void_t, param_types, true);
+    auto* new_function = new llvm::FunctionCallee();
+
+    vector<string> programFunctions;
+    if(extTable->find(programName) != extTable->end()){
+        programFunctions = extTable->find(programName)->second;
+    } else {
+        auto format = "No program named %s provided.";
+        auto size = std::snprintf(nullptr, 0, format, programName.c_str());
+        std::string errormessage(size + 1, '\0');
+        std::sprintf(&errormessage[0], format, programName.c_str());
+        throw CompileException(errormessage);
+    }
+
+    if(std::find(programFunctions.begin(), programFunctions.end(), functionName) == programFunctions.end()){
+        auto format = "No function named %s found in program %s.";
+        auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
+        std::string errormessage(size + 1, '\0');
+        std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
+        throw CompileException(errormessage);
+    }
+
     *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
 
-    llvm::ArrayRef<llvm::Value *> args = parameters;
+    llvm::ArrayRef<llvm::Value*> args = parameters;
 
     builder->CreateCall(*new_function, args);
 
@@ -623,15 +644,15 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
 
 void Visitor::reset() {
-    for (DataTree *dataStructure: dataStructures) {
+    for (DataTree* dataStructure : dataStructures) {
         while (dataStructure->getPrevious() != nullptr) {
             dataStructure = dataStructure->getPrevious();
         }
     }
 }
 
-void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::RepresentationContext *picture) {
-    Field *field = dynamic_cast<Field *>(dataTree);
+void Visitor::setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext *picture) {
+    Field *field = dynamic_cast<Field*>(dataTree);
     if (picture != nullptr) {
         string pictureString;
         if (picture->INT() != nullptr) {
@@ -673,9 +694,9 @@ void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::Represe
 }
 
 
-vector<DataTree *> Visitor::getNodes(string path) {
+vector<DataTree*> Visitor::getNodes(string path) {
     reset();
-    vector<DataTree *> result;
+    vector<DataTree*> result;
     for (auto d: dataStructures) {
         vector<DataTree *> tempVec;
         tempVec = d->getNodesFromPath(path, tempVec);

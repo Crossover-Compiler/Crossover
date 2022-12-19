@@ -18,6 +18,7 @@ class Visitor: public BabyCobolBaseVisitor {
 private:
     vector<std::string> compiledVector;
     map<string, Value*> values;
+    map<string,vector<string>>* extTable;
     int topLevel;
     DataTree* root;
     string current_id;
@@ -28,7 +29,7 @@ private:
 public:
     vector<DataTree*> dataStructures;
 
-    Visitor(BCModule* bcModule, BCBuilder* builder) : bcModule(bcModule), builder(builder), topLevel(-1) {}
+    Visitor(BCModule* bcModule, BCBuilder* builder, map<string,vector<string>>* extTable) : bcModule(bcModule), builder(builder), topLevel(-1), extTable(extTable) {}
 
     void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
 
