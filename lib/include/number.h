@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <iostream>
 
+extern "C" {
+
 namespace bstd {
 
     /**
@@ -19,10 +21,11 @@ namespace bstd {
 
         uint64_t value;
         uint64_t scale;
-        uint8_t length;
+        uint32_t length;
         bool isSigned = false;
         bool positive = true;
 
+        // TODO: There might be issues with this. Also, return type should probably be int64
         [[nodiscard]] int getSignedValue() const {
             uint64_t minusOne = -1;
             if (positive) {
@@ -33,10 +36,10 @@ namespace bstd {
 
                 return minusOne * value;
             }
-//            return positive ? value : (minusOne * value);
         }
 
     } Number;
 }
 
+}
 #endif //CROSSOVER_NUMBER_H

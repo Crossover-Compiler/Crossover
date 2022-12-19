@@ -9,21 +9,19 @@ void BCModule::initialize() {
     llvm::Type* int8_t = llvm::Type::getInt8Ty(this->getContext());
     llvm::Type* int32_t = llvm::Type::getInt32Ty(this->getContext());
     llvm::Type* int64_t = llvm::Type::getInt64Ty(this->getContext());
-    llvm::Type* int1_t = llvm::Type::getInt1Ty(this->getContext());
 
     // instantiate printf function
     llvm::FunctionType* printf_type = llvm::FunctionType::get(int32_t, { int8ptr_t }, true);
     this->printf_func = new llvm::FunctionCallee();
     *(this->printf_func) = this->getOrInsertFunction("printf", printf_type);
 
-    // create number struct type
+    // create number struct type-
     llvm::ArrayRef<llvm::Type*> number_struct_types = {
-            int64_t, // value
-            int64_t, // scale
-            int8_t, // length
-            int64_t, // digits
-            int1_t,  // isSigned
-            int1_t,  // positive
+            int64_t,    // value
+            int64_t,    // scale
+            int32_t,     // length
+            int8_t,     // isSigned
+            int8_t,     // positive
     };
     this->numberStructType = llvm::StructType::create(this->getContext(), number_struct_types, "Struct.Number");
 }
@@ -34,6 +32,10 @@ llvm::FunctionCallee* BCModule::getPrintf() {
 
 llvm::StructType* BCModule::getNumberStructType() {
     return this->numberStructType;
+}
+
+int BCModule::getNumberStructTypeBits() {
+    return 7*32;
 }
 
 llvm::FunctionCallee* BCModule::getPrintNumber() {

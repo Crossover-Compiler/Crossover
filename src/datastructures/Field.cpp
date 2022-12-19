@@ -10,10 +10,10 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
     switch (primitiveType) {
         case DataType::INT: {
             uint64_t value = std::stoi(this->value);
-            uint64_t scale = 0; // todo: add to grammar
-            uint8_t length = 0;
-            bool isSigned = false; // todo: have include "signed" in grammar!
-            bool positive = true;
+            uint64_t scale = 125; // todo: add to grammar
+            uint32_t length = this->cardinality;
+            bool isSigned = true; // todo: have include "signed" in grammar!
+            bool positive = false;
 
             return builder->CreateNumber(new bstd::Number{
                     .value = value,
@@ -38,7 +38,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
 }
 
 llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {
-    return this->codegen(builder, bcModule, global, name);
+    return codegen(builder, bcModule, global, name);
 }
 
 void Field::setPicture(string picture) {

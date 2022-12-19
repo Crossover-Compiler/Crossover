@@ -72,7 +72,7 @@ public:
     llvm::Value* get(std::string identifier, llvm::IRBuilder<>* builder, float defaultValue = 0.f);
 
 
-
+    int getNumberStructTypeBits();
 };
 
 #endif

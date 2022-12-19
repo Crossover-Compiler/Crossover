@@ -6,7 +6,7 @@
 #include "../../include/ir/bcbuilder.h"
 
 llvm::Constant *BCBuilder::asConstant(int n) {
-    return llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, n, false));
+    return llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, n, true));
 }
 
 llvm::Value *BCBuilder::CreateNumber(bstd::Number *number, std::string &name, bool global) {
@@ -16,49 +16,56 @@ llvm::Value *BCBuilder::CreateNumber(bstd::Number *number, std::string &name, bo
     llvm::Value *alloc;
 
     if (global) {
+        std::cout << "Creating global var: " << name << std::endl;
         // we should allocate global memory
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(number_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, number_struct_type, false,
                                          llvm::GlobalVariable::CommonLinkage, zeroInit, name,
                                          nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
     } else {
+        std::cout << "Creating local var: " << name << std::endl;
         // we should allocate local memory
         alloc = this->CreateAlloca(number_struct_type, nullptr, "tmp" + name);
     }
 
-    std::vector<llvm::Value *> indices(6);
+    std::vector<llvm::Value *> indices(7);
     indices[0] = asConstant(0);
     indices[1] = asConstant(0);
     indices[2] = asConstant(1);
-    indices[3] = asConstant(2);
-    indices[4] = asConstant(3);
-    indices[5] = asConstant(4);
+    indices[3] = asConstant(1);
+    indices[4] = asConstant(2);
+    indices[5] = asConstant(3);
+    indices[6] = asConstant(4);
+
+
 
     // store "value" field of struct
-    llvm::Value *value_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[1]}, "valuePtr");
+    llvm::Value *value_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[0]}, "valuePtr");
     llvm::Value *val = llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, number->value, false));
+
     this->CreateStore(val, value_ptr);
 
     // store "scale" field of struct
     llvm::Value *scale_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[2]}, "scalePtr");
     llvm::Value *sca = llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, number->scale, false));
+
     this->CreateStore(sca, scale_ptr);
 
     // store "length" field of struct
-    llvm::Value *length_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[3]}, "lengthPtr");
-    llvm::Value *length = llvm::ConstantInt::get(module->getContext(), llvm::APInt(8, number->length, false));
+    llvm::Value *length_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[4]}, "lengthPtr");
+    llvm::Value *length = llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, number->length, false));
     this->CreateStore(length, length_ptr);
 
     // store "isSigned" field of struct
-    llvm::Value *is_signed_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[4]}, "isSignedPtr");
+    llvm::Value *is_signed_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[5]}, "isSignedPtr");
     llvm::Value *is_signed = llvm::ConstantInt::get(module->getContext(),
-                                                    llvm::APInt(1, number->isSigned ? 1 : 0, false));
+                                                    llvm::APInt(8, number->isSigned ? 1 : 0, false));
     this->CreateStore(is_signed, is_signed_ptr);
 
     // store "positive" field of struct
-    llvm::Value *positive_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[5]}, "positivePtr");
+    llvm::Value *positive_ptr = this->CreateGEP(number_struct_type, alloc, {indices[0], indices[6]}, "positivePtr");
     llvm::Value *positive = llvm::ConstantInt::get(module->getContext(),
-                                                   llvm::APInt(1, number->positive ? 1 : 0, false));
+                                                   llvm::APInt(8, number->positive ? 1 : 0, false));
     this->CreateStore(positive, positive_ptr);
 
     return alloc;

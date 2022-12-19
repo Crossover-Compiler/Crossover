@@ -3,9 +3,10 @@ IDENTIFICATION DIVISION.
        DATA DIVISION
             01 ROOT.
                    02 INTS.
-                       03 C PICTURE IS 999.
-                       03 D PICTURE IS 999.
+                       03 C PICTURE IS 999999.
+                       03 D PICTURE IS 99.
 
        PROCEDURE DIVISION.
        MAIN.
         CALL bruh OF helloWorld USING C AS STRUCT BY REFERENCE D AS STRUCT.
+        DISPLAY C "    ---    " D.
