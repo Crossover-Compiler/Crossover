@@ -23,6 +23,7 @@ private:
     string current_id;
     BCModule* bcModule;
     BCBuilder* builder;
+    int callCount = 0;
 
 public:
     vector<DataTree*> dataStructures;

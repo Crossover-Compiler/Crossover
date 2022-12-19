@@ -60,7 +60,7 @@ std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
     // compile the data division
     for (DataTree *tree: dataStructures) {
         // TODO: stoi is invalid here. Add switch to find out which type should be codegen'ed
-        llvm::Value *v = tree->codegen(builder, bcModule, nullptr);
+        llvm::Value *v = tree->codegen(builder, bcModule, false);
         tree->setLlvmValue(v);
         values.push_back(v);
     }
@@ -432,6 +432,7 @@ any Visitor::visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) {
 }
 
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
+    callCount++;
     // True, True if -> BY VALUE, AS PRIMITIVE
     // False, False if -> BY REFERENCE, AS STRUCT
     vector<tuple<bool, bool>> passType(ctx->atomic().size());
@@ -456,13 +457,19 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         throw CompileException("unable to pass field: " + field.getName());
                     } else if (field.getPrimitiveType() == DataType::INT) {
                         if (get<0>(currentType) && get<1>(currentType)) {
+                            // int
                             pushIntOnParameterList(&parameters, stoi(field.getValue()));
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)
+                            string newValueName = "CallVar" + to_string(callCount) + field.getName();
+                            llvm::Value* value_ptr = field.codegen(builder, bcModule, false, newValueName);
+                            llvm::StructType *number_struct_type = bcModule->getNumberStructType();
+                            llvm::LoadInst* load = builder->CreateLoad(number_struct_type, value_ptr, newValueName);
 
+                            parameters.push_back(load);
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // int*
-                           // TODO: This is the raw value. We should apply the signs before we send it
+                            // TODO: This is the raw value. We should apply the signs before we send it
                             llvm::Value *value_ptr = builder->CreateStructGEP(bcModule->getNumberStructType(), field.getLlvmValue(), 0, "valuePtr");
                             parameters.push_back(value_ptr);
 
@@ -709,7 +716,7 @@ void Visitor::pushDoubleOnParameterList(std::vector<llvm::Value *> *parameters, 
 
 void Visitor::pushStringOnParameterList(std::vector<llvm::Value *> *parameters, string value) {
     auto v_t = llvm::Type::getInt8Ty(bcModule->getContext());
-    ArrayType *arrayType = ArrayType::get(v_t, value.size() + 1);
+    llvm::ArrayType *arrayType = llvm::ArrayType::get(v_t, value.size() + 1);
     auto alloc = builder->CreateAlloca(arrayType);
 
     auto charType = llvm::IntegerType::get(bcModule->getContext(), 8);

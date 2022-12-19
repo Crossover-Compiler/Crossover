@@ -34,7 +34,8 @@ public:
     DataType primitiveType;
     string value;
 
-    llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, Record *record) override;
+    llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global) override;
+    llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global, string name) override;
 
     void setPicture(string picture);
 

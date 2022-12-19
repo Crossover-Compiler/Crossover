@@ -5,7 +5,7 @@
 #include "Field.h"
 #include "../Exceptions/CompileException.h"
 
-llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, Record* record) {
+llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global, string name) {
 
     switch (primitiveType) {
         case DataType::INT: {
@@ -21,7 +21,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, Record* reco
                     .length = length,
                     .isSigned = isSigned,
                     .positive = positive
-            }, this->name, record == nullptr);
+            }, name, global);
         }
         case DataType::DOUBLE: {
             // TODO: CreateNumber?
@@ -29,12 +29,16 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, Record* reco
         }
         case DataType::STRING: {
             // TODO: CreateString?
-          break;
+            break;
         }
         default: {
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
+}
+
+llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {
+    return this->codegen(builder, bcModule, global, name);
 }
 
 void Field::setPicture(string picture) {

@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <iostream>
 
 namespace bstd {
 
@@ -22,7 +23,16 @@ namespace bstd {
         bool positive = true;
 
         [[nodiscard]] int getSignedValue() const {
-            return positive ? value : (-1 * (int) value);
+            uint64_t minusOne = -1;
+            if (positive) {
+                std::cout << "positive" << std::endl;
+                return value;
+            } else {
+                std::cout << "negative" << std::endl;
+
+                return minusOne * value;
+            }
+//            return positive ? value : (minusOne * value);
         }
 
     } Number;

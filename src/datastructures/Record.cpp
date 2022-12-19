@@ -8,7 +8,16 @@ llvm::Type *Record::getType(llvm::Value *value) {
     return value->getType();
 }
 
-llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, Record *record) {
+llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, bool global) {
+    return this->codegen(builder, bcModule, global, name);
+}
+
+string Record::toString() {
+    string result = to_string(level) + " " + name + "\n";
+    return result;
+}
+
+llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, bool global, string name) {
 
     // code gen all children, generate struct for this record, and insert the children into this struct.
 
@@ -17,7 +26,7 @@ llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, Record *rec
 
     // code gen children
     for (auto next: this->next) {
-        auto v = next->codegen(builder, bcModule, this);
+        auto v = next->codegen(builder, bcModule, false);
         next->setLlvmValue(v);
         values.push_back(v);
     }
@@ -27,18 +36,18 @@ llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, Record *rec
     transform(values.begin(), values.end(), back_inserter(types), Record::getType);
 
     // create record struct
-    llvm::StructType *recordType = llvm::StructType::create(bcModule->getContext(), types, "Struct." + this->name);
+    llvm::StructType *recordType = llvm::StructType::create(bcModule->getContext(), types, "Struct." + name);
     llvm::Value *alloc;
 
-    if (record == nullptr) {
+    if (global) {
         // we are a root record, so we should allocate global memory
         llvm::Constant *zeroInit = llvm::ConstantAggregateZero::get(recordType);
         alloc = new llvm::GlobalVariable(*(llvm::Module *) bcModule, recordType, false,
-                                         llvm::GlobalVariable::CommonLinkage, zeroInit, this->name, nullptr,
+                                         llvm::GlobalVariable::CommonLinkage, zeroInit, name, nullptr,
                                          llvm::GlobalValue::NotThreadLocal, 4, false);
     } else {
         // we are not a root type, so allocate local memory
-        alloc = builder->CreateAlloca(recordType, nullptr, "tmp" + this->name);
+        alloc = builder->CreateAlloca(recordType, nullptr, "tmp" + name);
     }
 
     // assign children this record struct
@@ -53,9 +62,4 @@ llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, Record *rec
     }
 
     return alloc;
-}
-
-string Record::toString() {
-    string result = to_string(level) + " " + name + "\n";
-    return result;
 }

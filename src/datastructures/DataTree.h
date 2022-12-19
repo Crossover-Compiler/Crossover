@@ -93,7 +93,8 @@ public:
 
     vector<string> split(string s, string delimiter);
 
-    virtual llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, Record* record) = 0;
+    virtual llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, bool global, string name) = 0;
+    virtual llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, bool global) = 0;
 
 };
 
