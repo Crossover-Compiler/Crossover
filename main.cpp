@@ -166,7 +166,8 @@ int main(int argc, char **argv) {
     cout << "Compiling BabyCobol Standard Library" << endl;
     exec("mkdir -p out/lib");
     exec("cd out/lib || exit 1");
-    exec("clang++ -stdlib=libc++ -c --include-directory ../lib/include/ ../lib/src/*.cpp");
+    // command below requires libc++-dev to be installed
+    exec("clang++ --stdlib=libc++ -c --include-directory ../lib/include/ ../lib/src/*.cpp");
     exec("ar cr libbstd.a *.o");
 
     string linkCommand = "clang --for-linker=-Lout/lib/,-lbstd -o exec output.o";
