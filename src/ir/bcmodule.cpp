@@ -34,10 +34,6 @@ llvm::StructType* BCModule::getNumberStructType() {
     return this->numberStructType;
 }
 
-int BCModule::getNumberStructTypeBits() {
-    return 7*32;
-}
-
 llvm::FunctionCallee* BCModule::getPrintNumber() {
 //    printNumber(Number*)
     auto r_type = llvm::Type::getVoidTy(this->getContext());

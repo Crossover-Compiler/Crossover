@@ -519,13 +519,8 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             pushIntOnParameterList(&parameters, stoi(field.getValue()));
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)
-                            string newValueName = "CallVar" + to_string(callCount) + field.getName();
-                            llvm::Value* alloc = builder->CreateAlloca(bcModule->getNumberStructType(), nullptr, "tmp" + field.getName() + "Call");
-
-                            llvm::StructType *number_struct_type = bcModule->getNumberStructType();
-                            builder->CreateMemCpy(alloc, llvm::MaybeAlign(), field.getLlvmValue(), llvm::MaybeAlign(), bcModule->getNumberStructTypeBits());
-                            parameters.push_back(alloc);
-                            byvalTracker.emplace_back(i, number_struct_type);
+                            parameters.push_back(field.getLlvmValue());
+                            byvalTracker.emplace_back(i, bcModule->getNumberStructType());
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // int*
@@ -537,6 +532,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)*
+                            // TODO: At re-entry we should marshall this value!
                             parameters.push_back(field.getLlvmValue());
                         }
 
