@@ -11,7 +11,7 @@ ar cr libbstd.a *.o
 cd ../..
 
 # build specified files and link against library
-clang++ --for-linker=-Lout/lib/,-lbstd cmake-build-debug/output.o "${@}" -o out/exec
+clang++ --for-linker=-Lout/lib/,-lbstd build/output.o "${@}" -o out/exec
 
 # clean up files
 #rm out/lib.o

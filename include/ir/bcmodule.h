@@ -70,9 +70,6 @@ public:
      */
 //         llvm::Value* get(std::string identifier, llvm::IRBuilder<>* builder, TokenType typeHint = TokenType::LITERAL_STRING, float defaultValue = 0.f); reimplement with hint later
     llvm::Value* get(std::string identifier, llvm::IRBuilder<>* builder, float defaultValue = 0.f);
-
-
-    int getNumberStructTypeBits();
 };
 
 #endif
