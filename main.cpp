@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/callPrimitiveLiterals.txt");
+    stream.open("../test/callDatadivPrimitives.txt");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 
     string name = string("test_pic");
     auto pic_val = builder.CreatePicture(pic, name);
-    builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
+//    builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
     // print to test
     std::cout << bstd::picutils::to_cstr(pic) << std::endl;
 

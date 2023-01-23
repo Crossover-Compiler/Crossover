@@ -17,17 +17,6 @@
 class Record;
 
 using namespace std;
-enum class DataType {NINE, X, UNDEFINED};
-constexpr const char* dataTypeToString(DataType dt) noexcept
-{
-    switch (dt)
-    {
-        case DataType::NINE: return "NINE";
-        case DataType::X: return "X";
-        case DataType::UNDEFINED: return "UNDEFINED";
-        default: throw std::invalid_argument("Unimplemented item");
-    }
-}
 
 class DataTree {
 
@@ -37,31 +26,36 @@ protected:
             level(level),
             next(),
             previous(nullptr),
-            picture(std::string()),
-            cardinality(-1),
-            index(1),
             occurs(1),
-            like(nullptr)
+            like(nullptr),
+            llvm_value(nullptr)
+
     {}
 
     string name;
     vector<DataTree*> next;
     DataTree* previous;
     int level;
-    string value;
-    string picture;
-    int cardinality;
-    int index;
     int occurs;
-    DataTree* like;
+    DataTree *like;
+    llvm::Value* llvm_value;
+
 
 public:
+
+    llvm::Value* getLlvmValue();
+
+    void setLlvmValue(llvm::Value* llvm_value);
 
     map<DataTree*, int> getLeaves(map<DataTree*, int> result, int childOrder);
 
     bool identicalNode(DataTree* dataTree);
 
     bool isRecord();
+
+    vector<DataTree*> getNodesWithOccurs(vector<DataTree*> result);
+
+    vector<DataTree*> getNodesWithLikes(vector<DataTree*> result);
 
     DataTree* getLike();
 
@@ -70,18 +64,6 @@ public:
     int getOccurs();
 
     void setOccurs(int occurs);
-
-    vector<DataTree*> getNodesWithOccurs(vector<DataTree*> result);
-
-    vector<DataTree*> getNodesWithLikes(vector<DataTree*> result);
-
-    void setIndex(int index);
-
-    int getIndex();
-
-    void setPicture(string picture);
-
-    string getPicture();
 
     void addNext(DataTree* dataTree);
 
@@ -97,19 +79,13 @@ public:
 
     int getLevel();
 
-    string getValue();
-
-    void setValue(string value);
-
     string getName();
-
-    int getCardinality();
-
-    void setCardinality(int cardinality);
 
     void resetNode();
 
     string toString();
+
+    DataTree* findDataTreeByName(string name);
 
     vector<DataTree*> getNodes(string node, vector<DataTree*> result);
 
@@ -117,7 +93,8 @@ public:
 
     vector<string> split(string s, string delimiter);
 
-    virtual llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, Record* record) = 0;
+    virtual llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, bool global, string name) = 0;
+    virtual llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, bool global) = 0;
 
 };
 

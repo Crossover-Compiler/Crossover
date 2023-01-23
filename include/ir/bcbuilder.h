@@ -48,7 +48,6 @@ public:
      * @return 32-bit constant LLVM value representing the specified integer n.
      */
     llvm::Constant* asConstant(int n);
-
 };
 
 #endif //CROSSOVER_BCBUILDER_H
