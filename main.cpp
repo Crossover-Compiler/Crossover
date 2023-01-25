@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/callPrimitiveLiterals.txt");
+    stream.open("../test/callDatadivPrimitives.txt");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -88,6 +88,7 @@ int main(int argc, char **argv) {
 
     Visitor visitor(module, &builder, &extTable);
     visitor.visitProgram(tree);
+
 
 //    // test number print
 //    bstd::Picture* pic = bstd::picutils::of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);

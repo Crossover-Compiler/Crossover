@@ -24,6 +24,7 @@ private:
     string current_id;
     BCModule* bcModule;
     BCBuilder* builder;
+    int callCount = 0;
 
 public:
     vector<DataTree*> dataStructures;
@@ -157,6 +158,11 @@ public:
     vector<DataTree*> getNodes(string path);
 
     vector<string> split(string s, string delimiter);
+
+    void pushIntOnParameterList(std::vector<llvm::Value*> *parameters, int value);
+    void pushDoubleOnParameterList(std::vector<llvm::Value*> *parameters, double value);
+    void pushStringOnParameterList(std::vector<llvm::Value*> *parameters, string value);
+    void populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx);
 };
 
 
