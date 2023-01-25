@@ -8,5 +8,6 @@ IDENTIFICATION DIVISION.
 
        PROCEDURE DIVISION.
        MAIN.
-           CALL bruh OF helloWorld USING C AS STRUCT BY REFERENCE D AS STRUCT.
+           CALL bruh OF bruh USING C AS STRUCT BY REFERENCE D AS STRUCT.
            DISPLAY C "    ---    " D.
+           DISPLAY "hello".

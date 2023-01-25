@@ -90,15 +90,6 @@ int main(int argc, char **argv) {
     visitor.visitProgram(tree);
 
 
-//    // test number print
-//    bstd::Picture* pic = bstd::picutils::of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);
-//
-//    string name = string("test_pic");
-//    auto pic_val = builder.CreatePicture(pic, name);
-//    builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
-//    // print to test
-//    std::cout << bstd::picutils::to_cstr(pic) << std::endl;
-
     builder.CreateRetVoid();
     cout << "Finished Compiling!" << endl;
 
@@ -167,8 +158,7 @@ int main(int argc, char **argv) {
     cout << "Compiling BabyCobol Standard Library" << endl;
     exec("mkdir -p out/lib");
     exec("cd out/lib || exit 1");
-    // command below requires libc++-dev to be installed
-    exec("clang++ --stdlib=libc++ -c --include-directory ../lib/include/ ../lib/src/*.cpp");
+    exec("clang -c --include-directory ../Crossover_bstd_lib/include/ ../Crossover_bstd_lib/src/*.c");
     exec("ar cr libbstd.a *.o");
 
     string linkCommand = "clang --for-linker=-Lout/lib/,-lbstd -o exec output.o";
