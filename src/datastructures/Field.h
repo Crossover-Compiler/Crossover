@@ -30,9 +30,12 @@ public:
     };
 
     int cardinality;
+    int scale;
     string picture;
     DataType primitiveType;
     string value;
+    bool isSigned;
+    bool isPositive;
 
     llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global) override;
     llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global, string name) override;

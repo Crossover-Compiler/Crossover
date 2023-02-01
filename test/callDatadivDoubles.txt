@@ -1,0 +1,14 @@
+IDENTIFICATION DIVISION.
+       PROGRAM-ID. "call-datadiv-doubles".
+       DATA DIVISION
+            01 ROOT.
+                   02 INTS.
+                        03 C PICTURE IS 9V9.
+                        03 D PICTURE IS 99V99.
+                        03 E PICTURE IS 999V999.
+                        03 F PICTURE IS 9999V9999.
+
+       PROCEDURE DIVISION.
+       MAIN.
+           CALL bruh OF bruh USING C D AS STRUCT BY REFERENCE E F AS STRUCT.
+           DISPLAY C D E F.

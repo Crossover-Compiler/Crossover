@@ -164,10 +164,12 @@ std::any Visitor::visitLevel(BabyCobolParser::LevelContext *ctx) {
 }
 
 std::any Visitor::visitRepresentation(BabyCobolParser::RepresentationContext *ctx) {
-    if (!ctx->INT()->getText().empty()) {
-        return ctx->INT()->getText();
+    if (ctx->INT() != nullptr) {
+        if (!ctx->INT()->getText().empty()) {
+            return ctx->INT()->getText();
+        }
     }
-    return ctx->IDENTIFIER()->getSymbol();
+    return ctx->IDENTIFIER()->getText();
 }
 
 std::any Visitor::visitProcedure(BabyCobolParser::ProcedureContext *ctx) {
@@ -541,11 +543,19 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             pushDoubleOnParameterList(&parameters, stod(field.getValue()));
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)
+                            parameters.push_back(field.getLlvmValue());
+                            byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // double*
+                            // TODO: This is the raw value. We should apply the signs before we send it
                             // TODO: Pass memory address of the field itself
+                            llvm::Value *value_ptr = builder->CreateStructGEP(bcModule->getNumberStructType(),
+                                                                              field.getLlvmValue(), 0, "valuePtr");
+                            parameters.push_back(value_ptr);
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)*
+                            // TODO: At re-entry we should marshall this value!
+                            parameters.push_back(field.getLlvmValue());
                         }
                     } else if (field.getPrimitiveType() == DataType::STRING) {
                         if (get<0>(currentType) && get<1>(currentType)) {
@@ -738,14 +748,19 @@ void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::Represe
 
         if (match) {
             cout << "Correct Picture: " << pictureString << endl;
-            // TODO: Set picture
             field->setPicture(pictureString);
             field->setCardinality(pictureString.size());
 
             if (match_int) {
                 field->setPrimitiveType(DataType::INT);
+                field->isSigned = pictureString.find('S') != std::string::npos;
+                field->isPositive = true;
+                field->scale = 0;
             } else if (match_double) {
                 field->setPrimitiveType(DataType::DOUBLE);
+                field->isSigned = pictureString.find('S') != std::string::npos;
+                field->isPositive = true;
+                field->scale = split(pictureString, "S")[1].length();
             } else {
                 field->setPrimitiveType(DataType::STRING);
             }

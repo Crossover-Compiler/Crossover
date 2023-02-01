@@ -10,10 +10,10 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
     switch (primitiveType) {
         case DataType::INT: {
             uint64_t value = std::stoi(this->value);
-            uint64_t scale = 125; // todo: add to grammar
+            uint64_t scale = this->scale;
             uint32_t length = this->cardinality;
-            bool isSigned = true; // todo: have include "signed" in grammar!
-            bool positive = false;
+            bool isSigned = this->isSigned;
+            bool positive = this->isPositive;
 
             return builder->CreateNumber(new bstd::Number{
                     .value = value,
@@ -24,8 +24,19 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             }, name, global);
         }
         case DataType::DOUBLE: {
-            // TODO: CreateNumber?
-            break;
+            uint64_t value = std::stoi(this->value);
+            uint64_t scale = this->scale;
+            uint32_t length = this->cardinality;
+            bool isSigned = this->isSigned;
+            bool positive = this->isPositive;
+
+            return builder->CreateNumber(new bstd::Number{
+                    .value = value,
+                    .scale = scale,
+                    .length = length,
+                    .isSigned = isSigned,
+                    .positive = positive
+            }, name, global);
         }
         case DataType::STRING: {
             // TODO: CreateString?
