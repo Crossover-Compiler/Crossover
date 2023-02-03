@@ -65,7 +65,7 @@ void babycobolParserInitialize() {
       "'IS'", "'LIKE'", "'OCCURS'", "'GO'", "'SPACES'", "'HIGH-VALUES'", 
       "'LOW-VALUES'", "'SIGNAL'", "'ON ERROR'", "'OFF'", "'ALTER'", "'PROCEED'", 
       "'CALL'", "'RETURNING'", "'BY VALUE'", "'BY REFERENCE'", "", "'USING'", 
-      "'AS'", "", "", "", "", "", "", "'.'"
+      "'AS'", "", "", "", "", "", "'.'"
     },
     std::vector<std::string>{
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "STRUCT", 
@@ -77,8 +77,8 @@ void babycobolParserInitialize() {
       "LOOP", "VARYING", "WHILE", "UNTIL", "OF", "THROUGH", "PICTURE", "IS", 
       "LIKE", "OCCURS", "GO", "SPACES", "HIGH", "LOW", "SIGNAL", "ONERROR", 
       "OFF", "ALTER", "PROCEED", "CALL", "RETURNING", "BYVALUE", "BYREFERENCE", 
-      "RETURNINGBYREFERENCE", "USING", "AS", "COMMENTLINE", "WS", "FUNCTIONNAME", 
-      "INT", "DOUBLE", "LITERAL", "DOT", "IDENTIFIER"
+      "RETURNINGBYREFERENCE", "USING", "AS", "WS", "FUNCTIONNAME", "INT", 
+      "DOUBLE", "LITERAL", "DOT", "IDENTIFIER", "COMMENTLINE"
     }
   );
   static const int32_t serializedATNSegment[] = {
@@ -131,7 +131,7 @@ void babycobolParserInitialize() {
   	43,564,8,43,10,43,12,43,567,9,43,1,43,1,43,1,43,1,43,3,43,573,8,43,1,
   	44,1,44,1,44,0,3,66,68,70,45,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
   	30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,
-  	76,78,80,82,84,86,88,0,7,2,0,83,83,87,87,1,0,1,2,2,0,37,37,86,86,2,0,
+  	76,78,80,82,84,86,88,0,7,2,0,82,82,86,86,1,0,1,2,2,0,37,37,85,85,2,0,
   	74,74,77,77,1,0,4,9,1,0,48,50,2,0,1,3,10,11,630,0,90,1,0,0,0,2,97,1,0,
   	0,0,4,110,1,0,0,0,6,112,1,0,0,0,8,114,1,0,0,0,10,124,1,0,0,0,12,126,1,
   	0,0,0,14,130,1,0,0,0,16,146,1,0,0,0,18,148,1,0,0,0,20,150,1,0,0,0,22,
@@ -144,27 +144,27 @@ void babycobolParserInitialize() {
   	530,1,0,0,0,80,532,1,0,0,0,82,552,1,0,0,0,84,558,1,0,0,0,86,560,1,0,0,
   	0,88,574,1,0,0,0,90,92,3,2,1,0,91,93,3,8,4,0,92,91,1,0,0,0,92,93,1,0,
   	0,0,93,94,1,0,0,0,94,95,3,20,10,0,95,96,5,0,0,1,96,1,1,0,0,0,97,98,5,
-  	16,0,0,98,99,5,17,0,0,99,107,5,86,0,0,100,101,3,4,2,0,101,102,5,86,0,
-  	0,102,103,3,6,3,0,103,104,5,86,0,0,104,106,1,0,0,0,105,100,1,0,0,0,106,
+  	16,0,0,98,99,5,17,0,0,99,107,5,85,0,0,100,101,3,4,2,0,101,102,5,85,0,
+  	0,102,103,3,6,3,0,103,104,5,85,0,0,104,106,1,0,0,0,105,100,1,0,0,0,106,
   	109,1,0,0,0,107,105,1,0,0,0,107,108,1,0,0,0,108,3,1,0,0,0,109,107,1,0,
-  	0,0,110,111,5,87,0,0,111,5,1,0,0,0,112,113,5,85,0,0,113,7,1,0,0,0,114,
+  	0,0,110,111,5,86,0,0,111,5,1,0,0,0,112,113,5,84,0,0,113,7,1,0,0,0,114,
   	115,5,19,0,0,115,119,5,17,0,0,116,118,3,10,5,0,117,116,1,0,0,0,118,121,
   	1,0,0,0,119,117,1,0,0,0,119,120,1,0,0,0,120,9,1,0,0,0,121,119,1,0,0,0,
   	122,125,3,12,6,0,123,125,3,14,7,0,124,122,1,0,0,0,124,123,1,0,0,0,125,
-  	11,1,0,0,0,126,127,3,16,8,0,127,128,5,87,0,0,128,129,5,86,0,0,129,13,
-  	1,0,0,0,130,131,3,16,8,0,131,137,5,87,0,0,132,133,5,60,0,0,133,134,5,
+  	11,1,0,0,0,126,127,3,16,8,0,127,128,5,86,0,0,128,129,5,85,0,0,129,13,
+  	1,0,0,0,130,131,3,16,8,0,131,137,5,86,0,0,132,133,5,60,0,0,133,134,5,
   	61,0,0,134,138,3,18,9,0,135,136,5,62,0,0,136,138,3,86,43,0,137,132,1,
-  	0,0,0,137,135,1,0,0,0,138,142,1,0,0,0,139,140,5,63,0,0,140,141,5,83,0,
+  	0,0,0,137,135,1,0,0,0,138,142,1,0,0,0,139,140,5,63,0,0,140,141,5,82,0,
   	0,141,143,5,33,0,0,142,139,1,0,0,0,142,143,1,0,0,0,143,144,1,0,0,0,144,
-  	145,5,86,0,0,145,15,1,0,0,0,146,147,3,88,44,0,147,17,1,0,0,0,148,149,
-  	7,0,0,0,149,19,1,0,0,0,150,151,5,18,0,0,151,152,5,17,0,0,152,156,5,86,
+  	145,5,85,0,0,145,15,1,0,0,0,146,147,3,88,44,0,147,17,1,0,0,0,148,149,
+  	7,0,0,0,149,19,1,0,0,0,150,151,5,18,0,0,151,152,5,17,0,0,152,156,5,85,
   	0,0,153,155,3,24,12,0,154,153,1,0,0,0,155,158,1,0,0,0,156,154,1,0,0,0,
   	156,157,1,0,0,0,157,160,1,0,0,0,158,156,1,0,0,0,159,161,3,22,11,0,160,
   	159,1,0,0,0,161,162,1,0,0,0,162,160,1,0,0,0,162,163,1,0,0,0,163,21,1,
-  	0,0,0,164,165,3,28,14,0,165,167,5,86,0,0,166,168,3,24,12,0,167,166,1,
+  	0,0,0,164,165,3,28,14,0,165,167,5,85,0,0,166,168,3,24,12,0,167,166,1,
   	0,0,0,168,169,1,0,0,0,169,167,1,0,0,0,169,170,1,0,0,0,170,23,1,0,0,0,
   	171,173,3,26,13,0,172,171,1,0,0,0,173,174,1,0,0,0,174,172,1,0,0,0,174,
-  	175,1,0,0,0,175,176,1,0,0,0,176,177,5,86,0,0,177,25,1,0,0,0,178,180,7,
+  	175,1,0,0,0,175,176,1,0,0,0,176,177,5,85,0,0,177,25,1,0,0,0,178,180,7,
   	1,0,0,179,178,1,0,0,0,179,180,1,0,0,0,180,198,1,0,0,0,181,199,3,30,15,
   	0,182,199,3,32,16,0,183,199,3,34,17,0,184,199,3,36,18,0,185,199,3,38,
   	19,0,186,199,3,40,20,0,187,199,3,42,21,0,188,199,3,44,22,0,189,199,3,
@@ -174,7 +174,7 @@ void babycobolParserInitialize() {
   	0,0,198,185,1,0,0,0,198,186,1,0,0,0,198,187,1,0,0,0,198,188,1,0,0,0,198,
   	189,1,0,0,0,198,190,1,0,0,0,198,191,1,0,0,0,198,192,1,0,0,0,198,193,1,
   	0,0,0,198,194,1,0,0,0,198,195,1,0,0,0,198,196,1,0,0,0,198,197,1,0,0,0,
-  	199,27,1,0,0,0,200,201,5,87,0,0,201,29,1,0,0,0,202,204,5,20,0,0,203,205,
+  	199,27,1,0,0,0,200,201,5,86,0,0,201,29,1,0,0,0,202,204,5,20,0,0,203,205,
   	3,84,42,0,204,203,1,0,0,0,205,206,1,0,0,0,206,204,1,0,0,0,206,207,1,0,
   	0,0,207,211,1,0,0,0,208,209,5,21,0,0,209,210,5,22,0,0,210,212,5,23,0,
   	0,211,208,1,0,0,0,211,212,1,0,0,0,212,31,1,0,0,0,213,214,5,24,0,0,214,
@@ -216,8 +216,8 @@ void babycobolParserInitialize() {
   	0,0,342,345,3,28,14,0,343,345,5,70,0,0,344,342,1,0,0,0,344,343,1,0,0,
   	0,345,346,1,0,0,0,346,347,5,69,0,0,347,59,1,0,0,0,348,349,5,71,0,0,349,
   	350,3,28,14,0,350,351,5,26,0,0,351,352,5,72,0,0,352,353,5,26,0,0,353,
-  	354,3,28,14,0,354,61,1,0,0,0,355,358,5,73,0,0,356,357,5,87,0,0,357,359,
-  	5,58,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,360,1,0,0,0,360,437,5,87,
+  	354,3,28,14,0,354,61,1,0,0,0,355,358,5,73,0,0,356,357,5,86,0,0,357,359,
+  	5,58,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,360,1,0,0,0,360,437,5,86,
   	0,0,361,433,5,78,0,0,362,364,5,75,0,0,363,365,3,84,42,0,364,363,1,0,0,
   	0,365,366,1,0,0,0,366,364,1,0,0,0,366,367,1,0,0,0,367,368,1,0,0,0,368,
   	369,5,79,0,0,369,370,5,15,0,0,370,432,1,0,0,0,371,373,5,76,0,0,372,374,
@@ -241,7 +241,7 @@ void babycobolParserInitialize() {
   	431,414,1,0,0,0,431,420,1,0,0,0,431,427,1,0,0,0,432,434,1,0,0,0,433,431,
   	1,0,0,0,434,435,1,0,0,0,435,433,1,0,0,0,435,436,1,0,0,0,436,438,1,0,0,
   	0,437,361,1,0,0,0,437,438,1,0,0,0,438,441,1,0,0,0,439,440,7,3,0,0,440,
-  	442,5,87,0,0,441,439,1,0,0,0,441,442,1,0,0,0,442,63,1,0,0,0,443,447,3,
+  	442,5,86,0,0,441,439,1,0,0,0,441,442,1,0,0,0,442,63,1,0,0,0,443,447,3,
   	66,33,0,444,447,3,68,34,0,445,447,3,70,35,0,446,443,1,0,0,0,446,444,1,
   	0,0,0,446,445,1,0,0,0,447,65,1,0,0,0,448,449,6,33,-1,0,449,450,3,84,42,
   	0,450,457,1,0,0,0,451,452,10,1,0,0,452,453,3,80,40,0,453,454,3,66,33,
@@ -273,13 +273,13 @@ void babycobolParserInitialize() {
   	0,0,543,541,1,0,0,0,543,544,1,0,0,0,544,553,1,0,0,0,545,546,5,43,0,0,
   	546,548,5,44,0,0,547,549,3,26,13,0,548,547,1,0,0,0,549,550,1,0,0,0,550,
   	548,1,0,0,0,550,551,1,0,0,0,551,553,1,0,0,0,552,534,1,0,0,0,552,545,1,
-  	0,0,0,553,83,1,0,0,0,554,559,3,88,44,0,555,559,5,84,0,0,556,559,5,85,
+  	0,0,0,553,83,1,0,0,0,554,559,3,88,44,0,555,559,5,83,0,0,556,559,5,84,
   	0,0,557,559,3,86,43,0,558,554,1,0,0,0,558,555,1,0,0,0,558,556,1,0,0,0,
-  	558,557,1,0,0,0,559,85,1,0,0,0,560,565,5,87,0,0,561,562,5,58,0,0,562,
-  	564,5,87,0,0,563,561,1,0,0,0,564,567,1,0,0,0,565,563,1,0,0,0,565,566,
+  	558,557,1,0,0,0,559,85,1,0,0,0,560,565,5,86,0,0,561,562,5,58,0,0,562,
+  	564,5,86,0,0,563,561,1,0,0,0,564,567,1,0,0,0,565,563,1,0,0,0,565,566,
   	1,0,0,0,566,572,1,0,0,0,567,565,1,0,0,0,568,569,5,12,0,0,569,570,3,88,
   	44,0,570,571,5,13,0,0,571,573,1,0,0,0,572,568,1,0,0,0,572,573,1,0,0,0,
-  	573,87,1,0,0,0,574,575,5,83,0,0,575,89,1,0,0,0,67,92,107,119,124,137,
+  	573,87,1,0,0,0,574,575,5,82,0,0,575,89,1,0,0,0,67,92,107,119,124,137,
   	142,156,162,169,174,179,198,206,211,220,226,232,238,246,250,256,261,269,
   	275,277,285,291,297,305,309,313,320,332,344,358,366,375,383,392,401,409,
   	418,424,429,431,435,437,441,446,457,468,480,488,496,501,505,509,513,520,
@@ -1703,11 +1703,11 @@ BabyCobolParser::DisplayContext* BabyCobolParser::display() {
       setState(206); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-      | (1ULL << (BabyCobolParser::DOUBLE - 83))
-      | (1ULL << (BabyCobolParser::LITERAL - 83))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+    } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+      | (1ULL << (BabyCobolParser::DOUBLE - 82))
+      | (1ULL << (BabyCobolParser::LITERAL - 82))
+      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
     setState(211);
     _errHandler->sync(this);
 
@@ -1972,11 +1972,11 @@ BabyCobolParser::SubtractContext* BabyCobolParser::subtract() {
       setState(232); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-      | (1ULL << (BabyCobolParser::DOUBLE - 83))
-      | (1ULL << (BabyCobolParser::LITERAL - 83))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+    } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+      | (1ULL << (BabyCobolParser::DOUBLE - 82))
+      | (1ULL << (BabyCobolParser::LITERAL - 82))
+      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
     setState(234);
     match(BabyCobolParser::FROM);
     setState(235);
@@ -2075,11 +2075,11 @@ BabyCobolParser::MultiplyContext* BabyCobolParser::multiply() {
       setState(246); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-      | (1ULL << (BabyCobolParser::DOUBLE - 83))
-      | (1ULL << (BabyCobolParser::LITERAL - 83))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+    } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+      | (1ULL << (BabyCobolParser::DOUBLE - 82))
+      | (1ULL << (BabyCobolParser::LITERAL - 82))
+      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
     setState(250);
     _errHandler->sync(this);
 
@@ -2176,11 +2176,11 @@ BabyCobolParser::PerformContext* BabyCobolParser::perform() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (((((_la - 83) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-      | (1ULL << (BabyCobolParser::DOUBLE - 83))
-      | (1ULL << (BabyCobolParser::LITERAL - 83))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0)) {
+    if (((((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+      | (1ULL << (BabyCobolParser::DOUBLE - 82))
+      | (1ULL << (BabyCobolParser::LITERAL - 82))
+      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0)) {
       setState(258);
       antlrcpp::downCast<PerformContext *>(_localctx)->times = atomic();
       setState(259);
@@ -2495,11 +2495,11 @@ BabyCobolParser::AddContext* BabyCobolParser::add() {
       setState(291); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-      | (1ULL << (BabyCobolParser::DOUBLE - 83))
-      | (1ULL << (BabyCobolParser::LITERAL - 83))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+    } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+      | (1ULL << (BabyCobolParser::DOUBLE - 82))
+      | (1ULL << (BabyCobolParser::LITERAL - 82))
+      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
     setState(293);
     match(BabyCobolParser::TO);
     setState(294);
@@ -2606,11 +2606,11 @@ BabyCobolParser::DivideContext* BabyCobolParser::divide() {
       setState(305); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-      | (1ULL << (BabyCobolParser::DOUBLE - 83))
-      | (1ULL << (BabyCobolParser::LITERAL - 83))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+    } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+      | (1ULL << (BabyCobolParser::DOUBLE - 82))
+      | (1ULL << (BabyCobolParser::LITERAL - 82))
+      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
     setState(309);
     _errHandler->sync(this);
 
@@ -3250,11 +3250,11 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
             setState(366); 
             _errHandler->sync(this);
             _la = _input->LA(1);
-          } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-            ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-            | (1ULL << (BabyCobolParser::DOUBLE - 83))
-            | (1ULL << (BabyCobolParser::LITERAL - 83))
-            | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+          } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+            ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+            | (1ULL << (BabyCobolParser::DOUBLE - 82))
+            | (1ULL << (BabyCobolParser::LITERAL - 82))
+            | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
           setState(368);
           match(BabyCobolParser::AS);
           setState(369);
@@ -3275,11 +3275,11 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
             setState(375); 
             _errHandler->sync(this);
             _la = _input->LA(1);
-          } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-            ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-            | (1ULL << (BabyCobolParser::DOUBLE - 83))
-            | (1ULL << (BabyCobolParser::LITERAL - 83))
-            | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+          } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+            ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+            | (1ULL << (BabyCobolParser::DOUBLE - 82))
+            | (1ULL << (BabyCobolParser::LITERAL - 82))
+            | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
           setState(377);
           match(BabyCobolParser::AS);
           setState(378);
@@ -3298,11 +3298,11 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
             setState(383); 
             _errHandler->sync(this);
             _la = _input->LA(1);
-          } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-            ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-            | (1ULL << (BabyCobolParser::DOUBLE - 83))
-            | (1ULL << (BabyCobolParser::LITERAL - 83))
-            | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+          } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+            ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+            | (1ULL << (BabyCobolParser::DOUBLE - 82))
+            | (1ULL << (BabyCobolParser::LITERAL - 82))
+            | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
           setState(385);
           match(BabyCobolParser::AS);
           setState(386);
@@ -3323,11 +3323,11 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
             setState(392); 
             _errHandler->sync(this);
             _la = _input->LA(1);
-          } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-            ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-            | (1ULL << (BabyCobolParser::DOUBLE - 83))
-            | (1ULL << (BabyCobolParser::LITERAL - 83))
-            | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+          } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+            ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+            | (1ULL << (BabyCobolParser::DOUBLE - 82))
+            | (1ULL << (BabyCobolParser::LITERAL - 82))
+            | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
           setState(394);
           match(BabyCobolParser::AS);
           setState(395);
@@ -3348,11 +3348,11 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
             setState(401); 
             _errHandler->sync(this);
             _la = _input->LA(1);
-          } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-            ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-            | (1ULL << (BabyCobolParser::DOUBLE - 83))
-            | (1ULL << (BabyCobolParser::LITERAL - 83))
-            | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+          } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+            ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+            | (1ULL << (BabyCobolParser::DOUBLE - 82))
+            | (1ULL << (BabyCobolParser::LITERAL - 82))
+            | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
           setState(403);
           match(BabyCobolParser::AS);
           setState(404);
@@ -3371,11 +3371,11 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
             setState(409); 
             _errHandler->sync(this);
             _la = _input->LA(1);
-          } while (((((_la - 83) & ~ 0x3fULL) == 0) &&
-            ((1ULL << (_la - 83)) & ((1ULL << (BabyCobolParser::INT - 83))
-            | (1ULL << (BabyCobolParser::DOUBLE - 83))
-            | (1ULL << (BabyCobolParser::LITERAL - 83))
-            | (1ULL << (BabyCobolParser::IDENTIFIER - 83)))) != 0));
+          } while (((((_la - 82) & ~ 0x3fULL) == 0) &&
+            ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
+            | (1ULL << (BabyCobolParser::DOUBLE - 82))
+            | (1ULL << (BabyCobolParser::LITERAL - 82))
+            | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
           setState(411);
           match(BabyCobolParser::AS);
           setState(412);

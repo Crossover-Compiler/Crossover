@@ -74,7 +74,6 @@ callStatement   :   CALL (function_name=IDENTIFIER OF)? program_name=IDENTIFIER
                                     (BYVALUE byvalueatomicsprim+=atomic+) |
                                     (BYREFERENCE byreferenceatomicsprim+=atomic+) |
                                     (byvalueatomicsprim+=atomic+)
-
                                 )
                             )+
                         )?

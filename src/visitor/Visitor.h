@@ -157,7 +157,7 @@ public:
 
     vector<DataTree*> getNodes(string path);
 
-    vector<string> split(string s, string delimiter);
+    vector<string> split(const string& s, string delimiter);
 
     void pushIntOnParameterList(std::vector<llvm::Value*> *parameters, int value);
     void pushDoubleOnParameterList(std::vector<llvm::Value*> *parameters, double value);

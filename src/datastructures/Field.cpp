@@ -9,8 +9,14 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
 
     switch (primitiveType) {
         case DataType::INT: {
-            uint64_t value = std::stoi(this->value);
+            string temp_str = this->value;
+            temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'Z'), temp_str.end());
+            temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'S'), temp_str.end());
+            // TODO: If int contains Z they are not used
+            uint64_t value = std::stoi(temp_str);
+
             uint64_t scale = this->scale;
+            // TODO: If double contains Z or S this is invalid
             uint32_t length = this->cardinality;
             bool isSigned = this->isSigned;
             bool positive = this->isPositive;
@@ -24,11 +30,26 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             }, name, global);
         }
         case DataType::DOUBLE: {
-            uint64_t value = std::stoi(this->value);
+            string temp_str = this->value;
+            temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'V'), temp_str.end());
+            temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'Z'), temp_str.end());
+            temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'S'), temp_str.end());
+            // TODO: If double contains Z they are not used
+
+            uint64_t value = std::stoi(temp_str);
+            // TODO: If double contains S after V this is invalid
             uint64_t scale = this->scale;
-            uint32_t length = this->cardinality;
+            // TODO: If double contains Z or S this is invalid, the -1 is for the V
+            uint32_t length = this->cardinality - 1;
             bool isSigned = this->isSigned;
             bool positive = this->isPositive;
+
+            cout << "Double: " << name << ":" << endl;
+            cout << "value: " << value << endl;
+            cout << "scale: " << scale << endl;
+            cout << "length: " << length << endl;
+            cout << "isSigned: " << isSigned << endl;
+            cout << "positive: " << positive << endl;
 
             return builder->CreateNumber(new bstd::Number{
                     .value = value,

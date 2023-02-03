@@ -208,7 +208,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
             if (dynamic_cast<Field *>(dataTree) != nullptr) {
                 // TODO: This does not get printed at the right time AND only prints i64
 
-                llvm::Value* numVal = builder->CreateLoad(bcModule->getNumberStructType(),dataTree->getLlvmValue());
+                llvm::Value *numVal = builder->CreateLoad(bcModule->getNumberStructType(),dataTree->getLlvmValue());
                 std::vector<llvm::Value *> indices(7);
                 indices[0] = builder->asConstant(0);
                 indices[1] = builder->asConstant(0);
@@ -540,7 +540,17 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                     } else if (field.getPrimitiveType() == DataType::DOUBLE) {
                         if (get<0>(currentType) && get<1>(currentType)) {
-                            pushDoubleOnParameterList(&parameters, stod(field.getValue()));
+                            llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *new_function = new llvm::FunctionCallee();
+                            *(new_function) = bcModule->getOrInsertFunction("bstd_get_double", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *alloc = builder->CreateCall(*new_function, args);
+                            parameters.push_back(alloc);
+
+                            // TODO Load llvm Value and get double value from the Number struct
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)
                             parameters.push_back(field.getLlvmValue());
@@ -760,7 +770,7 @@ void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::Represe
                 field->setPrimitiveType(DataType::DOUBLE);
                 field->isSigned = pictureString.find('S') != std::string::npos;
                 field->isPositive = true;
-                field->scale = split(pictureString, "S")[1].length();
+                field->scale = split(pictureString, "V").at(1).length();
             } else {
                 field->setPrimitiveType(DataType::STRING);
             }
@@ -787,7 +797,7 @@ vector<DataTree *> Visitor::getNodes(string path) {
 }
 
 // JAVA-like split function for strings
-vector<string> Visitor::split(string s, string delimiter) {
+vector<string> Visitor::split(const string& s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;
     vector<string> res;
