@@ -13,3 +13,6 @@ We provide a short overview for installation of these dependencies on Ubuntu:
 1. ```apt install libspdlog-dev```
 2. ```bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"```
 You may need root permission for these commands.
+
+Optionally, you may want to install ```clang``` to make use of the compile script included in this project:
+```apt install clang```
