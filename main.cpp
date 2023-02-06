@@ -157,11 +157,11 @@ int main(int argc, char **argv) {
 
     cout << "Compiling BabyCobol Standard Library" << endl;
     exec("mkdir -p out/lib");
-    exec("cd out/lib || exit 1");
-    exec("clang -c --include-directory ../Crossover_bstd_lib/include/ ../Crossover_bstd_lib/src/*.c");
-    exec("ar cr libbstd.a *.o");
+    exec("cd out/lib && "
+         "clang -c --include-directory ../../../Crossover_bstd_lib/include/ ../../../Crossover_bstd_lib/src/*.c && "
+         "ar cr libbstd.a *.o");
 
-    string linkCommand = "clang --for-linker=-Lout/lib/,-lbstd -o exec output.o";
+    string linkCommand = "clang -o exec output.o out/lib/libbstd.a";
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {
