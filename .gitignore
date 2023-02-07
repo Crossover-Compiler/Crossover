@@ -35,3 +35,9 @@ build/
 cmake-build-debug/
 /build/antlr4_runtime/src/antlr4_runtime/
 .idea/
+
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CMakeFiles/
+antlr4_runtime/
