@@ -9,7 +9,7 @@ llvm::Constant *BCBuilder::asConstant(int n) {
     return llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, n, true));
 }
 
-llvm::Value *BCBuilder::CreateNumber(bstd::Number *number, std::string &name, bool global) {
+llvm::Value *BCBuilder::CreateNumber(bstd_Number *number, std::string &name, bool global) {
 
     // Create instance of Number struct
     llvm::StructType *number_struct_type = module->getNumberStructType();
@@ -71,7 +71,7 @@ llvm::Value *BCBuilder::CreateNumber(bstd::Number *number, std::string &name, bo
     return alloc;
 }
 
-llvm::Value *BCBuilder::CreatePicture(bstd::Picture* picture, std::string &name, bool global) {
+llvm::Value *BCBuilder::CreatePicture(bstd_Picture* picture, std::string &name, bool global) {
 
     // picture struct types
     llvm::Type* int8_t = llvm::IntegerType::getInt8Ty(this->getContext());
@@ -138,6 +138,6 @@ llvm::Value *BCBuilder::CreatePicture(bstd::Picture* picture, std::string &name,
     return alloc;
 }
 
-llvm::Value* BCBuilder::CreateAdd(bstd::Number* lhs, bstd::Number* rhs) {
+llvm::Value* BCBuilder::CreateAdd(bstd_Number* lhs, bstd_Number* rhs) {
     return nullptr; // todo: implement
 }

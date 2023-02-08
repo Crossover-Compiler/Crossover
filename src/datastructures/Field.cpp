@@ -21,7 +21,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             bool isSigned = this->isSigned;
             bool positive = this->isPositive;
 
-            return builder->CreateNumber(new bstd::Number{
+            return builder->CreateNumber(new bstd_Number{
                     .value = value,
                     .scale = scale,
                     .length = length,
