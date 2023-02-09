@@ -2,6 +2,7 @@
 // Created by bruh on 10/17/22.
 //
 
+#include <iostream>
 #include "Field.h"
 #include "../Exceptions/CompileException.h"
 
@@ -17,7 +18,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
 
             uint64_t scale = this->scale;
             // TODO: If double contains Z or S this is invalid
-            uint32_t length = this->cardinality;
+            uint8_t length = this->cardinality;
             bool isSigned = this->isSigned;
             bool positive = this->isPositive;
 
@@ -40,7 +41,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             // TODO: If double contains S after V this is invalid
             uint64_t scale = this->scale;
             // TODO: If double contains Z or S this is invalid, the -1 is for the V
-            uint32_t length = this->cardinality - 1;
+            uint8_t length = this->cardinality - 1;
             bool isSigned = this->isSigned;
             bool positive = this->isPositive;
 
@@ -51,7 +52,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             cout << "isSigned: " << isSigned << endl;
             cout << "positive: " << positive << endl;
 
-            return builder->CreateNumber(new bstd::Number{
+            return builder->CreateNumber(new bstd_Number{
                     .value = value,
                     .scale = scale,
                     .length = length,
