@@ -1,30 +1,71 @@
 #include <stdio.h>
-
 #include "./Crossover_bstd_lib/include/number.h"
+
 /**
-    IDENTIFICATION DIVISION.
-    PROGRAM-ID. "GAP01".
-    PROCEDURE DIVISION.
-        MAIN.
-            CALL 'bruh' OF helloWorld USING 666 BY REFERENCE 500 BY VALUE 333,333 BY REFERENCE 150,150 BY VALUE "Hello" BY REFERENCE "World".
+IDENTIFICATION DIVISION.
+       PROGRAM-ID. "call-datadiv-ints".
+       DATA DIVISION
+            01 ROOT.
+                   02 INTS.
+                       03 C PICTURE IS 99.
+                       03 D PICTURE IS 9999.
+                       03 E PICTURE IS 999999.
+                       03 F PICTURE IS 99999999.
+
+       PROCEDURE DIVISION.
+       MAIN.
+           CALL call_datadiv_ints OF bruh USING C AS PRIMITIVE D AS STRUCT BY REFERENCE E AS PRIMITIVE BY REFERENCE F AS STRUCT.
+           DISPLAY C D E F.
  */
+void call_datadiv_ints(int int1, struct bstd_Number int2, int* int3, struct bstd_Number* int4) {
+    printf("call_datadiv_ints.\n\n");
 
-void bruh(struct bstd_Number int1, struct bstd_Number* int2) {
-    printf("bruh.\n");
-    printf("Pointer int2: %p\n", int2);
-    printf("%lu\n",int1.value);
-    printf("%lu\n",int1.scale);
-    printf("%d\n",int1.length);
-    printf("%d\n",int1.isSigned);
-    printf("%d\n",int1.positive);
+    printf("%d\n\n" , int1);
 
-    printf("%p %lu\n",int2 ,int2->value);
-    printf("%p %lu\n",int2,int2->scale);
-    printf("%p %d\n",int2,int2->length);
-    printf("%p %d\n",int2,int2->isSigned);
-    printf("%p %d\n",int2,int2->positive);
+    printf("%lu\n"  , int2.value);
+    printf("%lu\n"  , int2.scale);
+    printf("%d\n"   , int2.length);
+    printf("%d\n"   , int2.isSigned);
+    printf("%d\n\n" , int2.positive);
 
+    printf("%p %d\n\n" , int3 , *int3);
 
-    int1.value = 333;
-    int2->value = 444;
-    }
+    printf("%p %lu\n"   , int4 , int4->value);
+    printf("%p %lu\n"   , int4 , int4->scale);
+    printf("%p %d\n"    , int4 , int4->length);
+    printf("%p %d\n"    , int4 , int4->isSigned);
+    printf("%p %d\n\n"  , int4 , int4->positive);
+}
+
+/**
+IDENTIFICATION DIVISION.
+       PROGRAM-ID. "call-datadiv-doubles".
+       DATA DIVISION
+            01 ROOT.
+                   02 INTS.
+                        03 C PICTURE IS 9V9.
+                        03 D PICTURE IS 99V99.
+                        03 E PICTURE IS 999V999.
+
+       PROCEDURE DIVISION.
+       MAIN.
+           CALL call_datadiv_doubles OF bruh USING C AS PRIMITIVE D AS STRUCT BY REFERENCE E AS STRUCT.
+           DISPLAY C D E.
+ */
+void call_datadiv_doubles(double double1, struct bstd_Number double2, struct bstd_Number* double3) {
+    printf("call_datadiv_doubles.\n\n");
+
+    printf("%f\n\n" , double1);
+
+    printf("%lu\n"  , double2.value);
+    printf("%lu\n"  , double2.scale);
+    printf("%d\n"   , double2.length);
+    printf("%d\n"   , double2.isSigned);
+    printf("%d\n\n" , double2.positive);
+
+    printf("%p %lu\n"   , double3 , double3->value);
+    printf("%p %lu\n"   , double3 , double3->scale);
+    printf("%p %d\n"    , double3 , double3->length);
+    printf("%p %d\n"    , double3 , double3->isSigned);
+    printf("%p %d\n\n"  , double3 , double3->positive);
+}

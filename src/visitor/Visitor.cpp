@@ -518,7 +518,16 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                     } else if (field.getPrimitiveType() == DataType::INT) {
                         if (get<0>(currentType) && get<1>(currentType)) {
                             // int
-                            pushIntOnParameterList(&parameters, stoi(field.getValue()));
+                            llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *new_function = new llvm::FunctionCallee();
+                            *(new_function) = bcModule->getOrInsertFunction("bstd_get_int", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *alloc = builder->CreateCall(*new_function, args);
+                            parameters.push_back(alloc);
+
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)
                             parameters.push_back(field.getLlvmValue());
@@ -526,8 +535,8 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // int*
+                            // TODO: Decide if we want to do this
                             // TODO: This is the raw value. We should apply the signs before we send it
-                            // TODO: Do we want to apply marshalling when we re-enter BabyCobol?
                             llvm::Value *value_ptr = builder->CreateStructGEP(bcModule->getNumberStructType(),
                                                                               field.getLlvmValue(), 0, "valuePtr");
                             parameters.push_back(value_ptr);
@@ -540,6 +549,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                     } else if (field.getPrimitiveType() == DataType::DOUBLE) {
                         if (get<0>(currentType) && get<1>(currentType)) {
+                            // double
                             llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
                             llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
                             auto *new_function = new llvm::FunctionCallee();
@@ -549,19 +559,14 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                             llvm::Value *alloc = builder->CreateCall(*new_function, args);
                             parameters.push_back(alloc);
-
-                            // TODO Load llvm Value and get double value from the Number struct
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)
                             parameters.push_back(field.getLlvmValue());
                             byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // double*
-                            // TODO: This is the raw value. We should apply the signs before we send it
-                            // TODO: Pass memory address of the field itself
-                            llvm::Value *value_ptr = builder->CreateStructGEP(bcModule->getNumberStructType(),
-                                                                              field.getLlvmValue(), 0, "valuePtr");
-                            parameters.push_back(value_ptr);
+                            // TODO: Decide if we want to do this
+                            throw NotImplemented("Calling function by using a picture that looks like a double BY REFERENCE and AS PRIMITIVE is not supported!");
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)*
                             // TODO: At re-entry we should marshall this value!

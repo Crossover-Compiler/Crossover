@@ -11,14 +11,27 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
     switch (primitiveType) {
         case DataType::INT: {
             string temp_str = this->value;
+
+            int Z_count = 0;
+            int S_count = 0;
+
+            for (auto _char: temp_str) {
+                if (_char == 'Z') {
+                    Z_count++;
+                }
+                if (_char == 'S') {
+                    S_count++;
+                }
+            }
+
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'Z'), temp_str.end());
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'S'), temp_str.end());
             // TODO: If int contains Z they are not used
             uint64_t value = std::stoi(temp_str);
-
             uint64_t scale = this->scale;
-            // TODO: If double contains Z or S this is invalid
-            uint8_t length = this->cardinality;
+
+            // TODO: Review what we want with Z characters in Pictures
+            uint8_t length = this->cardinality - Z_count - S_count;
             bool isSigned = this->isSigned;
             bool positive = this->isPositive;
 
@@ -32,31 +45,49 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
         }
         case DataType::DOUBLE: {
             string temp_str = this->value;
+
+            int Z_count = 0;
+            int V_count = 0;
+            int S_count = 0;
+
+            bool seen_V = false;
+            bool S_after_V = false;
+
+            for (auto _char: temp_str) {
+                if (_char == 'V') {
+                    V_count++;
+                    seen_V = true;
+                }
+                if (_char == 'Z') {
+                    Z_count++;
+                }
+                if (_char == 'S') {
+                    S_count++;
+                    if (seen_V) {
+                        S_after_V = true;
+                    }
+                }
+            }
+
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'V'), temp_str.end());
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'Z'), temp_str.end());
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'S'), temp_str.end());
             // TODO: If double contains Z they are not used
-
             uint64_t value = std::stoi(temp_str);
-            // TODO: If double contains S after V this is invalid
-            uint64_t scale = this->scale;
-            // TODO: If double contains Z or S this is invalid, the -1 is for the V
-            uint8_t length = this->cardinality - 1;
-            bool isSigned = this->isSigned;
-            bool positive = this->isPositive;
 
-            cout << "Double: " << name << ":" << endl;
-            cout << "value: " << value << endl;
-            cout << "scale: " << scale << endl;
-            cout << "length: " << length << endl;
-            cout << "isSigned: " << isSigned << endl;
-            cout << "positive: " << positive << endl;
+            uint64_t scale = this->scale;
+            if (S_after_V) scale--;
+
+            // TODO: Review what we want with Z characters in Pictures
+            uint8_t length = this->cardinality - Z_count - V_count - S_count;
+            bool signed_ = this->isSigned;
+            bool positive = this->isPositive;
 
             return builder->CreateNumber(new bstd_Number{
                     .value = value,
                     .scale = scale,
                     .length = length,
-                    .isSigned = isSigned,
+                    .isSigned = signed_,
                     .positive = positive
             }, name, global);
         }
@@ -68,6 +99,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
+    throw logic_error("Should not get here...");
 }
 
 llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {
@@ -92,6 +124,7 @@ void Field::setValue(string value) {
 
 string Field::toString() {
     string result = to_string(level) + " " + value + " " + name + " " + picture + "\n";
+    return result;
 }
 
 DataType Field::getPrimitiveType() const {

@@ -9,7 +9,7 @@
 #include "Record.h"
 
 enum class DataType {INT, DOUBLE, STRING, UNDEFINED};
-constexpr const char* dataTypeToString(DataType dt) noexcept
+constexpr const char* dataTypeToString(DataType dt) noexcept(false)
 {
     switch (dt)
     {
