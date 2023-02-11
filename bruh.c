@@ -10,7 +10,7 @@ IDENTIFICATION DIVISION.
            CALL call_literal_ints OF bruh USING -1 AS PRIMITIVE -33 AS STRUCT BY REFERENCE +666 AS PRIMITIVE BY REFERENCE +9999 AS STRUCT.
  */
 void call_literal_ints(int int1, struct bstd_Number int2, int *int3, struct bstd_Number* int4) {
-    printf("call_literal_ints.txt.\n\n");
+    printf("call_literal_ints.bc.\n\n");
 
     printf("%d\n\n" , int1);
 
@@ -46,7 +46,7 @@ IDENTIFICATION DIVISION.
            DISPLAY C D E F.
  */
 void call_datadiv_ints(int int1, struct bstd_Number int2, int* int3, struct bstd_Number* int4) {
-    printf("call_datadiv_ints.\n\n");
+    printf("call_datadiv_ints.bc\n\n");
 
     printf("%d\n\n" , int1);
 
@@ -74,7 +74,7 @@ IDENTIFICATION DIVISION.
            CALL call_literal_doubles OF bruh USING -1,1 AS PRIMITIVE -33,33 AS STRUCT BY REFERENCE +666,666 AS PRIMITIVE BY REFERENCE +9999,9999 AS STRUCT.
  */
 void call_literal_doubles(double double1, struct bstd_Number double2, double *double3, struct bstd_Number* double4) {
-    printf("call_literal_doubles.\n\n");
+    printf("call_literal_doubles.bc\n\n");
 
     printf("%f\n\n" , double1);
 
@@ -109,7 +109,7 @@ IDENTIFICATION DIVISION.
            DISPLAY C D E.
  */
 void call_datadiv_doubles(double double1, struct bstd_Number double2, struct bstd_Number* double3) {
-    printf("call_datadiv_doubles.\n\n");
+    printf("call_datadiv_doubles.bc\n\n");
 
     printf("%f\n\n" , double1);
 
