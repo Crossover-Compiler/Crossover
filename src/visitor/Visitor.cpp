@@ -583,13 +583,16 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                 int dataType = -1;
                 // atomic is a literal. So either an int, double or string
                 if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+                    BabyCobolParser::IntLiteralContext * intLiteralContext = dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]);
                     dataType = 0;
-                    int value = any_cast<int>(visit(ctx->atomic()[i]));
+                    int value = any_cast<int>(visitIntLiteral(intLiteralContext));
                     if (get<0>(currentType) && get<1>(currentType)) {
                         pushIntOnParameterList(&parameters, value);
                     } else if (get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(int)
-
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(intLiteralContext));
+                        byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                     } else if (!get<0>(currentType) && get<1>(currentType)) {
                         // int*
                         auto int64_t = llvm::IntegerType::getInt64Ty(bcModule->getContext());
@@ -600,6 +603,8 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         parameters.push_back(alloc);
                     } else if (!get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(int)*
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(intLiteralContext));
                     }
                 } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
                     BabyCobolParser::DoubleLiteralContext * doubleLiteralContext = dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]);

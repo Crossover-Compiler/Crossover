@@ -21,14 +21,12 @@ public:
 
     /**
      * todo: doc
-     * @param number
      * @return
      */
     llvm::Value* CreateNumber(BabyCobolParser::IntLiteralContext* context);
 
     /**
      * todo: doc
-     * @param number
      * @return
      */
     llvm::Value* CreateNumber(BabyCobolParser::DoubleLiteralContext* context);
@@ -63,6 +61,12 @@ public:
      * @return 32-bit constant LLVM value representing the specified integer n.
      */
     llvm::Constant* asConstant(int n);
+
+    /**
+     * todo: doc
+     * @return
+     */
+    llvm::Value *CreateNumberValue(const std::string& name, uint64_t m_value, uint64_t m_scale, uint8_t m_length, bool m_isSigned, bool m_isPositive, bool global);
 
     int LiteralCount = 0;
 };
