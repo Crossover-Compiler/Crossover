@@ -19,7 +19,7 @@ void BCModule::initialize() {
     llvm::ArrayRef<llvm::Type*> number_struct_types = {
             int64_t,    // value
             int64_t,    // scale
-            int32_t,     // length
+            int8_t,     // length
             int8_t,     // isSigned
             int8_t,     // positive
     };
