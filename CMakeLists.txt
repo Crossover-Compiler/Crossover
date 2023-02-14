@@ -70,19 +70,19 @@ add_executable(output main.cpp
         include/utils/utils.h
         src/utils/utils.cpp
         src/Exceptions/CompileException.h
-        lib/src/arithmetic.cpp
-        lib/include/arithmetic.h
-        lib/include/number.h
+        Crossover_bstd_lib/src/arithmetic.c
+        Crossover_bstd_lib/include/arithmetic.h
+        Crossover_bstd_lib/include/number.h
         src/datastructures/Field.cpp
         src/datastructures/Field.h
         src/datastructures/Record.cpp
         src/datastructures/Record.h
-        lib/include/picutils.h
-        lib/include/picture.h
-        lib/src/picutils.cpp
+        Crossover_bstd_lib/include/picutils.h
+        Crossover_bstd_lib/include/picture.h
+        Crossover_bstd_lib/src/picutils.c
         include/ir/bcbuilder.h
         src/ir/bcbuilder.cpp
-        lib/include/numutils.h
-        lib/src/numutils.cpp)
+        Crossover_bstd_lib/include/numutils.h
+        Crossover_bstd_lib/src/numutils.c)
 llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
 target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)

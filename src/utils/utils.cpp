@@ -129,8 +129,6 @@ namespace utils{
         return false;
     }
 
-    // function from:
-    // https://stackoverflow.com/questions/478898/how-do-i-execute-a-command-and-get-the-output-of-the-command-within-c-using-po
     std::string exec(string cmdstr) {
         std::array<char, 128> buffer;
         std::string result;

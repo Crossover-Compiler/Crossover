@@ -1,0 +1,3 @@
+[submodule "Crossover_bstd_lib"]
+	path = Crossover_bstd_lib
+	url = git@github.com:omersayilir75/Crossover_bstd_lib.git
