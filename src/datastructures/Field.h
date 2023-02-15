@@ -9,7 +9,7 @@
 #include "Record.h"
 
 enum class DataType {INT, DOUBLE, STRING, UNDEFINED};
-constexpr const char* dataTypeToString(DataType dt) noexcept
+constexpr const char* dataTypeToString(DataType dt) noexcept(false)
 {
     switch (dt)
     {
@@ -30,9 +30,12 @@ public:
     };
 
     int cardinality;
+    int scale;
     string picture;
     DataType primitiveType;
     string value;
+    bool isSigned;
+    bool isPositive;
 
     llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global) override;
     llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global, string name) override;
