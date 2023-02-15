@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/callDatadivDoubles.txt");
+    stream.open("../test/callLiteralDoubles.txt");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);

@@ -1,7 +1,3 @@
-//
-// Created by bruh on 21-9-22.
-//
-
 #include "Visitor.h"
 #include "../Exceptions/NotImplemented.h"
 #include <llvm/IR/Constants.h>
@@ -229,30 +225,19 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
                 vector<llvm::Value*> argsValueVector;
                 argsValueVector.reserve(10);
                 string tempString = "";
-                if(loaded_member->getType()->isIntegerTy() )
-                {
-                    if(loaded_member->getType()->getIntegerBitWidth() <= 64)
-                    {
+                if(loaded_member->getType()->isIntegerTy() ) {
+                    if(loaded_member->getType()->getIntegerBitWidth() <= 64) {
                         tempString = tempString + "%+d,";
                     }
                 }
                 argsValueVector.push_back(loaded_member);
 
-            string formatString = tempString + "\n" ;
-
-
-
-            // every string is declared as a "global constant" at the top of the module.
-            Value* val=builder->CreateGlobalStringPtr(formatString,"str");
-
-            std::vector<Value*>::iterator it = argsValueVector.begin();
-
-            argsValueVector.insert(it,val);
-
-
-        builder->CreateCall(*printf_func,argsValueVector,"calltmp") ;
-
-
+                string formatString = tempString + "\n" ;
+                // every string is declared as a "global constant" at the top of the module.
+                Value* val=builder->CreateGlobalStringPtr(formatString,"str");
+                std::vector<Value*>::iterator it = argsValueVector.begin();
+                argsValueVector.insert(it,val);
+                builder->CreateCall(*printf_func,argsValueVector,"calltmp") ;
 
             } else if (dynamic_cast<Record *>(dataTree) != nullptr) {
                 throw NotImplemented("Visitor:visitDisplay() Printing by identifier->Record is not implemented");
@@ -262,7 +247,6 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
         }
         i++;
     }
-
 
     std::vector<llvm::Value *> outputValues;
     outputValues.reserve(value.size());
@@ -618,12 +602,16 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         // wrap(int)*
                     }
                 } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+                    BabyCobolParser::DoubleLiteralContext * doubleLiteralContext = dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]);
                     dataType = 1;
-                    auto value = any_cast<double>(visit(ctx->atomic()[i]));
+                    auto value = any_cast<double>(visitDoubleLiteral(doubleLiteralContext));
                     if (get<0>(currentType) && get<1>(currentType)) {
                         pushDoubleOnParameterList(&parameters, value);
                     } else if (get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(double)
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(doubleLiteralContext));
+                        byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                     } else if (!get<0>(currentType) && get<1>(currentType)) {
                         // double*
                         auto double_t = llvm::Type::getDoubleTy(bcModule->getContext());
@@ -634,6 +622,8 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         parameters.push_back(alloc);
                     } else if (!get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(double)*
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(doubleLiteralContext));
                     }
                 } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
                     dataType = 2;

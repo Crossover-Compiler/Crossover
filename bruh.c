@@ -69,3 +69,31 @@ void call_datadiv_doubles(double double1, struct bstd_Number double2, struct bst
     printf("%p %d\n"    , double3 , double3->isSigned);
     printf("%p %d\n\n"  , double3 , double3->positive);
 }
+
+/**
+IDENTIFICATION DIVISION.
+       PROGRAM-ID. "call_literal_doubles".
+       DATA DIVISION
+       PROCEDURE DIVISION.
+       MAIN.
+           CALL call_literal_doubles OF bruh USING -1,1 AS PRIMITIVE -33,33 AS STRUCT BY REFERENCE +666,666 AS PRIMITIVE BY REFERENCE +9999,9999 AS STRUCT.
+ */
+void call_literal_doubles(double double1, struct bstd_Number double2, double *double3, struct bstd_Number* double4) {
+    printf("call_literal_doubles.\n\n");
+
+    printf("%f\n\n" , double1);
+
+    printf("%lu\n"  , double2.value);
+    printf("%lu\n"  , double2.scale);
+    printf("%d\n"   , double2.length);
+    printf("%d\n"   , double2.isSigned);
+    printf("%d\n\n" , double2.positive);
+
+    printf("%p %f\n\n"   , double3 , *double3);
+
+    printf("%p %lu\n"   , double4 , double4->value);
+    printf("%p %lu\n"   , double4 , double4->scale);
+    printf("%p %d\n"    , double4 , double4->length);
+    printf("%p %d\n"    , double4 , double4->isSigned);
+    printf("%p %d\n\n"  , double4 , double4->positive);
+}
