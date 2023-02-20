@@ -3,7 +3,7 @@
 //
 
 #include "../../include/utils/utils.h"
-#include <fstream>
+#include "../Exceptions/CompileException.h"
 
 using namespace std;
 
@@ -129,8 +129,6 @@ namespace utils{
         return false;
     }
 
-    // function from:
-    // https://stackoverflow.com/questions/478898/how-do-i-execute-a-command-and-get-the-output-of-the-command-within-c-using-po
     std::string exec(string cmdstr) {
         std::array<char, 128> buffer;
         std::string result;
@@ -192,20 +190,20 @@ namespace utils{
         if(path.find('/') == std::string::npos){
             string result = path.substr(0, path.length()-2);
             return result;
-        } else{
-            bool encounteredForwardslash = false;
-            for (int i = path.length() - 1; i >= 0; i--){
-                char currentChar = path[i];
-                if (std::strcmp(&currentChar, "/") == 0){
-                    encounteredForwardslash = true;
-                }
-                if (encounteredForwardslash){
-                    string filename = path.substr(i);
-                    string result = filename.substr(i-1 ,filename.length()-3);
-                    return result;
-                }
+        }
+
+        bool encounteredForwardslash = false;
+        for (int i = path.length() - 1; i >= 0; i--){
+            char currentChar = path[i];
+            if (std::strcmp(&currentChar, "/") == 0){
+                encounteredForwardslash = true;
+            }
+            if (encounteredForwardslash){
+                string filename = path.substr(i);
+                string result = filename.substr(i-1 ,filename.length()-3);
+                return result;
             }
         }
+        throw CompileException("Invalid path for program name");
     }
-
 }

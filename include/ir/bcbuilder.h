@@ -6,9 +6,10 @@
 #define CROSSOVER_BCBUILDER_H
 
 #include <llvm/IR/IRBuilder.h>
-#include "../../lib/include/number.h"
+#include "../../Crossover_bstd_lib//include/number.h"
 #include "bcmodule.h"
-#include "../../lib/include/picture.h"
+#include "../../Crossover_bstd_lib/include/picture.h"
+#include "../antlr/BabyCobolParser.h"
 
 class BCBuilder : public llvm::IRBuilder<> {
 
@@ -20,10 +21,22 @@ public:
 
     /**
      * todo: doc
+     * @return
+     */
+    llvm::Value* CreateNumber(BabyCobolParser::IntLiteralContext* context);
+
+    /**
+     * todo: doc
+     * @return
+     */
+    llvm::Value* CreateNumber(BabyCobolParser::DoubleLiteralContext* context);
+
+    /**
+     * todo: doc
      * @param number
      * @return
      */
-    llvm::Value* CreateNumber(bstd::Number* number, std::string& name, bool global = false);
+    llvm::Value* CreateNumber(bstd_Number* number, std::string& name, bool global = false);
 
     /**
      * todo: doc
@@ -32,7 +45,7 @@ public:
      * @param global
      * @return
      */
-    llvm::Value* CreatePicture(bstd::Picture* picture, std::string &name, bool global = false);
+    llvm::Value* CreatePicture(bstd_Picture* picture, std::string &name, bool global = false);
 
     /**
      * todo: doc
@@ -40,7 +53,7 @@ public:
      * @param rhs
      * @return
      */
-    llvm::Value* CreateAdd(bstd::Number* lhs, bstd::Number* rhs);
+    llvm::Value* CreateAdd(bstd_Number* lhs, bstd_Number* rhs);
 
     /**
      * todo: doc
@@ -48,6 +61,14 @@ public:
      * @return 32-bit constant LLVM value representing the specified integer n.
      */
     llvm::Constant* asConstant(int n);
+
+    /**
+     * todo: doc
+     * @return
+     */
+    llvm::Value *CreateNumberValue(const std::string& name, uint64_t m_value, uint64_t m_scale, uint8_t m_length, bool m_isSigned, bool m_isPositive, bool global);
+
+    int LiteralCount = 0;
 };
 
 #endif //CROSSOVER_BCBUILDER_H

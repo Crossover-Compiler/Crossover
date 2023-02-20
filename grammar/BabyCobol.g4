@@ -74,7 +74,6 @@ callStatement   :   CALL (function_name=IDENTIFIER OF)? program_name=IDENTIFIER
                                     (BYVALUE byvalueatomicsprim+=atomic+) |
                                     (BYREFERENCE byreferenceatomicsprim+=atomic+) |
                                     (byvalueatomicsprim+=atomic+)
-
                                 )
                             )+
                         )?
@@ -142,7 +141,7 @@ atomic          :   int                         #intLiteral
 
 identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
 
-int             :   INT;
+int             :   ('-'|'+')? INT;
 
 
 // Keywords & symbol names
@@ -216,7 +215,7 @@ AS:         'AS';
 
 WS              :   [ \r\n\t\f]+ -> skip;
 FUNCTIONNAME    :   '\''IDENTIFIER'\'';
-INT             : '-'? [0-9]+;
+INT             :   [0-9]+;
 DOUBLE          :   ('-'|'+')? INT ',' INT;
 LITERAL         :   '"' ~'"'+ '"'; // Any char except for "
 DOT             :   '.';

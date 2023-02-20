@@ -29,7 +29,7 @@
 #include <memory>
 #include <system_error>
 #include <vector>
-#include "lib/include/picutils.h"
+
 
 
 using namespace std;
@@ -41,7 +41,7 @@ using namespace utils;
 // TODO: pls move me to somewhere sensible
 
 
-#include "lib/include/numutils.h"
+
 
 int main(int argc, char **argv) {
 
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/callDatadivPrimitives.txt");
+    stream.open("../test/call_literal_ints.bc");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -89,15 +89,6 @@ int main(int argc, char **argv) {
     Visitor visitor(module, &builder, &extTable);
     visitor.visitProgram(tree);
 
-
-//    // test number print
-//    bstd::Picture* pic = bstd::picutils::of(new char[]{ 'Q', 0, 'F' }, new char[]{ 'X', '9', 'X' }, 3);
-//
-//    string name = string("test_pic");
-//    auto pic_val = builder.CreatePicture(pic, name);
-//    builder.CreateCall(*module->getPrintPicture(), { pic_val }, "testPicturePrintCall");
-//    // print to test
-//    std::cout << bstd::picutils::to_cstr(pic) << std::endl;
 
     builder.CreateRetVoid();
     cout << "Finished Compiling!" << endl;
@@ -166,12 +157,11 @@ int main(int argc, char **argv) {
 
     cout << "Compiling BabyCobol Standard Library" << endl;
     exec("mkdir -p out/lib");
-    exec("cd out/lib || exit 1");
-    // command below requires libc++-dev to be installed
-    exec("clang++ --stdlib=libc++ -c --include-directory ../lib/include/ ../lib/src/*.cpp");
-    exec("ar cr libbstd.a *.o");
+    exec("cd out/lib && "
+         "clang -c --include-directory ../../../Crossover_bstd_lib/include/ ../../../Crossover_bstd_lib/src/*.c && "
+         "ar cr libbstd.a *.o");
 
-    string linkCommand = "clang --for-linker=-Lout/lib/,-lbstd -o exec output.o";
+    string linkCommand = "clang -o exec output.o out/lib/libbstd.a";
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {

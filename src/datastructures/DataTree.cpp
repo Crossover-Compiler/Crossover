@@ -130,6 +130,7 @@ bool DataTree::isRecord() {
 //                children
             }
         }
+        throw CompileException("getNodesFromPath is not implemented correctly...");
     }
 
 

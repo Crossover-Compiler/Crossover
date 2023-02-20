@@ -1,7 +1,3 @@
-//
-// Created by bruh on 21-9-22.
-//
-
 #include "Visitor.h"
 #include "../Exceptions/NotImplemented.h"
 #include <llvm/IR/Constants.h>
@@ -164,10 +160,12 @@ std::any Visitor::visitLevel(BabyCobolParser::LevelContext *ctx) {
 }
 
 std::any Visitor::visitRepresentation(BabyCobolParser::RepresentationContext *ctx) {
-    if (!ctx->INT()->getText().empty()) {
-        return ctx->INT()->getText();
+    if (ctx->INT() != nullptr) {
+        if (!ctx->INT()->getText().empty()) {
+            return ctx->INT()->getText();
+        }
     }
-    return ctx->IDENTIFIER()->getSymbol();
+    return ctx->IDENTIFIER()->getText();
 }
 
 std::any Visitor::visitProcedure(BabyCobolParser::ProcedureContext *ctx) {
@@ -206,7 +204,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
             if (dynamic_cast<Field *>(dataTree) != nullptr) {
                 // TODO: This does not get printed at the right time AND only prints i64
 
-                llvm::Value* numVal = builder->CreateLoad(bcModule->getNumberStructType(),dataTree->getLlvmValue());
+                llvm::Value *numVal = builder->CreateLoad(bcModule->getNumberStructType(),dataTree->getLlvmValue());
                 std::vector<llvm::Value *> indices(7);
                 indices[0] = builder->asConstant(0);
                 indices[1] = builder->asConstant(0);
@@ -227,30 +225,19 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
                 vector<llvm::Value*> argsValueVector;
                 argsValueVector.reserve(10);
                 string tempString = "";
-                if(loaded_member->getType()->isIntegerTy() )
-                {
-                    if(loaded_member->getType()->getIntegerBitWidth() <= 64)
-                    {
+                if(loaded_member->getType()->isIntegerTy() ) {
+                    if(loaded_member->getType()->getIntegerBitWidth() <= 64) {
                         tempString = tempString + "%+d,";
                     }
                 }
                 argsValueVector.push_back(loaded_member);
 
-            string formatString = tempString + "\n" ;
-
-
-
-            // every string is declared as a "global constant" at the top of the module.
-            Value* val=builder->CreateGlobalStringPtr(formatString,"str");
-
-            std::vector<Value*>::iterator it = argsValueVector.begin();
-
-            argsValueVector.insert(it,val);
-
-
-        builder->CreateCall(*printf_func,argsValueVector,"calltmp") ;
-
-
+                string formatString = tempString + "\n" ;
+                // every string is declared as a "global constant" at the top of the module.
+                Value* val=builder->CreateGlobalStringPtr(formatString,"str");
+                std::vector<Value*>::iterator it = argsValueVector.begin();
+                argsValueVector.insert(it,val);
+                builder->CreateCall(*printf_func,argsValueVector,"calltmp") ;
 
             } else if (dynamic_cast<Record *>(dataTree) != nullptr) {
                 throw NotImplemented("Visitor:visitDisplay() Printing by identifier->Record is not implemented");
@@ -260,7 +247,6 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
         }
         i++;
     }
-
 
     std::vector<llvm::Value *> outputValues;
     outputValues.reserve(value.size());
@@ -516,7 +502,16 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                     } else if (field.getPrimitiveType() == DataType::INT) {
                         if (get<0>(currentType) && get<1>(currentType)) {
                             // int
-                            pushIntOnParameterList(&parameters, stoi(field.getValue()));
+                            llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *new_function = new llvm::FunctionCallee();
+                            *(new_function) = bcModule->getOrInsertFunction("bstd_get_int", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *alloc = builder->CreateCall(*new_function, args);
+                            parameters.push_back(alloc);
+
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)
                             parameters.push_back(field.getLlvmValue());
@@ -524,11 +519,21 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // int*
-                            // TODO: This is the raw value. We should apply the signs before we send it
-                            // TODO: Do we want to apply marshalling when we re-enter BabyCobol?
-                            llvm::Value *value_ptr = builder->CreateStructGEP(bcModule->getNumberStructType(),
-                                                                              field.getLlvmValue(), 0, "valuePtr");
-                            parameters.push_back(value_ptr);
+                            // TODO: Marshall the newly created pointer back into the picture
+
+                            llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
+                            llvm::Type *int_ptr_t = llvm::Type::getInt64PtrTy(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *bstd_get_int = new llvm::FunctionCallee();
+                            *(bstd_get_int) = bcModule->getOrInsertFunction("bstd_get_int", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *value = builder->CreateCall(*bstd_get_int, args);
+                            llvm::Value *alloc = builder->CreateAlloca(int_ptr_t);
+
+                            builder->CreateStore(value, alloc, false);
+                            parameters.push_back(alloc);
 
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)*
@@ -538,14 +543,42 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                     } else if (field.getPrimitiveType() == DataType::DOUBLE) {
                         if (get<0>(currentType) && get<1>(currentType)) {
-                            pushDoubleOnParameterList(&parameters, stod(field.getValue()));
+                            // double
+                            llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *new_function = new llvm::FunctionCallee();
+                            *(new_function) = bcModule->getOrInsertFunction("bstd_get_double", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *alloc = builder->CreateCall(*new_function, args);
+                            parameters.push_back(alloc);
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)
+                            parameters.push_back(field.getLlvmValue());
+                            byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // double*
-                            // TODO: Pass memory address of the field itself
+                            // TODO: Marshall the newly created pointer back into the picture
+
+                            llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
+                            llvm::Type *double_ptr_t = llvm::Type::getDoublePtrTy(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *bstd_get_double = new llvm::FunctionCallee();
+                            *(bstd_get_double) = bcModule->getOrInsertFunction("bstd_get_double", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *value = builder->CreateCall(*bstd_get_double, args);
+                            llvm::Value *alloc = builder->CreateAlloca(double_ptr_t);
+
+                            builder->CreateStore(value, alloc, false);
+                            parameters.push_back(alloc);
+
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)*
+                            // TODO: At re-entry we should marshall this value!
+                            parameters.push_back(field.getLlvmValue());
                         }
                     } else if (field.getPrimitiveType() == DataType::STRING) {
                         if (get<0>(currentType) && get<1>(currentType)) {
@@ -574,13 +607,16 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                 int dataType = -1;
                 // atomic is a literal. So either an int, double or string
                 if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+                    BabyCobolParser::IntLiteralContext * intLiteralContext = dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]);
                     dataType = 0;
-                    int value = any_cast<int>(visit(ctx->atomic()[i]));
+                    int value = any_cast<int>(visitIntLiteral(intLiteralContext));
                     if (get<0>(currentType) && get<1>(currentType)) {
                         pushIntOnParameterList(&parameters, value);
                     } else if (get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(int)
-
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(intLiteralContext));
+                        byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                     } else if (!get<0>(currentType) && get<1>(currentType)) {
                         // int*
                         auto int64_t = llvm::IntegerType::getInt64Ty(bcModule->getContext());
@@ -591,14 +627,20 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         parameters.push_back(alloc);
                     } else if (!get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(int)*
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(intLiteralContext));
                     }
                 } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+                    BabyCobolParser::DoubleLiteralContext * doubleLiteralContext = dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]);
                     dataType = 1;
-                    auto value = any_cast<double>(visit(ctx->atomic()[i]));
+                    auto value = any_cast<double>(visitDoubleLiteral(doubleLiteralContext));
                     if (get<0>(currentType) && get<1>(currentType)) {
                         pushDoubleOnParameterList(&parameters, value);
                     } else if (get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(double)
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(doubleLiteralContext));
+                        byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                     } else if (!get<0>(currentType) && get<1>(currentType)) {
                         // double*
                         auto double_t = llvm::Type::getDoubleTy(bcModule->getContext());
@@ -609,6 +651,8 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         parameters.push_back(alloc);
                     } else if (!get<0>(currentType) && !get<1>(currentType)) {
                         // wrap(double)*
+                        // TODO: Release LLVM value on return
+                        parameters.push_back(builder->CreateNumber(doubleLiteralContext));
                     }
                 } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
                     dataType = 2;
@@ -738,14 +782,19 @@ void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::Represe
 
         if (match) {
             cout << "Correct Picture: " << pictureString << endl;
-            // TODO: Set picture
             field->setPicture(pictureString);
             field->setCardinality(pictureString.size());
 
             if (match_int) {
                 field->setPrimitiveType(DataType::INT);
+                field->isSigned = pictureString.find('S') != std::string::npos;
+                field->isPositive = true;
+                field->scale = 0;
             } else if (match_double) {
                 field->setPrimitiveType(DataType::DOUBLE);
+                field->isSigned = pictureString.find('S') != std::string::npos;
+                field->isPositive = true;
+                field->scale = split(pictureString, "V").at(1).length();
             } else {
                 field->setPrimitiveType(DataType::STRING);
             }
@@ -772,7 +821,7 @@ vector<DataTree *> Visitor::getNodes(string path) {
 }
 
 // JAVA-like split function for strings
-vector<string> Visitor::split(string s, string delimiter) {
+vector<string> Visitor::split(const string& s, string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;
     vector<string> res;

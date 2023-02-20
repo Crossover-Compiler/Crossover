@@ -1,0 +1,14 @@
+IDENTIFICATION DIVISION.
+       PROGRAM-ID. "call-datadiv-ints".
+       DATA DIVISION
+            01 ROOT.
+                   02 INTS.
+                       03 C PICTURE IS 99S.
+                       03 D PICTURE IS 9999S.
+                       03 E PICTURE IS 999999S.
+                       03 F PICTURE IS 99999999S.
+
+       PROCEDURE DIVISION.
+       MAIN.
+           CALL call_datadiv_ints OF bruh USING C AS PRIMITIVE D AS STRUCT BY REFERENCE E AS PRIMITIVE BY REFERENCE F AS STRUCT.
+           DISPLAY C D E F.
