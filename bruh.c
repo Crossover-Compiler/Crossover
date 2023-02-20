@@ -102,13 +102,14 @@ IDENTIFICATION DIVISION.
                         03 C PICTURE IS 9V9.
                         03 D PICTURE IS 99V99.
                         03 E PICTURE IS 999V999.
+                        03 F PICTURE IS 9999V9999.
 
        PROCEDURE DIVISION.
        MAIN.
-           CALL call_datadiv_doubles OF bruh USING C AS PRIMITIVE D AS STRUCT BY REFERENCE E AS STRUCT.
-           DISPLAY C D E.
+           CALL call_datadiv_doubles OF bruh USING C AS PRIMITIVE D AS STRUCT BY REFERENCE E AS PRIMITIVE F AS STRUCT.
+           DISPLAY C D E F.
  */
-void call_datadiv_doubles(double double1, struct bstd_Number double2, struct bstd_Number* double3) {
+void call_datadiv_doubles(double double1, struct bstd_Number double2, double *double3, struct bstd_Number* double4) {
     printf("call_datadiv_doubles.bc\n\n");
 
     printf("%f\n\n" , double1);
@@ -119,9 +120,11 @@ void call_datadiv_doubles(double double1, struct bstd_Number double2, struct bst
     printf("%d\n"   , double2.isSigned);
     printf("%d\n\n" , double2.positive);
 
-    printf("%p %lu\n"   , double3 , double3->value);
-    printf("%p %lu\n"   , double3 , double3->scale);
-    printf("%p %d\n"    , double3 , double3->length);
-    printf("%p %d\n"    , double3 , double3->isSigned);
-    printf("%p %d\n\n"  , double3 , double3->positive);
+    printf("%p %f\n\n"   , double3 , *double3);
+
+    printf("%p %lu\n"   , double4 , double4->value);
+    printf("%p %lu\n"   , double4 , double4->scale);
+    printf("%p %d\n"    , double4 , double4->length);
+    printf("%p %d\n"    , double4 , double4->isSigned);
+    printf("%p %d\n\n"  , double4 , double4->positive);
 }

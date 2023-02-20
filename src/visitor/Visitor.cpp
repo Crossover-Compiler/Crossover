@@ -519,11 +519,21 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // int*
-                            // TODO: Decide if we want to do this
-                            // TODO: This is the raw value. We should apply the signs before we send it
-                            llvm::Value *value_ptr = builder->CreateStructGEP(bcModule->getNumberStructType(),
-                                                                              field.getLlvmValue(), 0, "valuePtr");
-                            parameters.push_back(value_ptr);
+                            // TODO: Marshall the newly created pointer back into the picture
+
+                            llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
+                            llvm::Type *int_ptr_t = llvm::Type::getInt64PtrTy(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *bstd_get_int = new llvm::FunctionCallee();
+                            *(bstd_get_int) = bcModule->getOrInsertFunction("bstd_get_int", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *value = builder->CreateCall(*bstd_get_int, args);
+                            llvm::Value *alloc = builder->CreateAlloca(int_ptr_t);
+
+                            builder->CreateStore(value, alloc, false);
+                            parameters.push_back(alloc);
 
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)*
@@ -549,8 +559,22 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // double*
-                            // TODO: Decide if we want to do this
-                            throw NotImplemented("Calling function by using a picture that looks like a double BY REFERENCE and AS PRIMITIVE is not supported!");
+                            // TODO: Marshall the newly created pointer back into the picture
+
+                            llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
+                            llvm::Type *double_ptr_t = llvm::Type::getDoublePtrTy(bcModule->getContext());
+                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
+                            auto *bstd_get_double = new llvm::FunctionCallee();
+                            *(bstd_get_double) = bcModule->getOrInsertFunction("bstd_get_double", new_function_types);
+
+                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+
+                            llvm::Value *value = builder->CreateCall(*bstd_get_double, args);
+                            llvm::Value *alloc = builder->CreateAlloca(double_ptr_t);
+
+                            builder->CreateStore(value, alloc, false);
+                            parameters.push_back(alloc);
+
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)*
                             // TODO: At re-entry we should marshall this value!
