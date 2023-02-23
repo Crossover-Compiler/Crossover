@@ -64,14 +64,14 @@ namespace utils {
      * @param delimiter
      * @return
      */
-    vector<string> split (string s, string delimiter);
+    vector<string> split(string& s, string delimiter);
 
     /**
      * Extract global and local text symbols from nm output
      * @param input
      * @return
      */
-    vector<string> extractTextSymbols(string input);
+    vector<string> extractTextSymbols(string& input);
 
 
     /**

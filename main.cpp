@@ -30,8 +30,6 @@
 #include <system_error>
 #include <vector>
 
-
-
 using namespace std;
 using namespace antlr4;
 using namespace llvm;
@@ -53,7 +51,7 @@ int main(int argc, char **argv) {
     for (auto & element : externalFiles) {
         string execCommand = "nm --demangle ";
         string nmOutput = exec(execCommand.append(element));
-        vector<string> textSymbols = extractTextSymbols(nmOutput); // gather all T and t
+        vector<string> textSymbols = utils::extractTextSymbols(nmOutput); // gather all T and t
         string programName = extractProgramNameFromPath(element); // get program name from the input
         extTable.insert({programName, textSymbols});
     }
@@ -147,9 +145,7 @@ int main(int argc, char **argv) {
     pass.run(*module);
     dest.flush();
 
-    outs() << "Wrote " << Filename << "\n";
-
-
+    llvm::outs() << "Wrote " << Filename << "\n";
 
     if (presentInArgs(argc, argv,"-generate-structs")) {
         generateStructs(visitor.dataStructures);
@@ -161,7 +157,8 @@ int main(int argc, char **argv) {
          "clang -c --include-directory ../../../Crossover_bstd_lib/include/ ../../../Crossover_bstd_lib/src/*.c && "
          "ar cr libbstd.a *.o");
 
-    string linkCommand = "clang -o exec output.o out/lib/libbstd.a";
+    const string executableName = "exec";
+    string linkCommand = "clang output.o out/lib/libbstd.a -o " + executableName;
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {
@@ -169,8 +166,10 @@ int main(int argc, char **argv) {
         linkCommand.append(element);
     }
 
-    cout << "Compilation complete.";
-    exec(linkCommand);
+    auto result = exec(linkCommand);
+
+    std::cout << "Done." << std::endl << "Wrote executable to file: " << executableName << std::endl;
+
     return 0;
 }
 

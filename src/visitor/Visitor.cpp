@@ -474,17 +474,32 @@ any Visitor::visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) {
     return stod(s);
 }
 
+void Visitor::int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* intPtr) {
+
+    // dereference intPtr
+    auto int_val = builder->CreateLoad(llvm::Type::getInt64Ty(builder->getContext()), intPtr);
+
+    auto assign_int_func = module->getAssignIntFunc();
+    builder->CreateCall(*assign_int_func, { original, int_val });
+}
+
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     callCount++;
+
+    // todo: replace these tuples with enums.
     // True, True if -> BY VALUE, AS PRIMITIVE
     // False, False if -> BY REFERENCE, AS STRUCT
     vector<tuple<bool, bool>> passType(ctx->atomic().size());
     std::vector<llvm::Value *> parameters;
     parameters.reserve(ctx->atomic().size());
+
+    // (original, copy, handler)
+    vector<tuple<llvm::Value*, llvm::Value*, re_entry_handler_generator_t>> re_entry_cache;
+
     map<BabyCobolParser::AtomicContext *, const char *> stringsToMutate;
     map<BabyCobolParser::AtomicContext *, double *> doublesToMutate;
     map<BabyCobolParser::AtomicContext *, int *> intsToMutate;
-    vector<tuple<int, StructType*>> byvalTracker;
+    vector<tuple<int, Type*>> byvalTracker;
 
     if (ctx->USING() != nullptr) {
         populatePassTypeVector(&passType, ctx);
@@ -519,21 +534,18 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // int*
-                            // TODO: Marshall the newly created pointer back into the picture
 
-                            llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
-                            llvm::Type *int_ptr_t = llvm::Type::getInt64PtrTy(bcModule->getContext());
-                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
-                            auto *bstd_get_int = new llvm::FunctionCallee();
-                            *(bstd_get_int) = bcModule->getOrInsertFunction("bstd_get_int", new_function_types);
+                            // convert number to integer pointer
+                            auto original = field.getLlvmValue();
+                            auto intPtr = builder->CreateNumberToIntPtrCall(original);
 
-                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+                            // use integer pointer as call parameter
+                            parameters.push_back(intPtr);
 
-                            llvm::Value *value = builder->CreateCall(*bstd_get_int, args);
-                            llvm::Value *alloc = builder->CreateAlloca(int_ptr_t);
-
-                            builder->CreateStore(value, alloc, false);
-                            parameters.push_back(alloc);
+                            // keep track of this value for upon re-entry
+                            auto handler = &Visitor::int_ptr_re_entry_handler_generator;
+                            auto copy_handler_tuple = tuple(original, intPtr, handler);
+                            re_entry_cache.push_back(copy_handler_tuple);
 
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)*
@@ -584,7 +596,13 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         if (get<0>(currentType) && get<1>(currentType)) {
                             pushStringOnParameterList(&parameters, field.getValue());
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
-                            // wrap(string)
+                            // Picture
+
+
+
+                            parameters.push_back(field.getLlvmValue());
+                            byvalTracker.emplace_back(i, field.getLlvmValue()->getType());
+
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // string*
                             stringsToMutate[ctx->atomic()[i]] = field.getValue().c_str();
@@ -710,8 +728,6 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     llvm::FunctionType *new_function_types = llvm::FunctionType::get(void_t, param_types, true);
     auto *new_function = new llvm::FunctionCallee();
 
-
-
     vector<string> programFunctions;
     if(extTable->find(programName) != extTable->end()){
         programFunctions = extTable->find(programName)->second;
@@ -740,6 +756,14 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     llvm::ArrayRef<llvm::Value *> args = parameters;
 
     builder->CreateCall(*new_function, args);
+
+    // generate re-entry handlers
+    for (auto & it : re_entry_cache) {
+        auto original = get<0>(it);
+        auto copy = get<1>(it);
+        auto handler = get<2>(it);
+        (*handler)(this->builder, this->bcModule, original, copy);
+    }
 
     return nullptr;
 }
@@ -794,7 +818,7 @@ void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::Represe
                 field->setPrimitiveType(DataType::DOUBLE);
                 field->isSigned = pictureString.find('S') != std::string::npos;
                 field->isPositive = true;
-                field->scale = split(pictureString, "V").at(1).length();
+                field->scale = utils::split(pictureString, "V").at(1).length();
             } else {
                 field->setPrimitiveType(DataType::STRING);
             }
@@ -820,22 +844,6 @@ vector<DataTree *> Visitor::getNodes(string path) {
     return result;
 }
 
-// JAVA-like split function for strings
-vector<string> Visitor::split(const string& s, string delimiter) {
-    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    string token;
-    vector<string> res;
-
-    while ((pos_end = s.find(delimiter, pos_start)) != string::npos) {
-        token = s.substr(pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back(token);
-    }
-
-    res.push_back(s.substr(pos_start));
-    return res;
-}
-
 void Visitor::pushIntOnParameterList(std::vector<llvm::Value *> *parameters, int value) {
     auto v_t = llvm::Type::getInt64Ty(bcModule->getContext());
     auto v = llvm::ConstantInt::get(v_t, value, true);
@@ -849,24 +857,25 @@ void Visitor::pushDoubleOnParameterList(std::vector<llvm::Value *> *parameters, 
 }
 
 void Visitor::pushStringOnParameterList(std::vector<llvm::Value *> *parameters, string value) {
-    auto v_t = llvm::Type::getInt8Ty(bcModule->getContext());
-    llvm::ArrayType *arrayType = llvm::ArrayType::get(v_t, value.size() + 1);
+
+    auto int8_t = llvm::Type::getInt8Ty(bcModule->getContext());
+    llvm::ArrayType* arrayType = llvm::ArrayType::get(int8_t, value.size() + 1);
     auto alloc = builder->CreateAlloca(arrayType);
 
-    auto charType = llvm::IntegerType::get(bcModule->getContext(), 8);
-    std::vector<llvm::Constant *> chars(value.length());
-    for (unsigned int i = 0; i < value.size(); i++) {
-        chars[i] = llvm::ConstantInt::get(charType, value[i]);
-    }
-    chars.push_back(llvm::ConstantInt::get(charType, 0));
+    std::vector<llvm::Constant*> chars(value.length());
 
-    llvm::Value *v = llvm::ConstantArray::get(arrayType, chars);
+    for (unsigned int i = 0; i < value.size(); i++) {
+        chars[i] = llvm::ConstantInt::get(int8_t, value[i]);
+    }
+
+    chars.push_back(llvm::ConstantInt::get(int8_t, 0)); // null-terminator
+
+    llvm::Value* v = llvm::ConstantArray::get(arrayType, chars);
     builder->CreateStore(v, alloc, false);
     parameters->push_back(alloc);
 }
 
-void
-Visitor::populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx) {
+void Visitor::populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx) {
     int valuePrimCursor = 0;
     int referencePrimCursor = 0;
     int valueStructCursor = 0;
