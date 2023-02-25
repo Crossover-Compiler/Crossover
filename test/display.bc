@@ -1,0 +1,14 @@
+IDENTIFICATION DIVISION.
+       PROGRAM-ID. "display".
+       DATA DIVISION
+            01 ROOT.
+                   02 INTS.
+                        03 C PICTURE IS 9V9.
+                        03 D PICTURE IS XXXAX9.
+                        03 E PICTURE IS XXX.
+
+       PROCEDURE DIVISION.
+       MAIN.
+           DISPLAY C "HELLO" D E.
+           DISPLAY " ".
+           DISPLAY C "HELLO" D E WITH NO ADVANCING.

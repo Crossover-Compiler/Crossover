@@ -1,8 +1,3 @@
-//
-// Created by bruh on 10/17/22.
-//
-
-#include <iostream>
 #include "Field.h"
 #include "../Exceptions/CompileException.h"
 
@@ -92,14 +87,25 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             }, name, global);
         }
         case DataType::STRING: {
-            // TODO: CreateString?
-            break;
+            string temp_str = this->value;
+
+            char * bytes = new char [temp_str.length()+1];
+            std::strcpy (bytes, temp_str.c_str());
+
+            char * mask = new char [temp_str.length()+1];
+            std::strcpy (mask, temp_str.c_str());
+
+            return builder->CreatePicture(new bstd_Picture{
+                    .bytes = bytes,
+                    .mask = mask,
+                    .length = (std::uint8_t) temp_str.length()
+            }, name, global);
+
         }
         default: {
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
-    throw logic_error("Should not get here...");
 }
 
 llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {

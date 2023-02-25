@@ -49,7 +49,7 @@ public:
      * todo: doc
      * @return
      */
-    llvm::StructType* getPictureStructType(uint8_t length);
+    llvm::StructType* getPictureStructType();
 
     /**
      * @brief Gets a reference to the IR printf function

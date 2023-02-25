@@ -226,16 +226,18 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
                 auto type = field->getPrimitiveType();
                 if (type == DataType::INT || type == DataType::DOUBLE) {
                     new_function = bcModule->getOrInsertFunction("bstd_print_number", new_function_types);
+                    auto function = cast<Function>(new_function.getCallee());
+                    function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
+                                                                          bcModule->getNumberStructType()));
                 } else if (type == DataType::STRING) {
                     new_function = bcModule->getOrInsertFunction("bstd_print_picture", new_function_types);
+                    auto function = cast<Function>(new_function.getCallee());
+                    function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
+                                                                          bcModule->getPictureStructType()));
                 } else {
                     throw CompileException(
                             "Can't print Field '" + field->getName() + "' in display type == DataType::UNDEFINED");
                 }
-
-                auto function = cast<Function>(new_function.getCallee());
-                function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
-                                                                      bcModule->getNumberStructType()));
 
                 builder->CreateCall(new_function, parameters);
             } else if (dynamic_cast<Record *>(dataTree) != nullptr) {
@@ -787,7 +789,7 @@ void Visitor::reset() {
 }
 
 void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::RepresentationContext *picture) {
-    Field *field = dynamic_cast<Field *>(dataTree);
+    auto *field = dynamic_cast<Field *>(dataTree);
     if (picture != nullptr) {
         string pictureString;
         if (picture->INT() != nullptr) {
