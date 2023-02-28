@@ -204,14 +204,19 @@ llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_v
 
 llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
 
-    llvm::Type *int_t = llvm::Type::getInt64Ty(this->getContext());
-    llvm::Type *int_ptr_t = llvm::Type::getInt64PtrTy(this->getContext());
-    auto to_int_func = module->getMarshallIntFunc();
+    llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());
+    llvm::ConstantInt* const_i64 = llvm::ConstantInt::get(int_t, 64);
+
+    auto num_to_int = module->getMarshallIntFunc();
 
     llvm::ArrayRef<llvm::Value *> args = number;
-    llvm::Value *return_value = this->CreateCall(*to_int_func, args);
+    llvm::Value *return_value = this->CreateCall(*num_to_int, args);
 
+    // allocate memory...
     auto alloc = this->CreateAlloca(int_t);
+    // ... mark allocation as alive...
+    this->CreateLifetimeStart(alloc, const_i64);
+    // ... and assign marshalled representation to allocated memory.
     this->CreateStore(return_value, alloc);
 
     return alloc;

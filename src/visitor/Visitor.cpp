@@ -476,11 +476,17 @@ any Visitor::visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) {
 
 void Visitor::int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* intPtr) {
 
+    auto int_t = llvm::Type::getInt64Ty(builder->getContext());
+    auto const_i64 = llvm::ConstantInt::get(int_t, 64);
+
     // dereference intPtr
-    auto int_val = builder->CreateLoad(llvm::Type::getInt64Ty(builder->getContext()), intPtr);
+    auto int_val = builder->CreateLoad(int_t, intPtr);
 
     auto assign_int_func = module->getAssignIntFunc();
     builder->CreateCall(*assign_int_func, { original, int_val });
+
+    // free allocated memory
+    builder->CreateLifetimeEnd(intPtr, const_i64);
 }
 
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
