@@ -505,7 +505,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
                             llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
                             auto *new_function = new llvm::FunctionCallee();
-                            *(new_function) = bcModule->getOrInsertFunction("bstd_get_int", new_function_types);
+                            *(new_function) = bcModule->getOrInsertFunction("bstd_number_to_int", new_function_types);
 
                             llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
 
@@ -525,7 +525,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             llvm::Type *int_ptr_t = llvm::Type::getInt64PtrTy(bcModule->getContext());
                             llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
                             auto *bstd_get_int = new llvm::FunctionCallee();
-                            *(bstd_get_int) = bcModule->getOrInsertFunction("bstd_get_int", new_function_types);
+                            *(bstd_get_int) = bcModule->getOrInsertFunction("bstd_number_to_int", new_function_types);
 
                             llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
 
@@ -547,7 +547,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
                             llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
                             auto *new_function = new llvm::FunctionCallee();
-                            *(new_function) = bcModule->getOrInsertFunction("bstd_get_double", new_function_types);
+                            *(new_function) = bcModule->getOrInsertFunction("bstd_number_to_double", new_function_types);
 
                             llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
 
@@ -565,7 +565,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             llvm::Type *double_ptr_t = llvm::Type::getDoublePtrTy(bcModule->getContext());
                             llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(bcModule->getNumberStructType(), 0), false);
                             auto *bstd_get_double = new llvm::FunctionCallee();
-                            *(bstd_get_double) = bcModule->getOrInsertFunction("bstd_get_double", new_function_types);
+                            *(bstd_get_double) = bcModule->getOrInsertFunction("bstd_number_to_double", new_function_types);
 
                             llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
 
