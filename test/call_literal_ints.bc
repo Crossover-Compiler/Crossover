@@ -1,9 +1,6 @@
 IDENTIFICATION DIVISION.
        PROGRAM-ID. "call_literal_ints".
        DATA DIVISION
-           01 A PICTURE IS 9.
        PROCEDURE DIVISION.
        MAIN.
-           CALL foo OF bruh USING BY REFERENCE A AS PRIMITIVE.
-           DISPLAY A.
-           CALL bar OF bruh.
+            CALL call_literal_ints OF bruh USING -1 AS PRIMITIVE -33 AS STRUCT BY REFERENCE +666 AS PRIMITIVE BY REFERENCE +9999 AS STRUCT.
