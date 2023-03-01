@@ -11,6 +11,8 @@
 #include "../../Crossover_bstd_lib/include/picture.h"
 #include "../antlr/BabyCobolParser.h"
 
+class Field;
+
 class BCBuilder : public llvm::IRBuilder<> {
 
 protected:
@@ -67,6 +69,13 @@ public:
      * @return
      */
     llvm::Value *CreateNumberValue(const std::string& name, uint64_t m_value, uint64_t m_scale, uint8_t m_length, bool m_isSigned, bool m_isPositive, bool global);
+
+    /**
+     * Creates a call to the bstd runtime library marshaller function bstd_picture_to_cstr(bstd_picture*).
+     * @param picture The picture to marshall.
+     * @return Returns an pointer value referencing the c-style string representation of the specified picture.
+     */
+    llvm::Value* CreatePictureToCStrCall(Field* picture);
 
     int LiteralCount = 0;
 };

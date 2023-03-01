@@ -92,13 +92,26 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             }, name, global);
         }
         case DataType::STRING: {
-            // TODO: CreateString?
-            break;
+            string temp_str = this->value;
+
+            char* bytes = new char[this->cardinality];
+            char* mask = new char[this->cardinality]; // no null-terminator
+            ::strcpy(bytes, temp_str.c_str());
+            ::strcpy(mask, temp_str.c_str());
+
+            uint8_t length = this->cardinality;
+
+            return builder->CreatePicture(new bstd_Picture {
+                    .bytes = bytes,
+                    .mask = mask,
+                    .length = length
+            }, name, global);
         }
         default: {
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
+
     throw logic_error("Should not get here...");
 }
 

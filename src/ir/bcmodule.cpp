@@ -10,12 +10,7 @@ void BCModule::initialize() {
     llvm::Type* int32_t = llvm::Type::getInt32Ty(this->getContext());
     llvm::Type* int64_t = llvm::Type::getInt64Ty(this->getContext());
 
-    // instantiate printf function
-    llvm::FunctionType* printf_type = llvm::FunctionType::get(int32_t, { int8ptr_t }, true);
-    this->printf_func = new llvm::FunctionCallee();
-    *(this->printf_func) = this->getOrInsertFunction("printf", printf_type);
-
-    // create number struct type-
+    // create number struct type
     llvm::ArrayRef<llvm::Type*> number_struct_types = {
             int64_t,    // value
             int64_t,    // scale
@@ -24,6 +19,24 @@ void BCModule::initialize() {
             int8_t,     // positive
     };
     this->numberStructType = llvm::StructType::create(this->getContext(), number_struct_types, "Struct.Number");
+
+    // create picture struct type
+    llvm::ArrayRef<llvm::Type*> picture_struct_types = {
+            int8ptr_t,  // bytes
+            int8ptr_t,  // mask
+            int8_t,     // length
+    };
+    this->pictureStructType = llvm::StructType::create(this->getContext(), picture_struct_types, "Struct.Picture");
+
+    // instantiate printf function
+    llvm::FunctionType* printf_type = llvm::FunctionType::get(int32_t, { int8ptr_t }, true);
+    this->printf_func = new llvm::FunctionCallee();
+    *(this->printf_func) = this->getOrInsertFunction("printf", printf_type);
+
+    llvm::FunctionType *pic_to_cstr_types = llvm::FunctionType::get(int64_t, pictureStructType, false);
+    this->picture_to_cstr_func = new llvm::FunctionCallee();
+    *(this->picture_to_cstr_func) = this->getOrInsertFunction("bstd_picutils_to_cstr", pic_to_cstr_types);
+
 }
 
 llvm::FunctionCallee* BCModule::getPrintf() {
@@ -32,6 +45,10 @@ llvm::FunctionCallee* BCModule::getPrintf() {
 
 llvm::StructType* BCModule::getNumberStructType() {
     return this->numberStructType;
+}
+
+llvm::StructType* BCModule::getPictureStructType() {
+    return this->pictureStructType;
 }
 
 llvm::FunctionCallee* BCModule::getPrintNumber() {
@@ -79,4 +96,8 @@ llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, 
     spdlog::warn("identifier type is assumed to be string (Pls fix me later)");
     return builder->CreateGlobalStringPtr(identifier, identifier);
 
+}
+
+llvm::FunctionCallee* BCModule::getPictureToCStrFunc() {
+    return this->picture_to_cstr_func;
 }

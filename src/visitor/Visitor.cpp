@@ -194,7 +194,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
 
     for (int i = 0; i < ctx->atomic().size(); ++i) {
         if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            value += to_string(any_cast<int>(visit(ctx->atomic()[i])));;
+            value += to_string(any_cast<int>(visit(ctx->atomic()[i])));
         } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
             value += any_cast<string>(visit(ctx->atomic()[i]));
         } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
@@ -581,17 +581,27 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             parameters.push_back(field.getLlvmValue());
                         }
                     } else if (field.getPrimitiveType() == DataType::STRING) {
+
                         if (get<0>(currentType) && get<1>(currentType)) {
                             pushStringOnParameterList(&parameters, field.getValue());
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(string)
+
+                            parameters.push_back(field.getLlvmValue());
+                            byvalTracker.emplace_back(i, bcModule->getPictureStructType());
+
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // string*
-                            stringsToMutate[ctx->atomic()[i]] = field.getValue().c_str();
+                            auto cstr = builder->CreatePictureToCStrCall(&field);
+                            parameters.push_back(cstr);
 
-                            //TODO: create a temporary char* of the string, and after the call statement make string = char*
+                            // todo: on re-entry:
+                            // call bstd_picture_assign_string
+                            // free(alloc)
+
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(string)*
+                            parameters.push_back(field.getLlvmValue());
                         }
                     }
 

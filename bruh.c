@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "./Crossover_bstd_lib/include/number.h"
+#include "./Crossover_bstd_lib/include/picture.h"
 
 /**
 IDENTIFICATION DIVISION.
@@ -127,4 +128,11 @@ void call_datadiv_doubles(double double1, struct bstd_Number double2, double *do
     printf("%p %d\n"    , double4 , double4->length);
     printf("%p %d\n"    , double4 , double4->isSigned);
     printf("%p %d\n\n"  , double4 , double4->positive);
+}
+
+void call_datadiv_pictures(char* str, bstd_Picture* picture) {
+    printf("call_datadiv_pictures.bc\n\n");
+
+    printf("%s\n\n" , str);
+    printf("%d\n\n" , picture->length);
 }

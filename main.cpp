@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/call_literal_ints.bc");
+    stream.open("../test/call_datadiv_ints.bc");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -156,12 +156,13 @@ int main(int argc, char **argv) {
     }
 
     cout << "Compiling BabyCobol Standard Library" << endl;
+    // TODO: these relative paths are going to break if not run in the right working directory with access to the library source files...
     exec("mkdir -p out/lib");
     exec("cd out/lib && "
          "clang -c --include-directory ../../../Crossover_bstd_lib/include/ ../../../Crossover_bstd_lib/src/*.c && "
          "ar cr libbstd.a *.o");
 
-    string linkCommand = "clang -o exec output.o out/lib/libbstd.a";
+    string linkCommand = "clang -o exec output.o out/lib/libbstd.a -lm";
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {
