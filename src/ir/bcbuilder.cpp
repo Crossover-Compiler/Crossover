@@ -14,7 +14,7 @@ llvm::Value *BCBuilder::CreateNumber(bstd_number *number, std::string &name, boo
     return CreateNumberValue(name, number->value, number->scale, number->length, number->isSigned, number->positive, global);
 }
 
-llvm::Value *BCBuilder::CreatePicture(bstd_Picture* picture, std::string &name, bool global) {
+llvm::Value *BCBuilder::CreatePicture(bstd_picture* picture, std::string &name, bool global) {
 
     // picture struct types
     llvm::Type* int8_t = llvm::IntegerType::getInt8Ty(this->getContext());
