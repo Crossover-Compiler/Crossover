@@ -51,7 +51,7 @@ multiply        :   MULTIPLY at=atomic BY as+=atomic+ (GIVING giving=identifiers
 perform         :   PERFORM procedureName=label (THROUGH through=label)? (times=atomic TIMES)?;
 ifStatement     :   IF booleanExpression THEN t+=statement+ (ELSE f+=statement+)? (END | DOT);
 accept          :   ACCEPT id+=identifiers+;
-add             :   ADD atomic+ TO to=atomic (GIVING id=identifiers)?;
+add             :   ADD lhs+=atomic+ TO rhs=atomic (GIVING id=identifiers)?;
 divide          :   DIVIDE at=atomic INTO as+=atomic+ (GIVING id=identifiers)? (REMAINDER rem=identifiers)?;
 evaluate        :   EVALUATE anyExpression whenBlock* END;
 nextSentence    :   NEXT SENTENCE;

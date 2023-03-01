@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.11.1
 
 
 #include "BabyCobolVisitor.h"
@@ -36,7 +36,7 @@ struct BabyCobolParserStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-std::once_flag babycobolParserOnceFlag;
+::antlr4::internal::OnceFlag babycobolParserOnceFlag;
 BabyCobolParserStaticData *babycobolParserStaticData = nullptr;
 
 void babycobolParserInitialize() {
@@ -1123,26 +1123,9 @@ BabyCobolParser::ProcedureContext* BabyCobolParser::procedure() {
     setState(156);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0)) {
+    while (((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 20272543249203206) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0) {
       setState(153);
       sentence();
       setState(158);
@@ -1232,26 +1215,9 @@ BabyCobolParser::ParagraphContext* BabyCobolParser::paragraph() {
       setState(169); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+    } while (((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 20272543249203206) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0);
    
   }
   catch (RecognitionException &e) {
@@ -1317,26 +1283,9 @@ BabyCobolParser::SentenceContext* BabyCobolParser::sentence() {
       setState(174); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+    } while (((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 20272543249203206) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0);
     setState(176);
     match(BabyCobolParser::DOT);
    
@@ -1984,11 +1933,8 @@ BabyCobolParser::SubtractContext* BabyCobolParser::subtract() {
       _la = _input->LA(1);
     } while (_la == BabyCobolParser::T__1
 
-    || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-      | (1ULL << (BabyCobolParser::DOUBLE - 82))
-      | (1ULL << (BabyCobolParser::LITERAL - 82))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+    || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & 23) != 0);
     setState(234);
     match(BabyCobolParser::FROM);
     setState(235);
@@ -2296,26 +2242,9 @@ BabyCobolParser::IfStatementContext* BabyCobolParser::ifStatement() {
       setState(269); 
       _errHandler->sync(this);
       _la = _input->LA(1);
-    } while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+    } while (((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 20272543249203206) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0);
     setState(277);
     _errHandler->sync(this);
 
@@ -2333,26 +2262,9 @@ BabyCobolParser::IfStatementContext* BabyCobolParser::ifStatement() {
         setState(275); 
         _errHandler->sync(this);
         _la = _input->LA(1);
-      } while ((((_la & ~ 0x3fULL) == 0) &&
-        ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-        | (1ULL << BabyCobolParser::T__1)
-        | (1ULL << BabyCobolParser::DISPLAY)
-        | (1ULL << BabyCobolParser::STOP)
-        | (1ULL << BabyCobolParser::MOVE)
-        | (1ULL << BabyCobolParser::SUBTRACT)
-        | (1ULL << BabyCobolParser::MULTIPLY)
-        | (1ULL << BabyCobolParser::PERFORM)
-        | (1ULL << BabyCobolParser::IF)
-        | (1ULL << BabyCobolParser::ACCEPT)
-        | (1ULL << BabyCobolParser::ADD)
-        | (1ULL << BabyCobolParser::DIVIDE)
-        | (1ULL << BabyCobolParser::EVALUATE)
-        | (1ULL << BabyCobolParser::NEXT)
-        | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-        ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-        | (1ULL << (BabyCobolParser::SIGNAL - 64))
-        | (1ULL << (BabyCobolParser::ALTER - 64))
-        | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+      } while (((_la & ~ 0x3fULL) == 0) &&
+        ((1ULL << _la) & 20272543249203206) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+        ((1ULL << (_la - 64)) & 657) != 0);
     }
     setState(279);
     _la = _input->LA(1);
@@ -2509,21 +2421,19 @@ BabyCobolParser::AddContext* BabyCobolParser::add() {
     _la = _input->LA(1);
     do {
       setState(288);
-      atomic();
+      antlrcpp::downCast<AddContext *>(_localctx)->atomicContext = atomic();
+      antlrcpp::downCast<AddContext *>(_localctx)->lhs.push_back(antlrcpp::downCast<AddContext *>(_localctx)->atomicContext);
       setState(291); 
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while (_la == BabyCobolParser::T__1
 
-    || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-      | (1ULL << (BabyCobolParser::DOUBLE - 82))
-      | (1ULL << (BabyCobolParser::LITERAL - 82))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+    || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 82)) & 23) != 0);
     setState(293);
     match(BabyCobolParser::TO);
     setState(294);
-    antlrcpp::downCast<AddContext *>(_localctx)->to = atomic();
+    antlrcpp::downCast<AddContext *>(_localctx)->rhs = atomic();
     setState(297);
     _errHandler->sync(this);
 
@@ -2856,29 +2766,9 @@ BabyCobolParser::LoopContext* BabyCobolParser::loop() {
     setState(332);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP)
-      | (1ULL << BabyCobolParser::VARYING)
-      | (1ULL << BabyCobolParser::WHILE)
-      | (1ULL << BabyCobolParser::UNTIL))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0)) {
+    while (((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 272474122381950982) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0) {
       setState(329);
       loopExpression();
       setState(334);
@@ -3279,11 +3169,8 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
-                  || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+                  || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+                    ((1ULL << (_la - 82)) & 23) != 0);
                   setState(368);
                   match(BabyCobolParser::AS);
                   setState(369);
@@ -3306,11 +3193,8 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
-                  || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+                  || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+                    ((1ULL << (_la - 82)) & 23) != 0);
                   setState(377);
                   match(BabyCobolParser::AS);
                   setState(378);
@@ -3331,11 +3215,8 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
-                  || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+                  || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+                    ((1ULL << (_la - 82)) & 23) != 0);
                   setState(385);
                   match(BabyCobolParser::AS);
                   setState(386);
@@ -3358,11 +3239,8 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
-                  || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+                  || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+                    ((1ULL << (_la - 82)) & 23) != 0);
                   setState(394);
                   match(BabyCobolParser::AS);
                   setState(395);
@@ -3385,11 +3263,8 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
-                  || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+                  || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+                    ((1ULL << (_la - 82)) & 23) != 0);
                   setState(403);
                   match(BabyCobolParser::AS);
                   setState(404);
@@ -3410,11 +3285,8 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
-                  || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+                  || _la == BabyCobolParser::T__2 || (((_la - 82) & ~ 0x3fULL) == 0) &&
+                    ((1ULL << (_la - 82)) & 23) != 0);
                   setState(411);
                   match(BabyCobolParser::AS);
                   setState(412);
@@ -4418,13 +4290,8 @@ BabyCobolParser::ContractedBooleanPartContext* BabyCobolParser::contractedBoolea
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__3)
-      | (1ULL << BabyCobolParser::T__4)
-      | (1ULL << BabyCobolParser::T__5)
-      | (1ULL << BabyCobolParser::T__6)
-      | (1ULL << BabyCobolParser::T__7)
-      | (1ULL << BabyCobolParser::T__8))) != 0)) {
+    if (((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 1008) != 0) {
       setState(523);
       comparisonOp();
     }
@@ -4476,13 +4343,8 @@ BabyCobolParser::ComparisonOpContext* BabyCobolParser::comparisonOp() {
     enterOuterAlt(_localctx, 1);
     setState(528);
     _la = _input->LA(1);
-    if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__3)
-      | (1ULL << BabyCobolParser::T__4)
-      | (1ULL << BabyCobolParser::T__5)
-      | (1ULL << BabyCobolParser::T__6)
-      | (1ULL << BabyCobolParser::T__7)
-      | (1ULL << BabyCobolParser::T__8))) != 0))) {
+    if (!(((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 1008) != 0)) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -4547,10 +4409,8 @@ BabyCobolParser::BooleanOpContext* BabyCobolParser::booleanOp() {
     enterOuterAlt(_localctx, 1);
     setState(530);
     _la = _input->LA(1);
-    if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::OR)
-      | (1ULL << BabyCobolParser::AND)
-      | (1ULL << BabyCobolParser::XOR))) != 0))) {
+    if (!(((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 1970324836974592) != 0)) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -4603,12 +4463,8 @@ BabyCobolParser::ArithmeticOpContext* BabyCobolParser::arithmeticOp() {
     enterOuterAlt(_localctx, 1);
     setState(532);
     _la = _input->LA(1);
-    if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::T__2)
-      | (1ULL << BabyCobolParser::T__9)
-      | (1ULL << BabyCobolParser::T__10))) != 0))) {
+    if (!(((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 3086) != 0)) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -4748,26 +4604,9 @@ BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
         setState(543); 
         _errHandler->sync(this);
         _la = _input->LA(1);
-      } while ((((_la & ~ 0x3fULL) == 0) &&
-        ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-        | (1ULL << BabyCobolParser::T__1)
-        | (1ULL << BabyCobolParser::DISPLAY)
-        | (1ULL << BabyCobolParser::STOP)
-        | (1ULL << BabyCobolParser::MOVE)
-        | (1ULL << BabyCobolParser::SUBTRACT)
-        | (1ULL << BabyCobolParser::MULTIPLY)
-        | (1ULL << BabyCobolParser::PERFORM)
-        | (1ULL << BabyCobolParser::IF)
-        | (1ULL << BabyCobolParser::ACCEPT)
-        | (1ULL << BabyCobolParser::ADD)
-        | (1ULL << BabyCobolParser::DIVIDE)
-        | (1ULL << BabyCobolParser::EVALUATE)
-        | (1ULL << BabyCobolParser::NEXT)
-        | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-        ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-        | (1ULL << (BabyCobolParser::SIGNAL - 64))
-        | (1ULL << (BabyCobolParser::ALTER - 64))
-        | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+      } while (((_la & ~ 0x3fULL) == 0) &&
+        ((1ULL << _la) & 20272543249203206) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+        ((1ULL << (_la - 64)) & 657) != 0);
       break;
     }
 
@@ -4787,26 +4626,9 @@ BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
         setState(550); 
         _errHandler->sync(this);
         _la = _input->LA(1);
-      } while ((((_la & ~ 0x3fULL) == 0) &&
-        ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-        | (1ULL << BabyCobolParser::T__1)
-        | (1ULL << BabyCobolParser::DISPLAY)
-        | (1ULL << BabyCobolParser::STOP)
-        | (1ULL << BabyCobolParser::MOVE)
-        | (1ULL << BabyCobolParser::SUBTRACT)
-        | (1ULL << BabyCobolParser::MULTIPLY)
-        | (1ULL << BabyCobolParser::PERFORM)
-        | (1ULL << BabyCobolParser::IF)
-        | (1ULL << BabyCobolParser::ACCEPT)
-        | (1ULL << BabyCobolParser::ADD)
-        | (1ULL << BabyCobolParser::DIVIDE)
-        | (1ULL << BabyCobolParser::EVALUATE)
-        | (1ULL << BabyCobolParser::NEXT)
-        | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-        ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-        | (1ULL << (BabyCobolParser::SIGNAL - 64))
-        | (1ULL << (BabyCobolParser::ALTER - 64))
-        | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+      } while (((_la & ~ 0x3fULL) == 0) &&
+        ((1ULL << _la) & 20272543249203206) != 0 || (((_la - 64) & ~ 0x3fULL) == 0) &&
+        ((1ULL << (_la - 64)) & 657) != 0);
       break;
     }
 
@@ -5171,5 +4993,5 @@ bool BabyCobolParser::booleanExpressionSempred(BooleanExpressionContext *_localc
 }
 
 void BabyCobolParser::initialize() {
-  std::call_once(babycobolParserOnceFlag, babycobolParserInitialize);
+  ::antlr4::internal::call_once(babycobolParserOnceFlag, babycobolParserInitialize);
 }

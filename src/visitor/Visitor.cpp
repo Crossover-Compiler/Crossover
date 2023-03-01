@@ -299,12 +299,29 @@ std::any Visitor::visitAccept(BabyCobolParser::AcceptContext *ctx) {
 }
 
 std::any Visitor::visitAdd(BabyCobolParser::AddContext *ctx) {
-    current_id = "baseValue";
-    visit(ctx->atomic()[ctx->atomic().size() - 1]);
+//        OLD CODE
+//    current_id = "baseValue";
+//    visit(ctx->atomic()[ctx->atomic().size() - 1]);
+//    for (int i = 0; i < ctx->atomic().size() - 1; i++) {
+//        current_id = "visitAdd_" + std::to_string(i);
+//        visit(ctx->atomic()[i]);
+//        values["baseValue"] = builder->llvm::IRBuilderBase::CreateAdd(values[current_id], values["baseValue"], "mAdd");
+//    }
+
+/// get basevalue as we did before, but this time get number using field.getLlvmValue.
+/// use Builder->CreateNumber(ctx) to create a number from a int or double ctx
+
     for (int i = 0; i < ctx->atomic().size() - 1; i++) {
-        current_id = "visitAdd_" + std::to_string(i);
-        visit(ctx->atomic()[i]);
-        values["baseValue"] = builder->llvm::IRBuilderBase::CreateAdd(values[current_id], values["baseValue"], "mAdd");
+        /// then go through all values of the LHS and add them to the base value using their number structs
+        /** DATA DIV STUFF */
+        if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i]) != nullptr) {
+
+
+        }
+        /** LITERAL STUFF */
+        else {
+
+        }
     }
     return BabyCobolBaseVisitor::visitAdd(ctx);
 }

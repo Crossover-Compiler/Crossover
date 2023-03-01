@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.11.1
 
 #pragma once
 
@@ -516,7 +516,9 @@ public:
 
   class  AddContext : public antlr4::ParserRuleContext {
   public:
-    BabyCobolParser::AtomicContext *to = nullptr;
+    BabyCobolParser::AtomicContext *atomicContext = nullptr;
+    std::vector<AtomicContext *> lhs;
+    BabyCobolParser::AtomicContext *rhs = nullptr;
     BabyCobolParser::IdentifiersContext *id = nullptr;
     AddContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;

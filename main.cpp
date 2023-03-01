@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/call_literal_ints.bc");
+    stream.open("../test/simple_addition.bc");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
