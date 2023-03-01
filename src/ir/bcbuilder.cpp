@@ -10,11 +10,11 @@ llvm::Constant *BCBuilder::asConstant(int n) {
     return llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, n, true));
 }
 
-llvm::Value *BCBuilder::CreateNumber(bstd_Number *number, std::string &name, bool global) {
+llvm::Value *BCBuilder::CreateNumber(bstd_number *number, std::string &name, bool global) {
     return CreateNumberValue(name, number->value, number->scale, number->length, number->isSigned, number->positive, global);
 }
 
-llvm::Value *BCBuilder::CreatePicture(bstd_Picture* picture, std::string &name, bool global) {
+llvm::Value *BCBuilder::CreatePicture(bstd_picture* picture, std::string &name, bool global) {
 
     // picture struct types
     llvm::Type* int8_t = llvm::IntegerType::getInt8Ty(this->getContext());
@@ -81,7 +81,7 @@ llvm::Value *BCBuilder::CreatePicture(bstd_Picture* picture, std::string &name, 
     return alloc;
 }
 
-llvm::Value* BCBuilder::CreateAdd(bstd_Number* lhs, bstd_Number* rhs) {
+llvm::Value* BCBuilder::CreateAdd(bstd_number* lhs, bstd_number* rhs) {
     return nullptr; // todo: implement
 }
 
@@ -198,6 +198,26 @@ llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_v
     llvm::Value *positive = llvm::ConstantInt::get(module->getContext(),
                                                    llvm::APInt(8, m_isPositive ? 1 : 0, false));
     this->CreateStore(positive, positive_ptr);
+
+    return alloc;
+}
+
+llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
+
+    llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());
+    llvm::ConstantInt* const_i64 = llvm::ConstantInt::get(int_t, 64);
+
+    auto num_to_int = module->getMarshallIntFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = number;
+    llvm::Value *return_value = this->CreateCall(*num_to_int, args);
+
+    // allocate memory...
+    auto alloc = this->CreateAlloca(int_t);
+    // ... mark allocation as alive...
+    this->CreateLifetimeStart(alloc, const_i64);
+    // ... and assign marshalled representation to allocated memory.
+    this->CreateStore(return_value, alloc);
 
     return alloc;
 }

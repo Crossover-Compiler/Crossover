@@ -26,6 +26,12 @@ private:
     BCBuilder* builder;
     int callCount = 0;
 
+    /**
+     * Re-entry handler factories take care of generating IR which handle exposed values upon re-entry.
+     * An example of a re-entry handler is a function which converts and assigns the integer representation of a bstd_number back to that original bstd_number.
+     */
+    typedef void (*re_entry_handler_generator_t)(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* value);
+
 public:
     vector<DataTree*> dataStructures;
 
@@ -157,12 +163,13 @@ public:
 
     vector<DataTree*> getNodes(string path);
 
-    vector<string> split(const string& s, string delimiter);
-
     void pushIntOnParameterList(std::vector<llvm::Value*> *parameters, int value);
     void pushDoubleOnParameterList(std::vector<llvm::Value*> *parameters, double value);
     void pushStringOnParameterList(std::vector<llvm::Value*> *parameters, string value);
     void populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx);
+
+    static void int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* intPtr);
+
 };
 
 
