@@ -3,12 +3,17 @@ IDENTIFICATION DIVISION.
        DATA DIVISION
             01 ROOT.
                    02 INTS.
-                        03 C PICTURE IS 9V9.
-                        03 D PICTURE IS XXXAX9.
-                        03 E PICTURE IS XXX.
+                        03 C PICTURE IS S9V9.
+                        03 D PICTURE IS 9999V9999.
+                        03 E PICTURE IS XAX9X.
+                        03 F PICTURE IS 99.
 
        PROCEDURE DIVISION.
        MAIN.
-           DISPLAY C "HELLO" D E.
-           DISPLAY " ".
-           DISPLAY C "HELLO" D E WITH NO ADVANCING.
+            DISPLAY C "HELLO" D E F.
+
+            DISPLAY "----". CALL display OF bruh USING BY REFERENCE C D AS STRUCT.
+            DISPLAY C "There" D E F.
+
+            DISPLAY "----". CALL display OF bruh USING BY REFERENCE C D AS STRUCT.
+            DISPLAY C "World" D E F.

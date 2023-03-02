@@ -95,7 +95,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             char * mask = new char [temp_str.length()+1];
             std::strcpy (mask, temp_str.c_str());
 
-            return builder->CreatePicture(new bstd_Picture{
+            return builder->CreatePicture(new bstd_picture{
                     .bytes = bytes,
                     .mask = mask,
                     .length = (std::uint8_t) temp_str.length()

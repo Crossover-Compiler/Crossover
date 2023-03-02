@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
          "ar cr libbstd.a *.o");
 
     const string executableName = "exec";
-    string linkCommand = "clang output.o out/lib/libbstd.a -o -lm " + executableName;
+    string linkCommand = "clang output.o out/lib/libbstd.a -lm -o  " + executableName;
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {
