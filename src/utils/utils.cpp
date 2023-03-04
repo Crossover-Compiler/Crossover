@@ -158,7 +158,7 @@ namespace utils{
         return result;
     };
 
-    vector<string> split (string s, string delimiter) {
+    vector<string> split(string& s, string delimiter) {
         size_t pos_start = 0, pos_end, delim_len = delimiter.length();
         string token;
         vector<string> res;
@@ -172,7 +172,7 @@ namespace utils{
         return res;
     }
 
-    vector<string> extractTextSymbols(string input){
+    vector<string> extractTextSymbols(string& input){
         //filter on things that have either t or T
         vector<string> completeTable = split(input, "\n");
         vector<string> result;
@@ -188,7 +188,7 @@ namespace utils{
 
     string extractProgramNameFromPath(string path){
         if(path.find('/') == std::string::npos){
-            string result = path.substr(0, path.length()-2);
+            string result = path.substr(0, path.length()-2); // TODO: Bad way of getting rid of the file extension".o"...
             return result;
         }
 

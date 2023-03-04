@@ -12,6 +12,8 @@ class BCModule : public llvm::Module {
 private:
     llvm::FunctionCallee* printf_func;
     llvm::FunctionCallee* picture_to_cstr_func;
+    llvm::FunctionCallee* marshall_int_func;
+    llvm::FunctionCallee* assign_int_func;
 
     llvm::StructType* numberStructType;
     llvm::StructType* pictureStructType;
@@ -26,11 +28,14 @@ private:
 
 public:
 
-    BCModule(llvm::StringRef ModuleID, llvm::LLVMContext& C) : llvm::Module(ModuleID, C),
-                                                               printf_func(nullptr),
-                                                               picture_to_cstr_func(nullptr),
-                                                               numberStructType(nullptr),
-                                                               pictureStructType(nullptr) {
+    BCModule(llvm::StringRef ModuleID, llvm::LLVMContext& C):
+            llvm::Module(ModuleID, C),
+            printf_func(nullptr),
+            picture_to_cstr_func(nullptr),
+            marshall_int_func(nullptr),
+            assign_int_func(nullptr),
+            numberStructType(nullptr),
+            pictureStructType(nullptr) {
         initialize();
     };
 
@@ -78,6 +83,10 @@ public:
     llvm::Value* get(std::string identifier, llvm::IRBuilder<>* builder, float defaultValue = 0.f);
 
     llvm::FunctionCallee* getPictureToCStrFunc();
+
+    llvm::FunctionCallee* getMarshallIntFunc();
+    llvm::FunctionCallee* getAssignIntFunc();
+
 
 };
 

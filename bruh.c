@@ -10,7 +10,7 @@ IDENTIFICATION DIVISION.
        MAIN.
            CALL call_literal_ints OF bruh USING -1 AS PRIMITIVE -33 AS STRUCT BY REFERENCE +666 AS PRIMITIVE BY REFERENCE +9999 AS STRUCT.
  */
-void call_literal_ints(int int1, struct bstd_Number int2, int *int3, struct bstd_Number* int4) {
+void call_literal_ints(int int1, bstd_number int2, int *int3, bstd_number* int4) {
     printf("call_literal_ints.bc.\n\n");
 
     printf("%d\n\n" , int1);
@@ -46,7 +46,7 @@ IDENTIFICATION DIVISION.
            CALL call_datadiv_ints OF bruh USING C AS PRIMITIVE D AS STRUCT BY REFERENCE E AS PRIMITIVE BY REFERENCE F AS STRUCT.
            DISPLAY C D E F.
  */
-void call_datadiv_ints(int int1, struct bstd_Number int2, int* int3, struct bstd_Number* int4) {
+void call_datadiv_ints(int int1, bstd_number int2, int* int3, bstd_number* int4) {
     printf("call_datadiv_ints.bc\n\n");
 
     printf("%d\n\n" , int1);
@@ -74,7 +74,7 @@ IDENTIFICATION DIVISION.
        MAIN.
            CALL call_literal_doubles OF bruh USING -1,1 AS PRIMITIVE -33,33 AS STRUCT BY REFERENCE +666,666 AS PRIMITIVE BY REFERENCE +9999,9999 AS STRUCT.
  */
-void call_literal_doubles(double double1, struct bstd_Number double2, double *double3, struct bstd_Number* double4) {
+void call_literal_doubles(double double1, bstd_number double2, double *double3, bstd_number* double4) {
     printf("call_literal_doubles.bc\n\n");
 
     printf("%f\n\n" , double1);
@@ -110,7 +110,7 @@ IDENTIFICATION DIVISION.
            CALL call_datadiv_doubles OF bruh USING C AS PRIMITIVE D AS STRUCT BY REFERENCE E AS PRIMITIVE F AS STRUCT.
            DISPLAY C D E F.
  */
-void call_datadiv_doubles(double double1, struct bstd_Number double2, double *double3, struct bstd_Number* double4) {
+void call_datadiv_doubles(double double1, bstd_number double2, double *double3, bstd_number* double4) {
     printf("call_datadiv_doubles.bc\n\n");
 
     printf("%f\n\n" , double1);
@@ -130,9 +130,26 @@ void call_datadiv_doubles(double double1, struct bstd_Number double2, double *do
     printf("%p %d\n\n"  , double4 , double4->positive);
 }
 
-void call_datadiv_pictures(char* str, bstd_Picture* picture) {
+void call_datadiv_pictures(char* str, bstd_picture* picture) {
     printf("call_datadiv_pictures.bc\n\n");
 
-    printf("%s\n\n" , str);
-    printf("%d\n\n" , picture->length);
+    printf("%s\n\n", str);
+    printf("%d\n\n", picture->length);
+}
+
+int* global;
+
+void foo(int* a) {
+    printf("dereferenced a is %d\n", *a);
+    (*a) = 42;
+    printf("set dereferenced a to %d\n", *a);
+    global = a;
+}
+
+/**
+ * This _should_ fail; a (so also global) should be freed!
+ */
+void bar() {
+    printf("global address is %p\n", global);
+    printf("dereferenced global is %d\n", *global);
 }
