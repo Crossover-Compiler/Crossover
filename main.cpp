@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/call_literal_ints.bc");
+    stream.open("../test/display.bc");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
          "ar cr libbstd.a *.o");
 
     const string executableName = "exec";
-    string linkCommand = "clang output.o out/lib/libbstd.a -o " + executableName;
+    string linkCommand = "clang output.o out/lib/libbstd.a -lm -o  " + executableName;
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {

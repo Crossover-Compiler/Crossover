@@ -3,7 +3,6 @@
 #include "llvm/IR/IRBuilder.h"
 
 void BCModule::initialize() {
-
     llvm::Type* int8_t = llvm::Type::getInt8Ty(this->getContext());
     llvm::Type* int8ptr_t = llvm::Type::getInt8PtrTy(this->getContext());
     llvm::Type* int32_t = llvm::Type::getInt32Ty(this->getContext());
@@ -26,6 +25,14 @@ void BCModule::initialize() {
             int8_t,     // positive
     };
     this->numberStructType = llvm::StructType::create(this->getContext(), number_struct_types, "Struct.Number");
+
+    llvm::ArrayRef<llvm::Type*> picture_struct_types = {
+            int8ptr_t,  // bytes
+            int8ptr_t,  // mask
+            int8_t,     // length
+    };
+
+    this->pictureStructType = llvm::StructType::create(this->getContext(), picture_struct_types, "Struct.Picture");
 
     llvm::Type* number_struct_ptr_t = llvm::PointerType::get(this->numberStructType, 0);
 
@@ -74,9 +81,6 @@ llvm::FunctionCallee* BCModule::getPrintPicture() {
 }
 
 llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, float defaultValue) {
-
-
-
     llvm::Value* v = this->getGlobalVariable(identifier);
 
     if (v) {
@@ -92,9 +96,11 @@ llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, 
     // TODO: currently just casting it to string fix later
     spdlog::warn("identifier type is assumed to be string (Pls fix me later)");
     return builder->CreateGlobalStringPtr(identifier, identifier);
-
 }
 
+llvm::StructType *BCModule::getPictureStructType() {
+    return this->pictureStructType;
+}
 llvm::FunctionCallee* BCModule::getMarshallIntFunc() {
     return this->marshall_int_func;
 }

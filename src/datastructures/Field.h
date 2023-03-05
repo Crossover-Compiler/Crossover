@@ -26,7 +26,6 @@ class Field : public DataTree {
 public:
     Field(std::string name, int level, std::string value) : DataTree(std::move(name), level) {
         this->value = std::move(value);
-
     };
 
     int cardinality;
