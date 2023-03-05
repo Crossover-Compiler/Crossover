@@ -230,3 +230,7 @@ llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
 
     return alloc;
 }
+
+llvm::Value *BCBuilder::CreatePicture(BabyCobolParser::StringLiteralContext *context) {
+    return nullptr;
+}

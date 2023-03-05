@@ -45,7 +45,16 @@ public:
      * @param global
      * @return
      */
-    llvm::Value* CreatePicture(bstd_picture* picture, std::string &name, bool global = false);
+    llvm::Value* CreatePicture(bstd_picture* picture, std::string &name, bool global = false);\
+
+    /**
+     * todo: doc
+     * @param picture
+     * @param name
+     * @param global
+     * @return
+     */
+    llvm::Value* CreatePicture(BabyCobolParser::StringLiteralContext* context);
 
     /**
      * todo: doc

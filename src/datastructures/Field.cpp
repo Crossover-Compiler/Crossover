@@ -21,8 +21,8 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
 
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'Z'), temp_str.end());
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'S'), temp_str.end());
-            // TODO: If int contains Z they are not used
-            uint64_t value = std::stoi(temp_str);
+
+            uint64_t value = 0;
             uint64_t scale = this->scale;
 
             // TODO: Review what we want with Z characters in Pictures
