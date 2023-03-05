@@ -1,8 +1,3 @@
-//
-// Created by bruh on 10/17/22.
-//
-
-#include <iostream>
 #include "Field.h"
 #include "../Exceptions/CompileException.h"
 

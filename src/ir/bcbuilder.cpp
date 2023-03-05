@@ -1,7 +1,3 @@
-//
-// Created by manta on 11/10/22.
-//
-
 #include <iostream>
 #include "../../include/ir/bcbuilder.h"
 #include "../../include/utils/utils.h"
@@ -15,66 +11,36 @@ llvm::Value *BCBuilder::CreateNumber(bstd_number *number, std::string &name, boo
 }
 
 llvm::Value *BCBuilder::CreatePicture(bstd_picture* picture, std::string &name, bool global) {
-
-    // picture struct types
-    llvm::Type* int8_t = llvm::IntegerType::getInt8Ty(this->getContext());
-    llvm::Type* int8ptr_t = llvm::IntegerType::getInt8PtrTy(this->getContext());
-    llvm::ArrayType* char_array_type = llvm::ArrayType::get(int8_t, picture->length);
-
-    // Create instance of Picture struct
-    llvm::ArrayRef<llvm::Type*>* picture_struct_types = new llvm::ArrayRef(new llvm::Type*[]{
-            char_array_type,// bytes
-            char_array_type,// mask
-            int8_t,         // length
-    }, 3);
-    llvm::StructType* picture_struct_type = llvm::StructType::create(this->getContext(), *picture_struct_types, "Struct." + name);
-
+    llvm::StructType *picture_struct_type = module->getPictureStructType();
     llvm::Value *alloc;
-    if (global || true) {
+    if (global) {
         // we should allocate global memory
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(picture_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, picture_struct_type, false,
                                          llvm::GlobalVariable::CommonLinkage, zeroInit, name,
-                                         nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
+                                         nullptr, llvm::GlobalValue::NotThreadLocal);
     } else {
         // we should allocate local memory
         alloc = this->CreateAlloca(picture_struct_type, nullptr, "tmp" + name);
     }
 
-    std::vector<llvm::Value *> indices(4);
+    std::vector<llvm::Value *> indices(3);
     indices[0] = asConstant(0);
-    indices[1] = asConstant(0);
-    indices[2] = asConstant(1);
-    indices[3] = asConstant(2);
-
-    // transform bytes to values
-    std::vector<llvm::Constant*> bytes;
-    bytes.reserve(picture->length);
-    for (int i = 0; i < picture->length; ++i) {
-        auto b = llvm::ConstantInt::get(int8_t, picture->bytes[i], false);
-        bytes.push_back(b);
-    }
+    indices[1] = asConstant(1);
+    indices[2] = asConstant(2);
 
     // store "bytes" field of struct
-    llvm::Value* bytes_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[1]}, "bytesPtr");
-    llvm::Value* bytes_val = llvm::ConstantArray::get(char_array_type, bytes);
-    this->CreateStore(bytes_val, bytes_ptr);
-
-    // transform mask to values
-    std::vector<llvm::Constant*> mask;
-    mask.reserve(picture->length);
-    for (int i = 0; i < picture->length; ++i) {
-        auto m = llvm::ConstantInt::get(int8_t, picture->mask[i], false);
-        mask.push_back(m);
-    }
+    llvm::Value* bytes_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[0]}, "bytesPtr");
+    llvm::Value *bytes = this->CreateGlobalStringPtr(picture->bytes);
+    this->CreateStore(bytes, bytes_ptr);
 
     // store "bytes" field of struct
-    llvm::Value* mask_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[2]}, "maskPtr");
-    llvm::Value* mask_val = llvm::ConstantArray::get(char_array_type, mask);
-    this->CreateStore(mask_val, mask_ptr);
+    llvm::Value* mask_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[1]}, "maskPtr");
+    llvm::Value *mask = this->CreateGlobalStringPtr(picture->mask);
+    this->CreateStore(mask, mask_ptr);
 
     // store "length" field of struct
-    llvm::Value *length_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[3]}, "lengthPtr");
+    llvm::Value *length_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[2]}, "lengthPtr");
     llvm::Value *length = llvm::ConstantInt::get(module->getContext(), llvm::APInt(8, picture->length, false));
     this->CreateStore(length, length_ptr);
 
@@ -158,7 +124,7 @@ llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_v
     } else {
         std::cout << "Creating local var: " << name << std::endl;
         // we should allocate local memory
-        alloc = this->CreateAlloca(number_struct_type, nullptr, "tmp" + name);
+        alloc = this->CreateAlloca(number_struct_type, nullptr, name);
     }
 
     std::vector<llvm::Value *> indices(7);

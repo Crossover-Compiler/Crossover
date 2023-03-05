@@ -3,7 +3,6 @@
 #include "llvm/IR/IRBuilder.h"
 
 void BCModule::initialize() {
-
     llvm::Type* int8_t = llvm::Type::getInt8Ty(this->getContext());
     llvm::Type* int8ptr_t = llvm::Type::getInt8PtrTy(this->getContext());
     llvm::Type* int32_t = llvm::Type::getInt32Ty(this->getContext());
@@ -112,7 +111,10 @@ llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, 
     // TODO: currently just casting it to string fix later
     spdlog::warn("identifier type is assumed to be string (Pls fix me later)");
     return builder->CreateGlobalStringPtr(identifier, identifier);
+}
 
+llvm::StructType *BCModule::getPictureStructType() {
+    return this->pictureStructType;
 }
 
 llvm::FunctionCallee* BCModule::getPictureToCStrFunc() {
