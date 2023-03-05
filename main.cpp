@@ -1,6 +1,7 @@
 #include <iostream>
 #include <csignal>
 #include "src/visitor/Visitor.h"
+#include "src/Exceptions/CompileException.h"
 #include "include/utils/utils.h"
 #include "include/antlr/BabyCobolParser.h"
 #include "include/antlr/BabyCobolLexer.h"
@@ -57,9 +58,14 @@ int main(int argc, char **argv) {
     }
     // end build external symbol map
 
+    string bcInput = argv[1];
 
     ifstream stream;
-    stream.open("../test/display.bc");
+    stream.open(bcInput);
+    if (!stream.is_open()) {
+        throw CompileException("File \"" + bcInput + "\" not found");
+    }
+
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
