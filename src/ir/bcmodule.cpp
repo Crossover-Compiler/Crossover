@@ -113,10 +113,6 @@ llvm::Value* BCModule::get(std:: string identifier, llvm::IRBuilder<>* builder, 
     return builder->CreateGlobalStringPtr(identifier, identifier);
 }
 
-llvm::StructType *BCModule::getPictureStructType() {
-    return this->pictureStructType;
-}
-
 llvm::FunctionCallee* BCModule::getPictureToCStrFunc() {
     return this->picture_to_cstr_func;
 }

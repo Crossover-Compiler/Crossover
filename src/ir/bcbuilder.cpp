@@ -31,7 +31,7 @@ llvm::Value *BCBuilder::CreatePicture(bstd_picture* picture, std::string &name, 
 
     // store "bytes" field of struct
     llvm::Value* bytes_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[0]}, "bytesPtr");
-    llvm::Value *bytes = this->CreateGlobalStringPtr(picture->bytes);
+    llvm::Value *bytes = this->CreateGlobalStringPtr((char*)picture->bytes); // todo: these are raw bytes, it's not a string
     this->CreateStore(bytes, bytes_ptr);
 
     // store "bytes" field of struct
