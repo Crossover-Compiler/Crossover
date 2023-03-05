@@ -204,13 +204,20 @@ llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_v
 
 llvm::Value* BCBuilder::CreatePictureToCStrCall(Field* picture) {
 
-    llvm::IntegerType* int8_t = llvm::Type::getInt8Ty(this->getContext());
-    llvm::ConstantInt* const_i8 = llvm::ConstantInt::get(int8_t, 8);
-
     auto pic_to_cstr = module->getPictureToCStrFunc();
 
     llvm::ArrayRef<llvm::Value *> args = picture->getLlvmValue();
     llvm::Value *return_value = this->CreateCall(*pic_to_cstr, args);
+
+    return return_value;
+}
+
+llvm::Value* BCBuilder::CreateCStrToPictureCall(Field* picture, llvm::Value* str) {
+
+    auto assign_cstr_to_pic = module->getAssignCStrFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = { picture->getLlvmValue(), str };
+    llvm::Value *return_value = this->CreateCall(*assign_cstr_to_pic, args);
 
     return return_value;
 }

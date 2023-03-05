@@ -78,6 +78,14 @@ public:
     llvm::Value* CreatePictureToCStrCall(Field* picture);
 
     /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_cstr(bstd_picture*, char*).
+     * @param picture The picture to assign the specified c-style string to.
+     * @param str The c-style string to assign to the specified picture.
+     * @return Returns void.
+     */
+    llvm::Value* CreateCStrToPictureCall(Field* picture, llvm::Value* str);
+
+    /**
      * Creates a call to the bstd runtime library marshaller function bstd_number_to_int(Number*)
      * @param number The number to marshall
      * @return Returns an pointer value referencing the integer representation of the specified number.
