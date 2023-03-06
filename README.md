@@ -28,3 +28,17 @@ To build the crossover compiler, you can simply run cmake:
 ```
 cmake .
 ```
+
+# Using the compiler
+
+```
+USAGE: crossover babycobolsourcefile [options]
+
+Options:
+
+--external objectfiles... : Allows user to supply compiler with .o files.
+
+-generate-structs : Generates c structs from babycobol record types.
+
+-not-main : If this option is present the babycobol procedure is compiled as "procedureDivision". If it is not present the procedure is compiled as "main".
+```
