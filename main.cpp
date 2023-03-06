@@ -157,14 +157,8 @@ int main(int argc, char **argv) {
         generateStructs(visitor.dataStructures);
     }
 
-    cout << "Compiling BabyCobol Standard Library" << endl;
-    exec("mkdir -p out/lib");
-    exec("cd out/lib && "
-         "clang -c --include-directory ../../../Crossover_bstd_lib/include/ ../../../Crossover_bstd_lib/src/*.c && "
-         "ar cr libbstd.a *.o");
-
     const string executableName = "exec";
-    string linkCommand = "clang output.o out/lib/libbstd.a -lm -o  " + executableName;
+    string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {
