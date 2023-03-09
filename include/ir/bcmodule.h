@@ -3,7 +3,6 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/IR/IRBuilder.h"
 
-
 #ifndef BCMODULE_H
 #define BCMODULE_H
 
@@ -11,8 +10,9 @@ class BCModule : public llvm::Module {
 
 private:
     llvm::FunctionCallee* printf_func;
+    // marshalling
     llvm::FunctionCallee* marshall_int_func;
-    llvm::FunctionCallee* marshall_string_func;
+    // assignment
     llvm::FunctionCallee* assign_int_func;
 
     llvm::StructType* numberStructType;
@@ -32,7 +32,6 @@ public:
             llvm::Module(ModuleID, C),
             printf_func(nullptr),
             marshall_int_func(nullptr),
-            marshall_string_func(nullptr),
             assign_int_func(nullptr),
             numberStructType(nullptr),
             pictureStructType(nullptr) {
@@ -82,10 +81,26 @@ public:
 //         llvm::Value* get(std::string identifier, llvm::IRBuilder<>* builder, TokenType typeHint = TokenType::LITERAL_STRING, float defaultValue = 0.f); reimplement with hint later
     llvm::Value* get(std::string identifier, llvm::IRBuilder<>* builder, float defaultValue = 0.f);
 
+    /**
+     * @return Returns the function callee for marshalling bstd_numbers to integers.
+     */
     llvm::FunctionCallee* getMarshallIntFunc();
-    llvm::FunctionCallee* getMarshallStringFunc();
 
+    /**
+     * @return Returns the function callee for marshalling bstd_pictures to c-style strings.
+     */
+    llvm::FunctionCallee* getPictureToCStrFunc();
+
+    /**
+     * @return Returns the function callee for assigning integers to bstd_numbers.
+     */
     llvm::FunctionCallee* getAssignIntFunc();
+
+    /**
+     * @return Returns the function callee for assigning c-style strings to bstd_pictures.
+     */
+    llvm::FunctionCallee* getAssignCStrFunc();
+
 
 };
 

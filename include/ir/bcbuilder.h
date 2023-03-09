@@ -69,11 +69,27 @@ public:
     llvm::Value *CreateNumberValue(const std::string& name, uint64_t m_value, uint64_t m_scale, uint8_t m_length, bool m_isSigned, bool m_isPositive, bool global);
 
     /**
+     * Creates a call to the bstd runtime library marshaller function bstd_picture_to_cstr(bstd_picture*).
+     * @param picture The picture to marshall.
+     * @return Returns an pointer value referencing the c-style string representation of the specified picture.
+     */
+    llvm::Value* CreatePictureToCStrCall(llvm::Value* picture);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_cstr(bstd_picture*, char*).
+     * @param picture The picture to assign the specified c-style string to.
+     * @param str The c-style string to assign to the specified picture.
+     * @return Returns void.
+     */
+    llvm::Value* CreateCStrToPictureCall(llvm::Value* picture, llvm::Value* str);
+
+    /**
      * Creates a call to the bstd runtime library marshaller function bstd_number_to_int(Number*)
      * @param number The number to marshall
      * @return Returns an pointer value referencing the integer representation of the specified number.
      */
     llvm::Value* CreateNumberToIntPtrCall(llvm::Value* number);
+
 
     int LiteralCount = 0;
 };

@@ -486,6 +486,14 @@ void Visitor::int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* m
     builder->CreateLifetimeEnd(intPtr, const_i64);
 }
 
+void Visitor::cstr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* cstr) {
+
+    builder->CreateCStrToPictureCall(original, cstr);
+
+    // todo: free allocated memory
+
+}
+
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     callCount++;
 
@@ -599,20 +607,30 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             parameters.push_back(field.getLlvmValue());
                         }
                     } else if (field.getPrimitiveType() == DataType::STRING) {
+
                         if (get<0>(currentType) && get<1>(currentType)) {
                             pushStringOnParameterList(&parameters, field.getValue());
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
-                            // Picture
+                            // wrap(string)
+
                             parameters.push_back(field.getLlvmValue());
-                            byvalTracker.emplace_back(i, field.getLlvmValue()->getType());
+                            byvalTracker.emplace_back(i, bcModule->getPictureStructType());
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // string*
-                            stringsToMutate[ctx->atomic()[i]] = field.getValue().c_str();
 
-                            //TODO: create a temporary char* of the string, and after the call statement make string = char*
+                            auto original = field.getLlvmValue();
+                            auto cstr = builder->CreatePictureToCStrCall(original);
+                            parameters.push_back(cstr);
+
+                            // keep track of this value for upon re-entry
+                            auto handler = &Visitor::cstr_re_entry_handler_generator;
+                            auto copy_handler_tuple = tuple(original, cstr, handler);
+                            re_entry_cache.push_back(copy_handler_tuple);
+
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(string)*
+                            parameters.push_back(field.getLlvmValue());
                         }
                     }
 

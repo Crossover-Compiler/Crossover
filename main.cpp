@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
     string bcInput = argv[1];
 
     ifstream stream;
+
     stream.open(bcInput);
     if (!stream.is_open()) {
         throw CompileException("File \"" + bcInput + "\" not found");
@@ -129,7 +130,8 @@ int main(int argc, char **argv) {
     auto TheTargetMachine =
             Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
 
-    module->setDataLayout(TheTargetMachine->createDataLayout());
+    auto datalayout = TheTargetMachine->createDataLayout();
+    module->setDataLayout(datalayout);
 
     auto Filename = "output.o";
     std::error_code EC;

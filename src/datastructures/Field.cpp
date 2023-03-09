@@ -89,23 +89,25 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
         case DataType::STRING: {
             string temp_str = this->value;
 
-            char * bytes = new char [temp_str.length()+1];
-            std::strcpy (bytes, temp_str.c_str());
+            auto* bytes = new unsigned char[this->cardinality];
+            char* mask = new char[this->cardinality]; // no null-terminator!
+            ::strcpy((char*)bytes, temp_str.c_str()); // todo: this should be a proper initializer
+            ::strcpy(mask, temp_str.c_str());
 
-            char * mask = new char [temp_str.length()+1];
-            std::strcpy (mask, temp_str.c_str());
+            uint8_t length = this->cardinality;
 
-            return builder->CreatePicture(new bstd_picture{
+            return builder->CreatePicture(new bstd_picture {
                     .bytes = bytes,
                     .mask = mask,
-                    .length = (std::uint8_t) temp_str.length()
+                    .length = length
             }, name, global);
-
         }
         default: {
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
+
+    throw logic_error("Should not get here...");
 }
 
 llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {
