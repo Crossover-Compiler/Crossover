@@ -101,6 +101,8 @@ public:
 
 
     int LiteralCount = 0;
+
+    llvm::Value *CreatePicture(const std::string &name, char *m_bytes, char *m_mask, uint8_t m_length, bool global);
 };
 
 #endif //CROSSOVER_BCBUILDER_H

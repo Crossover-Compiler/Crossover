@@ -10,70 +10,6 @@ llvm::Value *BCBuilder::CreateNumber(bstd_number *number, std::string &name, boo
     return CreateNumberValue(name, number->value, number->scale, number->length, number->isSigned, number->positive, global);
 }
 
-llvm::Value *BCBuilder::CreatePicture(bstd_picture* picture, std::string &name, bool global) {
-
-    // picture struct types
-    llvm::Type* int8_t = llvm::IntegerType::getInt8Ty(this->getContext());
-    llvm::ArrayType* byte_array_type = llvm::ArrayType::get(int8_t, picture->length);
-    llvm::Value* picture_length = asConstant(picture->length);
-
-    llvm::StructType* picture_struct_type = module->getPictureStructType();
-
-    llvm::Value *alloc;
-    if (global) {
-        // we should allocate global memory
-        llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(picture_struct_type);
-        alloc = new llvm::GlobalVariable(*(llvm::Module*)module, picture_struct_type, false,
-                                         llvm::GlobalVariable::CommonLinkage, zeroInit, name,
-                                         nullptr, llvm::GlobalValue::NotThreadLocal);
-    } else {
-        // we should allocate local memory
-        alloc = this->CreateAlloca(picture_struct_type, nullptr, "tmp" + name);
-    }
-
-    std::vector<llvm::Value *> indices(3);
-    indices[0] = asConstant(0);
-    indices[1] = asConstant(1);
-    indices[2] = asConstant(2);
-
-    // transform bytes to values
-    std::vector<llvm::Constant*> bytes;
-    bytes.reserve(picture->length);
-    for (int i = 0; i < picture->length; ++i) {
-        auto b = llvm::ConstantInt::get(int8_t, picture->bytes[i], false);
-        bytes.push_back(b);
-    }
-
-    // store "bytes" field of struct
-    llvm::Value* bytes_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[0]}, "bytesPtr");
-    auto bytes_alloc = this->CreateAlloca(int8_t, 4, picture_length, "bytesAlloc"); // todo: fix address space
-    llvm::Value* bytes_val = llvm::ConstantArray::get(byte_array_type, bytes);
-    this->CreateStore(bytes_val, bytes_alloc);
-    this->CreateStore(bytes_alloc, bytes_ptr);
-
-    // transform mask to values
-    std::vector<llvm::Constant*> mask;
-    mask.reserve(picture->length);
-    for (int i = 0; i < picture->length; ++i) {
-        auto m = llvm::ConstantInt::get(int8_t, picture->mask[i], false);
-        mask.push_back(m);
-    }
-
-    // store "mask" field of struct
-    llvm::Value* mask_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[1]}, "maskPtr");
-    auto mask_alloc = this->CreateAlloca(int8_t, 4, picture_length, "maskAlloc"); // todo: fix address space
-    llvm::Value* mask_val = llvm::ConstantArray::get(byte_array_type, mask);
-    this->CreateStore(mask_val, mask_alloc);
-    this->CreateStore(mask_alloc, mask_ptr);
-
-    // store "length" field of struct
-    llvm::Value *length_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[2]}, "lengthPtr");
-    llvm::Value *length = llvm::ConstantInt::get(module->getContext(), llvm::APInt(8, picture->length, false));
-    this->CreateStore(length, length_ptr);
-
-    return alloc;
-}
-
 llvm::Value* BCBuilder::CreateAdd(bstd_number* lhs, bstd_number* rhs) {
     return nullptr; // todo: implement
 }
@@ -232,5 +168,125 @@ llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
 }
 
 llvm::Value *BCBuilder::CreatePicture(BabyCobolParser::StringLiteralContext *context) {
-    return nullptr;
+    // Create picture from string literal as mask = XXX...
+    string value = context->LITERAL()->getText().substr(1, context->LITERAL()->getText().size() - 2);
+    char* mask = new char[value.length() + 1];
+
+    int i = 0;
+    while (i < value.length()) {
+        mask[i] = 'X';
+        i++;
+    } mask[i] = '\00';
+
+    char *cstr = new char[value.length() + 1];
+    strcpy(cstr, value.c_str());
+
+    std::string name = "string" + std::to_string(LiteralCount);
+    LiteralCount++;
+    return CreatePicture(name, cstr, mask, (std::uint8_t) value.length(), false);
+}
+
+llvm::Value *BCBuilder::CreatePicture(bstd_picture* picture, std::string &name, bool global) {
+    return CreatePicture(name, picture->bytes, picture->mask, picture->length, global);
+}
+
+llvm::Value *BCBuilder::CreatePicture(const std::string& name, char* m_bytes, char* m_mask, uint8_t m_length, bool global) {
+    llvm::StructType *picture_struct_type = module->getPictureStructType();
+    llvm::Value *alloc;
+    if (global) {
+        // we should allocate global memory
+        llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(picture_struct_type);
+        alloc = new llvm::GlobalVariable(*(llvm::Module*)module, picture_struct_type, false,
+                                         llvm::GlobalVariable::CommonLinkage, zeroInit, name,
+                                         nullptr, llvm::GlobalValue::NotThreadLocal);
+    } else {
+        // we should allocate local memory
+        alloc = this->CreateAlloca(picture_struct_type, nullptr, name);
+    }
+
+    std::vector<llvm::Value *> indices(3);
+    indices[0] = asConstant(0);
+    indices[1] = asConstant(1);
+    indices[2] = asConstant(2);
+
+    // store "bytes" field of struct
+    llvm::Value* bytes_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[0]}, "bytesPtr");
+    llvm::Value *bytes = this->CreateGlobalStringPtr(m_bytes);
+    this->CreateStore(bytes, bytes_ptr);
+
+    // store "bytes" field of struct
+    llvm::Value* mask_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[1]}, "maskPtr");
+    llvm::Value *mask = this->CreateGlobalStringPtr(m_mask);
+    this->CreateStore(mask, mask_ptr);
+
+    // store "length" field of struct
+    llvm::Value *length_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[2]}, "lengthPtr");
+    llvm::Value *length = llvm::ConstantInt::get(module->getContext(), llvm::APInt(8, m_length, false));
+    this->CreateStore(length, length_ptr);
+
+    return alloc;
+}
+
+llvm::Value *BCBuilder::CreatePicture(bstd_picture* picture, std::string &name, bool global) {
+
+    // picture struct types
+    llvm::Type* int8_t = llvm::IntegerType::getInt8Ty(this->getContext());
+    llvm::ArrayType* byte_array_type = llvm::ArrayType::get(int8_t, picture->length);
+    llvm::Value* picture_length = asConstant(picture->length);
+
+    llvm::StructType* picture_struct_type = module->getPictureStructType();
+
+    llvm::Value *alloc;
+    if (global) {
+        // we should allocate global memory
+        llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(picture_struct_type);
+        alloc = new llvm::GlobalVariable(*(llvm::Module*)module, picture_struct_type, false,
+                                         llvm::GlobalVariable::CommonLinkage, zeroInit, name,
+                                         nullptr, llvm::GlobalValue::NotThreadLocal);
+    } else {
+        // we should allocate local memory
+        alloc = this->CreateAlloca(picture_struct_type, nullptr, "tmp" + name);
+    }
+
+    std::vector<llvm::Value *> indices(3);
+    indices[0] = asConstant(0);
+    indices[1] = asConstant(1);
+    indices[2] = asConstant(2);
+
+    // transform bytes to values
+    std::vector<llvm::Constant*> bytes;
+    bytes.reserve(picture->length);
+    for (int i = 0; i < picture->length; ++i) {
+        auto b = llvm::ConstantInt::get(int8_t, picture->bytes[i], false);
+        bytes.push_back(b);
+    }
+
+    // store "bytes" field of struct
+    llvm::Value* bytes_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[0]}, "bytesPtr");
+    auto bytes_alloc = this->CreateAlloca(int8_t, 4, picture_length, "bytesAlloc"); // todo: fix address space
+    llvm::Value* bytes_val = llvm::ConstantArray::get(byte_array_type, bytes);
+    this->CreateStore(bytes_val, bytes_alloc);
+    this->CreateStore(bytes_alloc, bytes_ptr);
+
+    // transform mask to values
+    std::vector<llvm::Constant*> mask;
+    mask.reserve(picture->length);
+    for (int i = 0; i < picture->length; ++i) {
+        auto m = llvm::ConstantInt::get(int8_t, picture->mask[i], false);
+        mask.push_back(m);
+    }
+
+    // store "mask" field of struct
+    llvm::Value* mask_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[1]}, "maskPtr");
+    auto mask_alloc = this->CreateAlloca(int8_t, 4, picture_length, "maskAlloc"); // todo: fix address space
+    llvm::Value* mask_val = llvm::ConstantArray::get(byte_array_type, mask);
+    this->CreateStore(mask_val, mask_alloc);
+    this->CreateStore(mask_alloc, mask_ptr);
+
+    // store "length" field of struct
+    llvm::Value *length_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[2]}, "lengthPtr");
+    llvm::Value *length = llvm::ConstantInt::get(module->getContext(), llvm::APInt(8, picture->length, false));
+    this->CreateStore(length, length_ptr);
+
+    return alloc;
 }

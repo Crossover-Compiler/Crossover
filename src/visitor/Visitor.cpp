@@ -273,28 +273,37 @@ std::any Visitor::visitStop(BabyCobolParser::StopContext *ctx) {
 
 std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
     // Prepare the struct we will be copying
-    llvm::Value *picValue;
-    llvm::Value *numValue;
+    llvm::Value *picValue = nullptr;
+    llvm::Value *numValue = nullptr;
     bool isNum = false;
     std::string mask;
-    auto *tree = any_cast<DataTree *>(visit(ctx->identifiers().at(0))); // TODO: bad any cast
+
+    std::vector<DataTree*> identifiers = {};
+    for (auto identifier: ctx->identifiers()) {
+        auto *tree = any_cast<DataTree *>(visit(identifier));
+        identifiers.push_back(tree);
+    }
+
+    // Get a Field that will be the figure
+    DataTree *tree = identifiers.at(0);
     if (tree->isRecord()) {
         throw CompileException("MOVE TO record is not supported!");
     } else {
         auto *field = dynamic_cast<Field *>(tree);
-        // TODO: Copy the llvm_value of this field. Then assign the move atomic to it, and use this value to paste to all other identifiers
         mask = field->picture;
         auto dataType = field->getPrimitiveType();
         if (dataType == DataType::INT || dataType == DataType::DOUBLE) {
+            // TODO: Check if this works
             numValue = builder->CreateAlloca(bcModule->getNumberStructType());
-            builder->CreateStore(field->getLlvmValue(), numValue, false);
+            builder->CreateMemCpy(numValue,llvm::MaybeAlign(), field->getLlvmValue(),llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
             isNum = true;
         } else if (dataType == DataType::STRING) {
             picValue = builder->CreateAlloca(bcModule->getPictureStructType());
-            builder->CreateStore(field->getLlvmValue(), picValue, false);
+            llvm::Value *pictureToAssignBits = builder->CreateBitCast(picValue, llvm::Type::getInt8PtrTy(bcModule->getContext()));
+            llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getLlvmValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
+            builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
         }
     }
-
 
     // Fill the struct we will be copying
     if (ctx->HIGH() != nullptr) {
@@ -329,9 +338,10 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
                 auto dataType = field->getPrimitiveType();
                 if (dataType == DataType::INT || dataType == DataType::DOUBLE) {
                     if (isNum) {
+                        // TODO: Check if this works
                         // take the Number to copy
                         llvm::Value *numberToAssign = builder->CreateAlloca(bcModule->getNumberStructType());
-                        builder->CreateStore(field->getLlvmValue(), numberToAssign, false);
+                        builder->CreateMemCpy(numberToAssign,llvm::MaybeAlign(), field->getLlvmValue(),llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
 
                         // then call assign Number with Number
                         callAssignNumber(numValue, numberToAssign);
@@ -343,7 +353,11 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
                     if (!isNum) {
                         // take the Picture to copy
                         llvm::Value *pictureToAssign = builder->CreateAlloca(bcModule->getPictureStructType());
-                        builder->CreateStore(field->getLlvmValue(), pictureToAssign, false);
+
+                        llvm::Value *pictureToAssignBits = builder->CreateBitCast(pictureToAssign, llvm::Type::getInt8PtrTy(bcModule->getContext()));
+                        llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getLlvmValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
+
+                        builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
 
                         // then call assign Picture with Picture
                         callAssignPicture(picValue, pictureToAssign);
@@ -386,10 +400,8 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
         }
     }
 
-
     // Assign to identifiers
-    for (auto identifier: ctx->identifiers()) {
-        auto *currentTree = any_cast<DataTree *>(visit(identifier));
+    for (auto currentTree: identifiers) {
         if (currentTree->isRecord()) {
             throw CompileException("MOVE TO record is not supported!");
         } else {
@@ -398,25 +410,16 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
             if (dataType == DataType::INT || dataType == DataType::DOUBLE) {
                 if (isNum) {
                     // take the Number to copy
-                    llvm::Value *numberToAssign = builder->CreateAlloca(bcModule->getNumberStructType());
-                    builder->CreateStore(numValue, numberToAssign, false);
-
                     // then call assign Number with Number
-                    callAssignNumber(field->getLlvmValue(), numberToAssign);
-                    numberToAssign->deleteValue();
+                    callAssignNumber(field->getLlvmValue(), numValue);
                 } else {
                     // TODO: What do we do in case the figure is not a Number?
                     throw CompileException("MOVE does not know what to do when assigning a Picture to Number...");
                 }
             } else if (dataType == DataType::STRING) {
                 if (!isNum) {
-                    // take the Picture to copy
-                    llvm::Value *pictureToAssign = builder->CreateAlloca(bcModule->getPictureStructType());
-                    builder->CreateStore(numValue, pictureToAssign, false);
-
                     // then call assign Picture with Picture
-                    callAssignPicture(field->getLlvmValue(), pictureToAssign);
-                    pictureToAssign->deleteValue();
+                    callAssignPicture(field->getLlvmValue(), picValue);
                 } else {
                     // TODO: What do we do in case the figure is not a Picture?
                     throw CompileException("MOVE does not know what to do when assigning a Number to Picture...");
@@ -424,7 +427,7 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
             }
         }
     }
-    return nullptr;
+    return 0;
 }
 
 std::any Visitor::visitSubtract(BabyCobolParser::SubtractContext *ctx) {
@@ -606,7 +609,23 @@ std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
 }
 
 std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
-    return BabyCobolBaseVisitor::visitIdentifiers(ctx);
+    string name = ctx->IDENTIFIER()[0]->getText();
+    int resultsAmount = 0;
+    DataTree *result = nullptr;
+    for (DataTree *dt: dataStructures) {
+        DataTree *tempResult = dt->findDataTreeByName(name);
+        if (tempResult != nullptr) {
+            resultsAmount++;
+            result = tempResult;
+        }
+    }
+
+    if (resultsAmount > 1) {
+        throw CompileException("Insufficient Qualification! Found multiple DataTree items with name: " + name);
+    } else if (resultsAmount == 0) {
+        throw CompileException("No Value " + ctx->IDENTIFIER()[0]->getText() + " found!");
+    }
+    return result;
 }
 
 any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
@@ -1113,6 +1132,6 @@ void Visitor::callAssignPicture(llvm::Value *assignee, llvm::Value *value) {
 
     llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
     llvm::FunctionType *bstd_assign_number_types = llvm::FunctionType::get(void_t, param_types, true);
-    FunctionCallee bstd_assign_number = bcModule->getOrInsertFunction("bstd_assign_picture", bstd_assign_number_types);
+    FunctionCallee bstd_assign_number = bcModule->getOrInsertFunction("bstd_picutils_assign", bstd_assign_number_types);
     builder->CreateCall(bstd_assign_number, parameters);
 }
