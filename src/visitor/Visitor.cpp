@@ -486,6 +486,14 @@ void Visitor::int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* m
     builder->CreateLifetimeEnd(intPtr, const_i64);
 }
 
+void Visitor::cstr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* cstr) {
+
+    builder->CreateCStrToPictureCall(original, cstr);
+
+    // todo: free allocated memory
+
+}
+
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     callCount++;
 
@@ -610,12 +618,15 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // string*
-                            auto cstr = builder->CreatePictureToCStrCall(&field);
+
+                            auto original = field.getLlvmValue();
+                            auto cstr = builder->CreatePictureToCStrCall(original);
                             parameters.push_back(cstr);
 
-                            // todo: on re-entry:
-                            // call bstd_picture_assign_string
-                            // free(alloc)
+                            // keep track of this value for upon re-entry
+                            auto handler = &Visitor::cstr_re_entry_handler_generator;
+                            auto copy_handler_tuple = tuple(original, cstr, handler);
+                            re_entry_cache.push_back(copy_handler_tuple);
 
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(string)*

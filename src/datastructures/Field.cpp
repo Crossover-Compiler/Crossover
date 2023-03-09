@@ -89,9 +89,9 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
         case DataType::STRING: {
             string temp_str = this->value;
 
-            char* bytes = new char[this->cardinality];
-            char* mask = new char[this->cardinality]; // no null-terminator
-            ::strcpy(bytes, temp_str.c_str());
+            auto* bytes = new unsigned char[this->cardinality];
+            char* mask = new char[this->cardinality]; // no null-terminator!
+            ::strcpy((char*)bytes, temp_str.c_str()); // todo: this should be a proper initializer
             ::strcpy(mask, temp_str.c_str());
 
             uint8_t length = this->cardinality;

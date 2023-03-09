@@ -167,8 +167,11 @@ public:
     void pushDoubleOnParameterList(std::vector<llvm::Value*> *parameters, double value);
     void pushStringOnParameterList(std::vector<llvm::Value*> *parameters, string value);
     void populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx);
-    static void int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* intPtr);
     void printDisplayItem(const string &value, bool nextLine);
+
+    // re-entry handler generators
+    static void int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* intPtr);
+    static void cstr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* cstr);
 };
 
 

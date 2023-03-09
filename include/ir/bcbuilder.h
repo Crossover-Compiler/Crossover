@@ -11,8 +11,6 @@
 #include "../../Crossover_bstd_lib/include/picture.h"
 #include "../antlr/BabyCobolParser.h"
 
-class Field;
-
 class BCBuilder : public llvm::IRBuilder<> {
 
 protected:
@@ -75,7 +73,7 @@ public:
      * @param picture The picture to marshall.
      * @return Returns an pointer value referencing the c-style string representation of the specified picture.
      */
-    llvm::Value* CreatePictureToCStrCall(Field* picture);
+    llvm::Value* CreatePictureToCStrCall(llvm::Value* picture);
 
     /**
      * Creates a call to the bstd runtime library assignment function bstd_assign_cstr(bstd_picture*, char*).
@@ -83,7 +81,7 @@ public:
      * @param str The c-style string to assign to the specified picture.
      * @return Returns void.
      */
-    llvm::Value* CreateCStrToPictureCall(Field* picture, llvm::Value* str);
+    llvm::Value* CreateCStrToPictureCall(llvm::Value* picture, llvm::Value* str);
 
     /**
      * Creates a call to the bstd runtime library marshaller function bstd_number_to_int(Number*)

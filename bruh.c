@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "./Crossover_bstd_lib/include/numutils.h"
+#include "./Crossover_bstd_lib/include/picture.h"
+#include "./Crossover_bstd_lib/include/picutils.h"
 
 /**
 IDENTIFICATION DIVISION.
@@ -130,10 +132,36 @@ void call_datadiv_doubles(double double1, bstd_number double2, double *double3, 
 }
 
 void call_datadiv_pictures(char* str, bstd_picture* picture) {
-    printf("call_datadiv_pictures.bc\n\n");
+    printf("call_datadiv_pictures.bc\n");
 
-    printf("%s\n\n", str);
-    printf("%d\n\n", picture->length);
+    printf("%s\n", str);
+    printf("raw bytes: %s\n", (char*)picture->bytes);
+    printf("mask: %s\n", picture->mask);
+
+    printf("returning to bb\n");
+}
+
+void call_datadiv_pictures2(char* str, bstd_picture* picture) {
+    printf("call_datadiv_pictures.bc 2\n");
+
+    printf("%s\n", str);
+    printf("raw bytes: %s\n", (char*)picture->bytes);
+    printf("mask: %s\n", picture->mask);
+
+    char b = '8';
+    printf("setting byte 2 to: %c\n", b);
+    str[2] = b;
+
+    printf("returning to bb\n");
+}
+
+void call_datadiv_pictures3(char* str, bstd_picture* picture) {
+    printf("call_datadiv_pictures.bc 3\n");
+
+    printf("%s\n", str);
+    printf("raw bytes: %s\n", (char*)picture->bytes);
+    printf("mask: %s\n", picture->mask);
+
 }
 
 int* global;
@@ -152,7 +180,6 @@ void bar() {
     printf("global address is %p\n", global);
     printf("dereferenced global is %d\n", *global);
 }
-
 
 // TODO: Remove, this is for demo purposes
 int i = 0;

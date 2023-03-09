@@ -3,7 +3,6 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/IR/IRBuilder.h"
 
-
 #ifndef BCMODULE_H
 #define BCMODULE_H
 
@@ -13,10 +12,8 @@ private:
     llvm::FunctionCallee* printf_func;
     // marshalling
     llvm::FunctionCallee* marshall_int_func;
-    llvm::FunctionCallee* picture_to_cstr_func;
     // assignment
     llvm::FunctionCallee* assign_int_func;
-    llvm::FunctionCallee* assign_cstr_to_picture_func;
 
     llvm::StructType* numberStructType;
     llvm::StructType* pictureStructType;
@@ -34,8 +31,6 @@ public:
     BCModule(llvm::StringRef ModuleID, llvm::LLVMContext& C):
             llvm::Module(ModuleID, C),
             printf_func(nullptr),
-            picture_to_cstr_func(nullptr),
-            assign_cstr_to_picture_func(nullptr),
             marshall_int_func(nullptr),
             assign_int_func(nullptr),
             numberStructType(nullptr),

@@ -1,10 +1,10 @@
 IDENTIFICATION DIVISION.
        PROGRAM-ID. "call-datadiv-pictures".
        DATA DIVISION
-            01 ROOT.
-                   02 INTS.
-                       03 C PICTURE IS XX9X.
+            01 C PICTURE IS XX9X.
 
        PROCEDURE DIVISION.
        MAIN.
-           CALL call_datadiv_pictures OF bruh USING C AS PRIMITIVE BY REFERENCE C AS STRUCT.
+           CALL call_datadiv_pictures OF bruh USING BY REFERENCE C AS PRIMITIVE BY REFERENCE C AS STRUCT.
+           CALL call_datadiv_pictures2 OF bruh USING BY REFERENCE C AS PRIMITIVE BY REFERENCE C AS STRUCT.
+           CALL call_datadiv_pictures3 OF bruh USING BY REFERENCE C AS PRIMITIVE BY REFERENCE C AS STRUCT.

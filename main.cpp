@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 
 
     ifstream stream;
-    stream.open("../test/call_datadiv_ints.bc");
+    stream.open("../test/call_datadiv_pictures.bc");
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -123,7 +123,8 @@ int main(int argc, char **argv) {
     auto TheTargetMachine =
             Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
 
-    module->setDataLayout(TheTargetMachine->createDataLayout());
+    auto datalayout = TheTargetMachine->createDataLayout();
+    module->setDataLayout(datalayout);
 
     auto Filename = "output.o";
     std::error_code EC;
