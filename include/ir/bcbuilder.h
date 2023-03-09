@@ -45,7 +45,7 @@ public:
      * @param global
      * @return
      */
-    llvm::Value* CreatePicture(bstd_picture* picture, std::string &name, bool global = false);\
+    llvm::Value* CreatePicture(bstd_picture* picture, std::string &name, bool global = false);
 
     /**
      * todo: doc
@@ -55,6 +55,17 @@ public:
      * @return
      */
     llvm::Value* CreatePicture(BabyCobolParser::StringLiteralContext* context);
+
+    /**
+     *
+     * @param name
+     * @param m_bytes
+     * @param m_mask
+     * @param m_length
+     * @param global
+     * @return
+     */
+    llvm::Value *CreatePicture(const std::string &name, unsigned char *m_bytes, char *m_mask, uint8_t m_length, bool global);
 
     /**
      * todo: doc
@@ -101,8 +112,6 @@ public:
 
 
     int LiteralCount = 0;
-
-    llvm::Value *CreatePicture(const std::string &name, char *m_bytes, char *m_mask, uint8_t m_length, bool global);
 };
 
 #endif //CROSSOVER_BCBUILDER_H

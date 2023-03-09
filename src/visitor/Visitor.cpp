@@ -1132,6 +1132,6 @@ void Visitor::callAssignPicture(llvm::Value *assignee, llvm::Value *value) {
 
     llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
     llvm::FunctionType *bstd_assign_number_types = llvm::FunctionType::get(void_t, param_types, true);
-    FunctionCallee bstd_assign_number = bcModule->getOrInsertFunction("bstd_picutils_assign", bstd_assign_number_types);
+    FunctionCallee bstd_assign_number = bcModule->getOrInsertFunction("bstd_assign_picture", bstd_assign_number_types);
     builder->CreateCall(bstd_assign_number, parameters);
 }
