@@ -16,12 +16,12 @@ apt install libspdlog-dev
 ```
 bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 ```
-You may need root permission for these commands.
 
-Optionally, you may want to install ```clang``` to make use of the compile script included in this project:
 ```
 apt install clang
 ```
+You may need root permission for these commands.
+
 
 # Building
 To build the crossover compiler, you can simply run cmake:
@@ -29,6 +29,10 @@ To build the crossover compiler, you can simply run cmake:
 cmake .
 ```
 
+# The BabyCobol standard library
+
+The BabyCobol standard library (bstd) is used both during compilation and runtime and it is required to be present in the same folder as the Crossover executable. To compile the bstd library simply run ```compile_bstd.sh``` and move the .a file to your output folder.
+ 
 # Using the compiler
 
 ```
@@ -42,3 +46,5 @@ Options:
 
 -not-main : If this option is present the babycobol procedure is compiled as "procedureDivision". If it is not present the procedure is compiled as "main".
 ```
+
+
