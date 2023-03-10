@@ -296,32 +296,28 @@ std::any Visitor::visitAccept(BabyCobolParser::AcceptContext *ctx) {
 }
 
 std::any Visitor::visitAdd(BabyCobolParser::AddContext *ctx) {
-//        OLD CODE
-//    current_id = "baseValue";
-//    visit(ctx->atomic()[ctx->atomic().size() - 1]);
-//    for (int i = 0; i < ctx->atomic().size() - 1; i++) {
-//        current_id = "visitAdd_" + std::to_string(i);
-//        visit(ctx->atomic()[i]);
-//        values["baseValue"] = builder->llvm::IRBuilderBase::CreateAdd(values[current_id], values["baseValue"], "mAdd");
-//    }
 
-/// get basevalue as we did before, but this time get number using field.getLlvmValue.
-/// use Builder->CreateNumber(ctx) to create a number from a int or double ctx
-//
-//    for (int i = 0; i < ctx->atomic().size() - 1; i++) {
-//        /// then go through all values of the LHS and add them to the base value using their number structs
-//        /** DATA DIV STUFF */
-//        if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i]) != nullptr) {
-//
-//
-//        }
-//        /** LITERAL STUFF */
-//        else {
-//
-//        }
-//    }
+//    dynamic_cast<BabyCobolParser::IdentifierContext *>(
+    // code below checks if lhs & rhs identifiers and casts them to idcontext if they are
+    // if they are not -> set to  NULL
+    auto lhs = dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->lhs);
+    auto rhs = dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->lhs);
 
-ctx->GIVING();
+    //TODO check if lhs,rhs is literal or field and handle accordingly.
+
+
+
+    if (ctx->GIVING() != nullptr) {
+        DataTree * tree = any_cast<DataTree*>(visitIdentifiers(ctx->identifiers()));
+        if (dynamic_cast<Record*>(tree) != nullptr){
+            throw CompileException("ADD does not support Record for GIVING clause!");
+        } else if (dynamic_cast<Field*>(tree) != nullptr) {
+            Field * field = dynamic_cast<Field*>(tree);
+            // TODO: Check field dataType
+            llvm::Value *number = field->getLlvmValue();
+        }
+    }
+
     return BabyCobolBaseVisitor::visitAdd(ctx);
 }
 
@@ -472,7 +468,23 @@ std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
 }
 
 std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
-    return BabyCobolBaseVisitor::visitIdentifiers(ctx);
+    string name = ctx->IDENTIFIER()[0]->getText();
+    int resultsAmount = 0;
+    DataTree *result = nullptr;
+    for (DataTree *dt: dataStructures) {
+        DataTree *tempResult = dt->findDataTreeByName(name);
+        if (tempResult != nullptr) {
+            resultsAmount++;
+            result = tempResult;
+        }
+    }
+
+    if (resultsAmount > 1) {
+        throw CompileException("Insufficient Qualification! Found multiple DataTree items with name: " + name);
+    } else if (resultsAmount == 0) {
+        throw CompileException("No Value " + ctx->IDENTIFIER()[0]->getText() + " found!");
+    }
+    return result;
 }
 
 any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
