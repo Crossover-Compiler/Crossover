@@ -1,9 +1,4 @@
-//
-// Created by bruh on 2-10-22.
-//
-
-#ifndef CROSSOVER_DATATREE_H
-#define CROSSOVER_DATATREE_H
+#pragma once
 
 #include <string>
 #include <utility>
@@ -29,7 +24,6 @@ protected:
             occurs(1),
             like(nullptr),
             llvm_value(nullptr)
-
     {}
 
     string name;
@@ -40,9 +34,7 @@ protected:
     DataTree *like;
     llvm::Value* llvm_value;
 
-
 public:
-
     llvm::Value* getLlvmValue();
 
     void setLlvmValue(llvm::Value* llvm_value);
@@ -97,8 +89,3 @@ public:
     virtual llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, bool global) = 0;
 
 };
-
-
-
-#endif //CROSSOVER_DATATREE_H
-

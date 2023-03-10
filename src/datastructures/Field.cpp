@@ -1,8 +1,3 @@
-//
-// Created by bruh on 10/17/22.
-//
-
-#include <iostream>
 #include "Field.h"
 #include "../Exceptions/CompileException.h"
 
@@ -92,13 +87,26 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             }, name, global);
         }
         case DataType::STRING: {
-            // TODO: CreateString?
-            break;
+            string temp_str = this->value;
+
+            auto* bytes = new unsigned char[this->cardinality];
+            char* mask = new char[this->cardinality]; // no null-terminator!
+            ::strcpy((char*)bytes, temp_str.c_str()); // todo: this should be a proper initializer
+            ::strcpy(mask, temp_str.c_str());
+
+            uint8_t length = this->cardinality;
+
+            return builder->CreatePicture(new bstd_picture {
+                    .bytes = bytes,
+                    .mask = mask,
+                    .length = length
+            }, name, global);
         }
         default: {
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
+
     throw logic_error("Should not get here...");
 }
 

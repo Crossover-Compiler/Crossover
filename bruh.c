@@ -1,5 +1,7 @@
 #include <stdio.h>
-#include "./Crossover_bstd_lib/include/number.h"
+#include "./Crossover_bstd_lib/include/numutils.h"
+#include "./Crossover_bstd_lib/include/picture.h"
+#include "./Crossover_bstd_lib/include/picutils.h"
 
 /**
 IDENTIFICATION DIVISION.
@@ -129,6 +131,39 @@ void call_datadiv_doubles(double double1, bstd_number double2, double *double3, 
     printf("%p %d\n\n"  , double4 , double4->positive);
 }
 
+void call_datadiv_pictures(char* str, bstd_picture* picture) {
+    printf("call_datadiv_pictures.bc\n");
+
+    printf("%s\n", str);
+    printf("raw bytes: %s\n", (char*)picture->bytes);
+    printf("mask: %s\n", picture->mask);
+
+    printf("returning to bb\n");
+}
+
+void call_datadiv_pictures2(char* str, bstd_picture* picture) {
+    printf("call_datadiv_pictures.bc 2\n");
+
+    printf("%s\n", str);
+    printf("raw bytes: %s\n", (char*)picture->bytes);
+    printf("mask: %s\n", picture->mask);
+
+    char b = '8';
+    printf("setting byte 2 to: %c\n", b);
+    str[2] = b;
+
+    printf("returning to bb\n");
+}
+
+void call_datadiv_pictures3(char* str, bstd_picture* picture) {
+    printf("call_datadiv_pictures.bc 3\n");
+
+    printf("%s\n", str);
+    printf("raw bytes: %s\n", (char*)picture->bytes);
+    printf("mask: %s\n", picture->mask);
+
+}
+
 int* global;
 
 void foo(int* a) {
@@ -144,4 +179,17 @@ void foo(int* a) {
 void bar() {
     printf("global address is %p\n", global);
     printf("dereferenced global is %d\n", *global);
+}
+
+// TODO: Remove, this is for demo purposes
+int i = 0;
+void display(bstd_number* double1, bstd_number* double2) {
+    if (i == 0) {
+        double1->value = 3;             // Results in 0.3         | should be printed as +0.3
+        double2->value = 123456;        // Results in 0012.3456   | should be printed as 0012.3456
+        i++;
+    } else {
+        double1->value = 100;           // Results in 10.0        | should be printed as +0.0
+        double2->value = 1234567890;    // Results in 123456.7890 | should be printed as 3456.7890
+    }
 }

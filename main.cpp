@@ -1,6 +1,7 @@
 #include <iostream>
 #include <csignal>
 #include "src/visitor/Visitor.h"
+#include "src/Exceptions/CompileException.h"
 #include "include/utils/utils.h"
 #include "include/antlr/BabyCobolParser.h"
 #include "include/antlr/BabyCobolLexer.h"
@@ -57,9 +58,15 @@ int main(int argc, char **argv) {
     }
     // end build external symbol map
 
+    string bcInput = argv[1];
 
     ifstream stream;
-    stream.open("../test/simple_addition.bc");
+
+    stream.open(bcInput);
+    if (!stream.is_open()) {
+        throw CompileException("File \"" + bcInput + "\" not found");
+    }
+
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
@@ -123,7 +130,8 @@ int main(int argc, char **argv) {
     auto TheTargetMachine =
             Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
 
-    module->setDataLayout(TheTargetMachine->createDataLayout());
+    auto datalayout = TheTargetMachine->createDataLayout();
+    module->setDataLayout(datalayout);
 
     auto Filename = "output.o";
     std::error_code EC;
@@ -151,14 +159,8 @@ int main(int argc, char **argv) {
         generateStructs(visitor.dataStructures);
     }
 
-    cout << "Compiling BabyCobol Standard Library" << endl;
-    exec("mkdir -p out/lib");
-    exec("cd out/lib && "
-         "clang -c --include-directory ../../../Crossover_bstd_lib/include/ ../../../Crossover_bstd_lib/src/*.c && "
-         "ar cr libbstd.a *.o");
-
     const string executableName = "exec";
-    string linkCommand = "clang output.o out/lib/libbstd.a -o " + executableName;
+    string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
 
     cout << "Linking objects and creating executable" << endl;
     for (auto & element : externalFiles) {
