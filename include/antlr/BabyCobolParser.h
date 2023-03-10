@@ -516,8 +516,7 @@ public:
 
   class  AddContext : public antlr4::ParserRuleContext {
   public:
-    BabyCobolParser::AtomicContext *atomicContext = nullptr;
-    std::vector<AtomicContext *> lhs;
+    BabyCobolParser::AtomicContext *lhs = nullptr;
     BabyCobolParser::AtomicContext *rhs = nullptr;
     BabyCobolParser::IdentifiersContext *id = nullptr;
     AddContext(antlr4::ParserRuleContext *parent, size_t invokingState);
