@@ -192,14 +192,18 @@ std::any Visitor::visitLabel(BabyCobolParser::LabelContext *ctx) {
 std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     // TODO: Add delimiter
     bool nextLine = ctx->ADVANCING() == nullptr;
+    bool spacer = false;
 
     for (int i = 0; i < ctx->atomic().size(); ++i) {
+        if (i == 1) {
+            spacer = true;
+        }
         if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            printDisplayItem(to_string(any_cast<int>(visit(ctx->atomic()[i]))), nextLine);
+            printDisplayItem(to_string(any_cast<int>(visit(ctx->atomic()[i]))), spacer);
         } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            printDisplayItem(any_cast<string>(visit(ctx->atomic()[i])), nextLine);
+            printDisplayItem(any_cast<string>(visit(ctx->atomic()[i])), spacer);
         } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            printDisplayItem(to_string(any_cast<double>(visit(ctx->atomic()[i]))), nextLine);
+            printDisplayItem(to_string(any_cast<double>(visit(ctx->atomic()[i]))), spacer);
         } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i]) != nullptr) {
             auto dataTree = any_cast<DataTree *>(visit(ctx->atomic()[i]));
             if (dynamic_cast<Field *>(dataTree) != nullptr) {
@@ -208,7 +212,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
                 std::vector<llvm::Value *> parameters;
                 parameters.reserve(2);
                 parameters.push_back(field->getLlvmValue());
-                if (nextLine) {
+                if (spacer) {
                     parameters.push_back(llvm::ConstantInt::getTrue(bcModule->getContext()));
                 } else {
                     parameters.push_back(llvm::ConstantInt::getFalse(bcModule->getContext()));
@@ -247,18 +251,21 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
             throw NotImplemented("Visitor:visitDisplay() We should never reach this statement!!!");
         }
     }
+    if (nextLine) {
+        printDisplayItem("\n\r", false);
+    }
     return 0;
 }
 
-void Visitor::printDisplayItem(const string &value, bool nextLine) {
+void Visitor::printDisplayItem(const string &value, bool spacer) {
     llvm::FunctionCallee *printf_func = bcModule->getPrintf();
 
     cout << value << endl;
     llvm::Value *raw = builder->CreateGlobalStringPtr(value);
     llvm::Value *strPtr;
-    if (nextLine) {
+    if (spacer) {
         // create a printf call for every operand
-        strPtr = builder->CreateGlobalStringPtr("%s\r\n");
+        strPtr = builder->CreateGlobalStringPtr(" %s");
     } else {
         strPtr = builder->CreateGlobalStringPtr("%s");
     }
