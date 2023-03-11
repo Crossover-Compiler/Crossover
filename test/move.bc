@@ -1,14 +1,28 @@
 IDENTIFICATION DIVISION.
-       PROGRAM-ID. "display".
-       DATA DIVISION
-            01 ROOT.
-                   02 INTS.
-                        03 C PICTURE IS XAX9.
-                        03 D PICTURE IS XXAX9.
+PROGRAM-ID. "display".
+DATA DIVISION
+    01 STRINGS.
+        02 SA PICTURE IS XAX9.
+        02 SB PICTURE IS XXAX9.
 
+    01 INTS.
+        02 IA PICTURE IS 999.
+        02 IB PICTURE IS 99999.
 
-       PROCEDURE DIVISION.
-       MAIN.
-            DISPLAY C D.
-            MOVE "ACDEF" TO C D.
-            DISPLAY C D.
+    01 DOUBLES.
+        03 DA PICTURE IS 99V99.
+        03 DB PICTURE IS 999V999.
+
+PROCEDURE DIVISION.
+MAIN.
+    DISPLAY SA SB.
+    DISPLAY IA IB.
+    DISPLAY DA DB.
+
+    MOVE "ACDEF" TO SA SB.
+    MOVE 1234 TO IA IB.
+    MOVE 123,456 TO DA DB.
+
+    DISPLAY SA SB.
+    DISPLAY IA IB.
+    DISPLAY DA DB.
