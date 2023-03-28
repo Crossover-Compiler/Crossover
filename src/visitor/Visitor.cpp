@@ -1138,7 +1138,7 @@ void Visitor::callAssignPicture(llvm::Value *assignee, llvm::Value *value) {
     transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
 
     llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
-    llvm::FunctionType *bstd_assign_number_types = llvm::FunctionType::get(void_t, param_types, true);
-    FunctionCallee bstd_assign_number = bcModule->getOrInsertFunction("bstd_assign_picture", bstd_assign_number_types);
-    builder->CreateCall(bstd_assign_number, parameters);
+    llvm::FunctionType *bstd_assign_picture_types = llvm::FunctionType::get(void_t, param_types, true);
+    FunctionCallee bstd_assign_picture = bcModule->getOrInsertFunction("bstd_assign_picture", bstd_assign_picture_types);
+    builder->CreateCall(bstd_assign_picture, parameters);
 }
