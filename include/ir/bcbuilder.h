@@ -49,6 +49,26 @@ public:
 
     /**
      * todo: doc
+     * @param picture
+     * @param name
+     * @param global
+     * @return
+     */
+    llvm::Value* CreatePicture(BabyCobolParser::StringLiteralContext* context);
+
+    /**
+     *
+     * @param name
+     * @param m_bytes
+     * @param m_mask
+     * @param m_length
+     * @param global
+     * @return
+     */
+    llvm::Value *CreatePicture(const std::string &name, unsigned char *m_bytes, char *m_mask, uint8_t m_length, bool global);
+
+    /**
+     * todo: doc
      * @param lhs
      * @param rhs
      * @return

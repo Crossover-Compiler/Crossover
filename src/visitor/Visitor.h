@@ -167,6 +167,8 @@ public:
     void pushDoubleOnParameterList(std::vector<llvm::Value*> *parameters, double value);
     void pushStringOnParameterList(std::vector<llvm::Value*> *parameters, string value);
     void populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx);
+    void callAssignNumber(Value *assignee, Value *value);
+    void callAssignPicture(Value *assignee, Value *value);
     void printDisplayItem(const string &value, bool nextLine);
 
     // re-entry handler generators

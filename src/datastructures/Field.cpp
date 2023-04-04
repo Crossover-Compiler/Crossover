@@ -21,8 +21,8 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
 
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'Z'), temp_str.end());
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'S'), temp_str.end());
-            // TODO: If int contains Z they are not used
-            uint64_t value = std::stoi(temp_str);
+
+            uint64_t value = 0;
             uint64_t scale = this->scale;
 
             // TODO: Review what we want with Z characters in Pictures
@@ -68,7 +68,7 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'Z'), temp_str.end());
             temp_str.erase(remove(temp_str.begin(), temp_str.end(), 'S'), temp_str.end());
             // TODO: If double contains Z they are not used
-            uint64_t value = std::stoi(temp_str);
+            uint64_t value = 0;
 
             uint64_t scale = this->scale;
             if (S_after_V) scale--;
@@ -87,12 +87,20 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             }, name, global);
         }
         case DataType::STRING: {
-            string temp_str = this->value;
+            char * mask = new char [this->cardinality];
+            std::strcpy (mask, value.c_str());
 
-            auto* bytes = new unsigned char[this->cardinality];
-            char* mask = new char[this->cardinality]; // no null-terminator!
-            ::strcpy((char*)bytes, temp_str.c_str()); // todo: this should be a proper initializer
-            ::strcpy(mask, temp_str.c_str());
+            unsigned char *bytes = new unsigned char [this->cardinality];
+
+            int i = 0;
+            while (i < value.length()) {
+                if (mask[i] == 'X' || mask[i] == 'A' ) {
+                    bytes[i] = ' ';
+                } else if (mask[i] == '9') {
+                    bytes[i] = 0;
+                }
+                i++;
+            }
 
             uint8_t length = this->cardinality;
 
@@ -106,8 +114,6 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
-
-    throw logic_error("Should not get here...");
 }
 
 llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {
@@ -150,6 +156,3 @@ int Field::getCardinality() {
 void Field::setCardinality(int cardinality) {
     this->cardinality = cardinality;
 }
-
-
-
