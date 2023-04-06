@@ -33,12 +33,12 @@ namespace utils{
                 ancestors.append(subtreeptr->getName());
                 result.insert(0, generateSubStruct(&ancestors ,subtreeptr)); // generate substructs recursively and prepend to result
             } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
-                Field* subtreeptr = dynamic_cast<Field*>(subtreeptr);
+                auto* subTreePtrAsField = dynamic_cast<Field*>(subtreeptr);
                 //Todo expand later when more fields other than numeric
                 result.append("Number* ");
-                result.append(subtreeptr->getName());
+                result.append(subTreePtrAsField->getName());
                 result.append("; // expected format: ");
-                result.append(subtreeptr->getValue());
+                result.append(subTreePtrAsField->getValue());
             }
             children.erase(children.begin());
         }
@@ -86,12 +86,11 @@ namespace utils{
                         currentPath.append(subtreeptr->getName());
                         middleLines.append(generateSubStruct(&currentPath, subtreeptr));
                     } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
-                        Field* subtreeptr = dynamic_cast<Field*>(subtreeptr);
-                        //Todo expand later when more fields other than numeric
+                        auto* subTreePtrAsField = dynamic_cast<Field*>(subtreeptr);
                         lastLines.append("Number* ");
-                        lastLines.append(subtreeptr->getName());
+                        lastLines.append(subTreePtrAsField->getName());
                         lastLines.append("; // expected format: ");
-                        lastLines.append(subtreeptr->getValue());
+                        lastLines.append(subTreePtrAsField->getValue());
                     }
                     children.erase(children.begin());
                 }
@@ -100,12 +99,12 @@ namespace utils{
                 lastLines.append("_t;\n\n");
             }
             else if(dynamic_cast<Field*>(treeptr) != nullptr){
-                Field* treeptr = dynamic_cast<Field*>(treeptr);
+                auto* treePtrAsField = dynamic_cast<Field*>(treeptr);
                 //Todo expand later when more fields other than numeric
                 lastLines.append("Number* ");
-                lastLines.append(treeptr->getName());
+                lastLines.append(treePtrAsField->getName());
                 lastLines.append("; // expected format: ");
-                lastLines.append(treeptr->getValue());
+                lastLines.append(treePtrAsField->getValue());
                 lastLines.append("\n");
             }
             dataStructures.erase(dataStructures.begin());
