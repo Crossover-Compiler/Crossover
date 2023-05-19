@@ -156,3 +156,7 @@ int Field::getCardinality() {
 void Field::setCardinality(int cardinality) {
     this->cardinality = cardinality;
 }
+
+bool Field::isNumber(){
+    return (primitiveType == DataType::INT || primitiveType == DataType::DOUBLE);
+}

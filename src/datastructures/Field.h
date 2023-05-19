@@ -53,6 +53,8 @@ public:
 
     string toString();
 
+    bool isNumber();
+
     [[nodiscard]] DataType getPrimitiveType() const;
 
     void setPrimitiveType(DataType primitiveType);

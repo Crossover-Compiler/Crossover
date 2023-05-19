@@ -34,11 +34,17 @@ namespace utils{
                 result.insert(0, generateSubStruct(&ancestors ,subtreeptr)); // generate substructs recursively and prepend to result
             } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
                 auto* subTreePtrAsField = dynamic_cast<Field*>(subtreeptr);
-                //Todo expand later when more fields other than numeric
-                result.append("Number* ");
-                result.append(subTreePtrAsField->getName());
-                result.append("; // expected format: ");
-                result.append(subTreePtrAsField->getValue());
+                if(subTreePtrAsField->isNumber()) {
+                    result.append("bstd_number* ");
+                    result.append(subTreePtrAsField->getName());
+                    result.append("; // expected format: ");
+                    result.append(subTreePtrAsField->getValue());
+                } else {
+                    result.append("bstd_picture* ");
+                    result.append(subTreePtrAsField->getName());
+                    result.append("; // expected format: ");
+                    result.append(subTreePtrAsField->getValue());
+                }
             }
             children.erase(children.begin());
         }
@@ -87,10 +93,17 @@ namespace utils{
                         middleLines.append(generateSubStruct(&currentPath, subtreeptr));
                     } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
                         auto* subTreePtrAsField = dynamic_cast<Field*>(subtreeptr);
-                        lastLines.append("Number* ");
-                        lastLines.append(subTreePtrAsField->getName());
-                        lastLines.append("; // expected format: ");
-                        lastLines.append(subTreePtrAsField->getValue());
+                        if(subTreePtrAsField->isNumber()) {
+                            lastLines.append("bstd_number* ");
+                            lastLines.append(subTreePtrAsField->getName());
+                            lastLines.append("; // expected format: ");
+                            lastLines.append(subTreePtrAsField->getValue());
+                        } else {
+                            lastLines.append("bstd_picture* ");
+                            lastLines.append(subTreePtrAsField->getName());
+                            lastLines.append("; // expected format: ");
+                            lastLines.append(subTreePtrAsField->getValue());
+                        }
                     }
                     children.erase(children.begin());
                 }
@@ -100,12 +113,17 @@ namespace utils{
             }
             else if(dynamic_cast<Field*>(treeptr) != nullptr){
                 auto* treePtrAsField = dynamic_cast<Field*>(treeptr);
-                //Todo expand later when more fields other than numeric
-                lastLines.append("Number* ");
-                lastLines.append(treePtrAsField->getName());
-                lastLines.append("; // expected format: ");
-                lastLines.append(treePtrAsField->getValue());
-                lastLines.append("\n");
+                if(treePtrAsField->isNumber()) {
+                    lastLines.append("bstd_number* ");
+                    lastLines.append(treePtrAsField->getName());
+                    lastLines.append("; // expected format: ");
+                    lastLines.append(treePtrAsField->getValue());
+                } else {
+                    lastLines.append("bstd_picture* ");
+                    lastLines.append(treePtrAsField->getName());
+                    lastLines.append("; // expected format: ");
+                    lastLines.append(treePtrAsField->getValue());
+                }
             }
             dataStructures.erase(dataStructures.begin());
         }

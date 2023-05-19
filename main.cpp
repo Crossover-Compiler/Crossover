@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
 
     BCBuilder builder(module, block);
 
-    Visitor visitor(module, &builder, &extTable);
+    Visitor visitor(module, &builder, &extTable, presentInArgs(argc, argv,"-generate-structs"));
     visitor.visitProgram(tree);
 
 
@@ -159,19 +159,20 @@ int main(int argc, char **argv) {
         generateStructs(visitor.dataStructures);
     }
 
-    const string executableName = "exec";
-    string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
+    if (!presentInArgs(argc, argv,"-generate-structs")) {
+        const string executableName = "exec";
+        string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
 
-    cout << "Linking objects and creating executable" << endl;
-    for (auto & element : externalFiles) {
-        linkCommand.append(" ");
-        linkCommand.append(element);
+        cout << "Linking objects and creating executable" << endl;
+        for (auto &element: externalFiles) {
+            linkCommand.append(" ");
+            linkCommand.append(element);
+        }
+
+        auto result = exec(linkCommand);
+
+        std::cout << "Done." << std::endl << "Wrote executable to file: " << executableName << std::endl;
     }
-
-    auto result = exec(linkCommand);
-
-    std::cout << "Done." << std::endl << "Wrote executable to file: " << executableName << std::endl;
-
     return 0;
 }
 

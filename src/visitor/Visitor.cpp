@@ -816,7 +816,8 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                 } else if (dynamic_cast<Record *>(any_cast<DataTree *>(visit(ctx->atomic()[i]))) != nullptr) {
                     // Identifier was a Record
-                    auto record = *any_cast<Record *>(visit(ctx->atomic()[i]));
+                    auto record = *dynamic_cast<Record*>(any_cast<DataTree *>(visit(ctx->atomic()[i])));
+                    parameters.push_back(record.getLlvmValue());
                     // Pass the record as class
                 }
 
@@ -930,23 +931,26 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     auto *new_function = new llvm::FunctionCallee();
 
     vector<string> programFunctions;
-    if (extTable->find(programName) != extTable->end()) {
-        programFunctions = extTable->find(programName)->second;
-    } else {
-        auto format = "No program named %s provided.";
-        auto size = std::snprintf(nullptr, 0, format, programName.c_str());
-        std::string errormessage(size + 1, '\0');
-        std::sprintf(&errormessage[0], format, programName.c_str());
-        throw CompileException(errormessage);
+    if(!generate_structs){ // if user wants to generate structs these errors should not be thrown since the program will not be linked yet
+        if (extTable->find(programName) != extTable->end()) {
+            programFunctions = extTable->find(programName)->second;
+        } else {
+            auto format = "No program named %s provided.";
+            auto size = std::snprintf(nullptr, 0, format, programName.c_str());
+            std::string errormessage(size + 1, '\0');
+            std::sprintf(&errormessage[0], format, programName.c_str());
+            throw CompileException(errormessage);
+        }
+
+        if (std::find(programFunctions.begin(), programFunctions.end(), functionName) == programFunctions.end()) {
+            auto format = "No function named %s found in program %s.";
+            auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
+            std::string errormessage(size + 1, '\0');
+            std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
+            throw CompileException(errormessage);
+        }
     }
 
-    if (std::find(programFunctions.begin(), programFunctions.end(), functionName) == programFunctions.end()) {
-        auto format = "No function named %s found in program %s.";
-        auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
-        std::string errormessage(size + 1, '\0');
-        std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
-        throw CompileException(errormessage);
-    }
 
     *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
     Function *function = cast<Function>(new_function->getCallee());

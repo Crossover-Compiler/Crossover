@@ -19,6 +19,7 @@ private:
     vector<std::string> compiledVector;
     map<string, Value*> values;
     map<string,vector<string>>* extTable;
+    bool generate_structs;
     int topLevel;
     DataTree* root;
     string current_id;
@@ -35,7 +36,7 @@ private:
 public:
     vector<DataTree*> dataStructures;
 
-    Visitor(BCModule* bcModule, BCBuilder* builder, map<string,vector<string>>* extTable) : bcModule(bcModule), builder(builder), topLevel(-1), extTable(extTable) {}
+    Visitor(BCModule* bcModule, BCBuilder* builder, map<string,vector<string>>* extTable, bool generate_structs) : bcModule(bcModule), builder(builder), topLevel(-1), extTable(extTable), generate_structs(generate_structs) {}
 
     void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
 
