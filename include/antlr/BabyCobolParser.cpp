@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/manzi/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.12.0
 
 
 #include "BabyCobolVisitor.h"
@@ -36,7 +36,7 @@ struct BabyCobolParserStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-std::once_flag babycobolParserOnceFlag;
+::antlr4::internal::OnceFlag babycobolParserOnceFlag;
 BabyCobolParserStaticData *babycobolParserStaticData = nullptr;
 
 void babycobolParserInitialize() {
@@ -107,23 +107,23 @@ void babycobolParserInitialize() {
   	12,22,285,1,23,1,23,4,23,290,8,23,11,23,12,23,291,1,23,1,23,1,23,1,23,
   	3,23,298,8,23,1,24,1,24,1,24,1,24,4,24,304,8,24,11,24,12,24,305,1,24,
   	1,24,3,24,310,8,24,1,24,1,24,3,24,314,8,24,1,25,1,25,1,25,5,25,319,8,
-  	25,10,25,12,25,322,9,25,1,25,1,25,1,26,1,26,1,26,1,27,1,27,5,27,331,8,
-  	27,10,27,12,27,334,9,27,1,27,1,27,1,28,1,28,1,28,1,28,1,29,1,29,1,29,
-  	3,29,345,8,29,1,29,1,29,1,30,1,30,1,30,1,30,1,30,1,30,1,30,1,31,1,31,
-  	1,31,3,31,359,8,31,1,31,1,31,1,31,1,31,4,31,365,8,31,11,31,12,31,366,
-  	1,31,1,31,1,31,1,31,1,31,4,31,374,8,31,11,31,12,31,375,1,31,1,31,1,31,
-  	1,31,4,31,382,8,31,11,31,12,31,383,1,31,1,31,1,31,1,31,1,31,4,31,391,
-  	8,31,11,31,12,31,392,1,31,1,31,1,31,1,31,1,31,4,31,400,8,31,11,31,12,
-  	31,401,1,31,1,31,1,31,1,31,4,31,408,8,31,11,31,12,31,409,1,31,1,31,1,
-  	31,1,31,1,31,4,31,417,8,31,11,31,12,31,418,1,31,1,31,4,31,423,8,31,11,
-  	31,12,31,424,1,31,4,31,428,8,31,11,31,12,31,429,3,31,432,8,31,4,31,434,
-  	8,31,11,31,12,31,435,3,31,438,8,31,1,31,1,31,3,31,442,8,31,1,32,1,32,
-  	1,32,3,32,447,8,32,1,33,1,33,1,33,1,33,1,33,1,33,1,33,5,33,456,8,33,10,
-  	33,12,33,459,9,33,1,34,1,34,1,34,1,34,1,34,1,34,5,34,467,8,34,10,34,12,
-  	34,470,9,34,1,35,1,35,1,35,1,35,1,35,1,35,1,35,4,35,479,8,35,11,35,12,
-  	35,480,1,35,1,35,1,35,1,35,1,35,1,35,3,35,489,8,35,1,35,1,35,1,35,1,35,
-  	5,35,495,8,35,10,35,12,35,498,9,35,1,36,1,36,3,36,502,8,36,1,36,1,36,
-  	3,36,506,8,36,1,36,1,36,3,36,510,8,36,1,36,1,36,3,36,514,8,36,1,36,1,
+  	25,10,25,12,25,322,9,25,1,25,1,25,1,26,1,26,1,26,1,27,1,27,1,27,5,27,
+  	332,8,27,10,27,12,27,335,9,27,1,27,1,27,1,28,1,28,1,28,1,28,1,29,1,29,
+  	1,29,3,29,346,8,29,1,29,1,29,1,30,1,30,1,30,1,30,1,30,1,30,1,30,1,31,
+  	1,31,1,31,3,31,360,8,31,1,31,1,31,1,31,1,31,4,31,366,8,31,11,31,12,31,
+  	367,1,31,1,31,1,31,1,31,1,31,4,31,375,8,31,11,31,12,31,376,1,31,1,31,
+  	1,31,1,31,4,31,383,8,31,11,31,12,31,384,1,31,1,31,1,31,1,31,1,31,4,31,
+  	392,8,31,11,31,12,31,393,1,31,1,31,1,31,1,31,1,31,4,31,401,8,31,11,31,
+  	12,31,402,1,31,1,31,1,31,1,31,4,31,409,8,31,11,31,12,31,410,1,31,1,31,
+  	1,31,1,31,1,31,4,31,418,8,31,11,31,12,31,419,1,31,1,31,4,31,424,8,31,
+  	11,31,12,31,425,1,31,4,31,429,8,31,11,31,12,31,430,3,31,433,8,31,4,31,
+  	435,8,31,11,31,12,31,436,3,31,439,8,31,1,31,1,31,3,31,443,8,31,1,32,1,
+  	32,1,32,3,32,448,8,32,1,33,1,33,1,33,1,33,1,33,1,33,1,33,5,33,457,8,33,
+  	10,33,12,33,460,9,33,1,34,1,34,1,34,1,34,1,34,1,34,5,34,468,8,34,10,34,
+  	12,34,471,9,34,1,35,1,35,1,35,1,35,1,35,1,35,1,35,4,35,480,8,35,11,35,
+  	12,35,481,1,35,1,35,1,35,1,35,1,35,1,35,3,35,490,8,35,1,35,1,35,1,35,
+  	1,35,5,35,496,8,35,10,35,12,35,499,9,35,1,36,1,36,3,36,503,8,36,1,36,
+  	1,36,3,36,507,8,36,1,36,1,36,3,36,511,8,36,1,36,1,36,3,36,515,8,36,1,
   	36,1,36,1,36,1,36,3,36,521,8,36,1,37,1,37,3,37,525,8,37,1,37,1,37,1,38,
   	1,38,1,39,1,39,1,40,1,40,1,41,1,41,4,41,537,8,41,11,41,12,41,538,1,41,
   	4,41,542,8,41,11,41,12,41,543,1,41,1,41,1,41,4,41,549,8,41,11,41,12,41,
@@ -133,14 +133,14 @@ void babycobolParserInitialize() {
   	18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,
   	64,66,68,70,72,74,76,78,80,82,84,86,88,0,8,2,0,82,82,86,86,1,0,1,2,2,
   	0,37,37,85,85,2,0,74,74,77,77,1,0,4,9,1,0,48,50,2,0,1,3,10,11,1,0,2,3,
-  	634,0,90,1,0,0,0,2,97,1,0,0,0,4,110,1,0,0,0,6,112,1,0,0,0,8,114,1,0,0,
+  	633,0,90,1,0,0,0,2,97,1,0,0,0,4,110,1,0,0,0,6,112,1,0,0,0,8,114,1,0,0,
   	0,10,124,1,0,0,0,12,126,1,0,0,0,14,130,1,0,0,0,16,146,1,0,0,0,18,148,
   	1,0,0,0,20,150,1,0,0,0,22,164,1,0,0,0,24,172,1,0,0,0,26,179,1,0,0,0,28,
   	200,1,0,0,0,30,202,1,0,0,0,32,213,1,0,0,0,34,215,1,0,0,0,36,228,1,0,0,
   	0,38,240,1,0,0,0,40,252,1,0,0,0,42,263,1,0,0,0,44,281,1,0,0,0,46,287,
   	1,0,0,0,48,299,1,0,0,0,50,315,1,0,0,0,52,325,1,0,0,0,54,328,1,0,0,0,56,
-  	337,1,0,0,0,58,341,1,0,0,0,60,348,1,0,0,0,62,355,1,0,0,0,64,446,1,0,0,
-  	0,66,448,1,0,0,0,68,460,1,0,0,0,70,488,1,0,0,0,72,520,1,0,0,0,74,522,
+  	338,1,0,0,0,58,342,1,0,0,0,60,349,1,0,0,0,62,356,1,0,0,0,64,447,1,0,0,
+  	0,66,449,1,0,0,0,68,461,1,0,0,0,70,489,1,0,0,0,72,520,1,0,0,0,74,522,
   	1,0,0,0,76,528,1,0,0,0,78,530,1,0,0,0,80,532,1,0,0,0,82,552,1,0,0,0,84,
   	558,1,0,0,0,86,560,1,0,0,0,88,575,1,0,0,0,90,92,3,2,1,0,91,93,3,8,4,0,
   	92,91,1,0,0,0,92,93,1,0,0,0,93,94,1,0,0,0,94,95,3,20,10,0,95,96,5,0,0,
@@ -209,82 +209,82 @@ void babycobolParserInitialize() {
   	0,313,314,1,0,0,0,314,49,1,0,0,0,315,316,5,42,0,0,316,320,3,64,32,0,317,
   	319,3,82,41,0,318,317,1,0,0,0,319,322,1,0,0,0,320,318,1,0,0,0,320,321,
   	1,0,0,0,321,323,1,0,0,0,322,320,1,0,0,0,323,324,5,37,0,0,324,51,1,0,0,
-  	0,325,326,5,51,0,0,326,327,5,52,0,0,327,53,1,0,0,0,328,332,5,54,0,0,329,
-  	331,3,72,36,0,330,329,1,0,0,0,331,334,1,0,0,0,332,330,1,0,0,0,332,333,
-  	1,0,0,0,333,335,1,0,0,0,334,332,1,0,0,0,335,336,5,37,0,0,336,55,1,0,0,
-  	0,337,338,5,64,0,0,338,339,5,26,0,0,339,340,3,4,2,0,340,57,1,0,0,0,341,
-  	344,5,68,0,0,342,345,3,28,14,0,343,345,5,70,0,0,344,342,1,0,0,0,344,343,
-  	1,0,0,0,345,346,1,0,0,0,346,347,5,69,0,0,347,59,1,0,0,0,348,349,5,71,
-  	0,0,349,350,3,28,14,0,350,351,5,26,0,0,351,352,5,72,0,0,352,353,5,26,
-  	0,0,353,354,3,28,14,0,354,61,1,0,0,0,355,358,5,73,0,0,356,357,5,86,0,
-  	0,357,359,5,58,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,360,1,0,0,0,360,
-  	437,5,86,0,0,361,433,5,78,0,0,362,364,5,75,0,0,363,365,3,84,42,0,364,
-  	363,1,0,0,0,365,366,1,0,0,0,366,364,1,0,0,0,366,367,1,0,0,0,367,368,1,
-  	0,0,0,368,369,5,79,0,0,369,370,5,15,0,0,370,432,1,0,0,0,371,373,5,76,
-  	0,0,372,374,3,84,42,0,373,372,1,0,0,0,374,375,1,0,0,0,375,373,1,0,0,0,
-  	375,376,1,0,0,0,376,377,1,0,0,0,377,378,5,79,0,0,378,379,5,15,0,0,379,
-  	432,1,0,0,0,380,382,3,84,42,0,381,380,1,0,0,0,382,383,1,0,0,0,383,381,
-  	1,0,0,0,383,384,1,0,0,0,384,385,1,0,0,0,385,386,5,79,0,0,386,387,5,15,
-  	0,0,387,432,1,0,0,0,388,390,5,75,0,0,389,391,3,84,42,0,390,389,1,0,0,
-  	0,391,392,1,0,0,0,392,390,1,0,0,0,392,393,1,0,0,0,393,394,1,0,0,0,394,
-  	395,5,79,0,0,395,396,5,14,0,0,396,432,1,0,0,0,397,399,5,76,0,0,398,400,
-  	3,84,42,0,399,398,1,0,0,0,400,401,1,0,0,0,401,399,1,0,0,0,401,402,1,0,
-  	0,0,402,403,1,0,0,0,403,404,5,79,0,0,404,405,5,14,0,0,405,432,1,0,0,0,
-  	406,408,3,84,42,0,407,406,1,0,0,0,408,409,1,0,0,0,409,407,1,0,0,0,409,
-  	410,1,0,0,0,410,411,1,0,0,0,411,412,5,79,0,0,412,413,5,14,0,0,413,432,
-  	1,0,0,0,414,416,5,75,0,0,415,417,3,84,42,0,416,415,1,0,0,0,417,418,1,
-  	0,0,0,418,416,1,0,0,0,418,419,1,0,0,0,419,432,1,0,0,0,420,422,5,76,0,
-  	0,421,423,3,84,42,0,422,421,1,0,0,0,423,424,1,0,0,0,424,422,1,0,0,0,424,
-  	425,1,0,0,0,425,432,1,0,0,0,426,428,3,84,42,0,427,426,1,0,0,0,428,429,
-  	1,0,0,0,429,427,1,0,0,0,429,430,1,0,0,0,430,432,1,0,0,0,431,362,1,0,0,
-  	0,431,371,1,0,0,0,431,381,1,0,0,0,431,388,1,0,0,0,431,397,1,0,0,0,431,
-  	407,1,0,0,0,431,414,1,0,0,0,431,420,1,0,0,0,431,427,1,0,0,0,432,434,1,
-  	0,0,0,433,431,1,0,0,0,434,435,1,0,0,0,435,433,1,0,0,0,435,436,1,0,0,0,
-  	436,438,1,0,0,0,437,361,1,0,0,0,437,438,1,0,0,0,438,441,1,0,0,0,439,440,
-  	7,3,0,0,440,442,5,86,0,0,441,439,1,0,0,0,441,442,1,0,0,0,442,63,1,0,0,
-  	0,443,447,3,66,33,0,444,447,3,68,34,0,445,447,3,70,35,0,446,443,1,0,0,
-  	0,446,444,1,0,0,0,446,445,1,0,0,0,447,65,1,0,0,0,448,449,6,33,-1,0,449,
-  	450,3,84,42,0,450,457,1,0,0,0,451,452,10,1,0,0,452,453,3,80,40,0,453,
-  	454,3,66,33,2,454,456,1,0,0,0,455,451,1,0,0,0,456,459,1,0,0,0,457,455,
-  	1,0,0,0,457,458,1,0,0,0,458,67,1,0,0,0,459,457,1,0,0,0,460,461,6,34,-1,
-  	0,461,462,3,84,42,0,462,468,1,0,0,0,463,464,10,1,0,0,464,465,5,3,0,0,
-  	465,467,3,68,34,2,466,463,1,0,0,0,467,470,1,0,0,0,468,466,1,0,0,0,468,
-  	469,1,0,0,0,469,69,1,0,0,0,470,468,1,0,0,0,471,472,6,35,-1,0,472,489,
-  	5,45,0,0,473,489,5,46,0,0,474,475,3,84,42,0,475,476,3,76,38,0,476,478,
-  	3,66,33,0,477,479,3,74,37,0,478,477,1,0,0,0,479,480,1,0,0,0,480,478,1,
-  	0,0,0,480,481,1,0,0,0,481,489,1,0,0,0,482,483,3,66,33,0,483,484,3,76,
-  	38,0,484,485,3,66,33,0,485,489,1,0,0,0,486,487,5,47,0,0,487,489,3,70,
-  	35,2,488,471,1,0,0,0,488,473,1,0,0,0,488,474,1,0,0,0,488,482,1,0,0,0,
-  	488,486,1,0,0,0,489,496,1,0,0,0,490,491,10,1,0,0,491,492,3,78,39,0,492,
-  	493,3,70,35,2,493,495,1,0,0,0,494,490,1,0,0,0,495,498,1,0,0,0,496,494,
-  	1,0,0,0,496,497,1,0,0,0,497,71,1,0,0,0,498,496,1,0,0,0,499,501,5,55,0,
-  	0,500,502,3,86,43,0,501,500,1,0,0,0,501,502,1,0,0,0,502,505,1,0,0,0,503,
-  	504,5,28,0,0,504,506,3,84,42,0,505,503,1,0,0,0,505,506,1,0,0,0,506,509,
-  	1,0,0,0,507,508,5,26,0,0,508,510,3,84,42,0,509,507,1,0,0,0,509,510,1,
-  	0,0,0,510,513,1,0,0,0,511,512,5,31,0,0,512,514,3,84,42,0,513,511,1,0,
-  	0,0,513,514,1,0,0,0,514,521,1,0,0,0,515,516,5,56,0,0,516,521,3,70,35,
-  	0,517,518,5,57,0,0,518,521,3,70,35,0,519,521,3,26,13,0,520,499,1,0,0,
-  	0,520,515,1,0,0,0,520,517,1,0,0,0,520,519,1,0,0,0,521,73,1,0,0,0,522,
-  	524,3,78,39,0,523,525,3,76,38,0,524,523,1,0,0,0,524,525,1,0,0,0,525,526,
-  	1,0,0,0,526,527,3,66,33,0,527,75,1,0,0,0,528,529,7,4,0,0,529,77,1,0,0,
-  	0,530,531,7,5,0,0,531,79,1,0,0,0,532,533,7,6,0,0,533,81,1,0,0,0,534,536,
-  	5,43,0,0,535,537,3,64,32,0,536,535,1,0,0,0,537,538,1,0,0,0,538,536,1,
-  	0,0,0,538,539,1,0,0,0,539,541,1,0,0,0,540,542,3,26,13,0,541,540,1,0,0,
-  	0,542,543,1,0,0,0,543,541,1,0,0,0,543,544,1,0,0,0,544,553,1,0,0,0,545,
-  	546,5,43,0,0,546,548,5,44,0,0,547,549,3,26,13,0,548,547,1,0,0,0,549,550,
-  	1,0,0,0,550,548,1,0,0,0,550,551,1,0,0,0,551,553,1,0,0,0,552,534,1,0,0,
-  	0,552,545,1,0,0,0,553,83,1,0,0,0,554,559,3,88,44,0,555,559,5,83,0,0,556,
-  	559,5,84,0,0,557,559,3,86,43,0,558,554,1,0,0,0,558,555,1,0,0,0,558,556,
-  	1,0,0,0,558,557,1,0,0,0,559,85,1,0,0,0,560,565,5,86,0,0,561,562,5,58,
-  	0,0,562,564,5,86,0,0,563,561,1,0,0,0,564,567,1,0,0,0,565,563,1,0,0,0,
-  	565,566,1,0,0,0,566,572,1,0,0,0,567,565,1,0,0,0,568,569,5,12,0,0,569,
-  	570,3,88,44,0,570,571,5,13,0,0,571,573,1,0,0,0,572,568,1,0,0,0,572,573,
-  	1,0,0,0,573,87,1,0,0,0,574,576,7,7,0,0,575,574,1,0,0,0,575,576,1,0,0,
-  	0,576,577,1,0,0,0,577,578,5,82,0,0,578,89,1,0,0,0,68,92,107,119,124,137,
-  	142,156,162,169,174,179,198,206,211,220,226,232,238,246,250,256,261,269,
-  	275,277,285,291,297,305,309,313,320,332,344,358,366,375,383,392,401,409,
-  	418,424,429,431,435,437,441,446,457,468,480,488,496,501,505,509,513,520,
-  	524,538,543,550,552,558,565,572,575
+  	0,325,326,5,51,0,0,326,327,5,52,0,0,327,53,1,0,0,0,328,329,5,54,0,0,329,
+  	333,3,72,36,0,330,332,3,26,13,0,331,330,1,0,0,0,332,335,1,0,0,0,333,331,
+  	1,0,0,0,333,334,1,0,0,0,334,336,1,0,0,0,335,333,1,0,0,0,336,337,5,37,
+  	0,0,337,55,1,0,0,0,338,339,5,64,0,0,339,340,5,26,0,0,340,341,3,4,2,0,
+  	341,57,1,0,0,0,342,345,5,68,0,0,343,346,3,28,14,0,344,346,5,70,0,0,345,
+  	343,1,0,0,0,345,344,1,0,0,0,346,347,1,0,0,0,347,348,5,69,0,0,348,59,1,
+  	0,0,0,349,350,5,71,0,0,350,351,3,28,14,0,351,352,5,26,0,0,352,353,5,72,
+  	0,0,353,354,5,26,0,0,354,355,3,28,14,0,355,61,1,0,0,0,356,359,5,73,0,
+  	0,357,358,5,86,0,0,358,360,5,58,0,0,359,357,1,0,0,0,359,360,1,0,0,0,360,
+  	361,1,0,0,0,361,438,5,86,0,0,362,434,5,78,0,0,363,365,5,75,0,0,364,366,
+  	3,84,42,0,365,364,1,0,0,0,366,367,1,0,0,0,367,365,1,0,0,0,367,368,1,0,
+  	0,0,368,369,1,0,0,0,369,370,5,79,0,0,370,371,5,15,0,0,371,433,1,0,0,0,
+  	372,374,5,76,0,0,373,375,3,84,42,0,374,373,1,0,0,0,375,376,1,0,0,0,376,
+  	374,1,0,0,0,376,377,1,0,0,0,377,378,1,0,0,0,378,379,5,79,0,0,379,380,
+  	5,15,0,0,380,433,1,0,0,0,381,383,3,84,42,0,382,381,1,0,0,0,383,384,1,
+  	0,0,0,384,382,1,0,0,0,384,385,1,0,0,0,385,386,1,0,0,0,386,387,5,79,0,
+  	0,387,388,5,15,0,0,388,433,1,0,0,0,389,391,5,75,0,0,390,392,3,84,42,0,
+  	391,390,1,0,0,0,392,393,1,0,0,0,393,391,1,0,0,0,393,394,1,0,0,0,394,395,
+  	1,0,0,0,395,396,5,79,0,0,396,397,5,14,0,0,397,433,1,0,0,0,398,400,5,76,
+  	0,0,399,401,3,84,42,0,400,399,1,0,0,0,401,402,1,0,0,0,402,400,1,0,0,0,
+  	402,403,1,0,0,0,403,404,1,0,0,0,404,405,5,79,0,0,405,406,5,14,0,0,406,
+  	433,1,0,0,0,407,409,3,84,42,0,408,407,1,0,0,0,409,410,1,0,0,0,410,408,
+  	1,0,0,0,410,411,1,0,0,0,411,412,1,0,0,0,412,413,5,79,0,0,413,414,5,14,
+  	0,0,414,433,1,0,0,0,415,417,5,75,0,0,416,418,3,84,42,0,417,416,1,0,0,
+  	0,418,419,1,0,0,0,419,417,1,0,0,0,419,420,1,0,0,0,420,433,1,0,0,0,421,
+  	423,5,76,0,0,422,424,3,84,42,0,423,422,1,0,0,0,424,425,1,0,0,0,425,423,
+  	1,0,0,0,425,426,1,0,0,0,426,433,1,0,0,0,427,429,3,84,42,0,428,427,1,0,
+  	0,0,429,430,1,0,0,0,430,428,1,0,0,0,430,431,1,0,0,0,431,433,1,0,0,0,432,
+  	363,1,0,0,0,432,372,1,0,0,0,432,382,1,0,0,0,432,389,1,0,0,0,432,398,1,
+  	0,0,0,432,408,1,0,0,0,432,415,1,0,0,0,432,421,1,0,0,0,432,428,1,0,0,0,
+  	433,435,1,0,0,0,434,432,1,0,0,0,435,436,1,0,0,0,436,434,1,0,0,0,436,437,
+  	1,0,0,0,437,439,1,0,0,0,438,362,1,0,0,0,438,439,1,0,0,0,439,442,1,0,0,
+  	0,440,441,7,3,0,0,441,443,5,86,0,0,442,440,1,0,0,0,442,443,1,0,0,0,443,
+  	63,1,0,0,0,444,448,3,66,33,0,445,448,3,68,34,0,446,448,3,70,35,0,447,
+  	444,1,0,0,0,447,445,1,0,0,0,447,446,1,0,0,0,448,65,1,0,0,0,449,450,6,
+  	33,-1,0,450,451,3,84,42,0,451,458,1,0,0,0,452,453,10,1,0,0,453,454,3,
+  	80,40,0,454,455,3,66,33,2,455,457,1,0,0,0,456,452,1,0,0,0,457,460,1,0,
+  	0,0,458,456,1,0,0,0,458,459,1,0,0,0,459,67,1,0,0,0,460,458,1,0,0,0,461,
+  	462,6,34,-1,0,462,463,3,84,42,0,463,469,1,0,0,0,464,465,10,1,0,0,465,
+  	466,5,3,0,0,466,468,3,68,34,2,467,464,1,0,0,0,468,471,1,0,0,0,469,467,
+  	1,0,0,0,469,470,1,0,0,0,470,69,1,0,0,0,471,469,1,0,0,0,472,473,6,35,-1,
+  	0,473,490,5,45,0,0,474,490,5,46,0,0,475,476,3,84,42,0,476,477,3,76,38,
+  	0,477,479,3,66,33,0,478,480,3,74,37,0,479,478,1,0,0,0,480,481,1,0,0,0,
+  	481,479,1,0,0,0,481,482,1,0,0,0,482,490,1,0,0,0,483,484,3,66,33,0,484,
+  	485,3,76,38,0,485,486,3,66,33,0,486,490,1,0,0,0,487,488,5,47,0,0,488,
+  	490,3,70,35,2,489,472,1,0,0,0,489,474,1,0,0,0,489,475,1,0,0,0,489,483,
+  	1,0,0,0,489,487,1,0,0,0,490,497,1,0,0,0,491,492,10,1,0,0,492,493,3,78,
+  	39,0,493,494,3,70,35,2,494,496,1,0,0,0,495,491,1,0,0,0,496,499,1,0,0,
+  	0,497,495,1,0,0,0,497,498,1,0,0,0,498,71,1,0,0,0,499,497,1,0,0,0,500,
+  	502,5,55,0,0,501,503,3,86,43,0,502,501,1,0,0,0,502,503,1,0,0,0,503,506,
+  	1,0,0,0,504,505,5,28,0,0,505,507,3,84,42,0,506,504,1,0,0,0,506,507,1,
+  	0,0,0,507,510,1,0,0,0,508,509,5,26,0,0,509,511,3,84,42,0,510,508,1,0,
+  	0,0,510,511,1,0,0,0,511,514,1,0,0,0,512,513,5,31,0,0,513,515,3,84,42,
+  	0,514,512,1,0,0,0,514,515,1,0,0,0,515,521,1,0,0,0,516,517,5,56,0,0,517,
+  	521,3,70,35,0,518,519,5,57,0,0,519,521,3,70,35,0,520,500,1,0,0,0,520,
+  	516,1,0,0,0,520,518,1,0,0,0,521,73,1,0,0,0,522,524,3,78,39,0,523,525,
+  	3,76,38,0,524,523,1,0,0,0,524,525,1,0,0,0,525,526,1,0,0,0,526,527,3,66,
+  	33,0,527,75,1,0,0,0,528,529,7,4,0,0,529,77,1,0,0,0,530,531,7,5,0,0,531,
+  	79,1,0,0,0,532,533,7,6,0,0,533,81,1,0,0,0,534,536,5,43,0,0,535,537,3,
+  	64,32,0,536,535,1,0,0,0,537,538,1,0,0,0,538,536,1,0,0,0,538,539,1,0,0,
+  	0,539,541,1,0,0,0,540,542,3,26,13,0,541,540,1,0,0,0,542,543,1,0,0,0,543,
+  	541,1,0,0,0,543,544,1,0,0,0,544,553,1,0,0,0,545,546,5,43,0,0,546,548,
+  	5,44,0,0,547,549,3,26,13,0,548,547,1,0,0,0,549,550,1,0,0,0,550,548,1,
+  	0,0,0,550,551,1,0,0,0,551,553,1,0,0,0,552,534,1,0,0,0,552,545,1,0,0,0,
+  	553,83,1,0,0,0,554,559,3,88,44,0,555,559,5,83,0,0,556,559,5,84,0,0,557,
+  	559,3,86,43,0,558,554,1,0,0,0,558,555,1,0,0,0,558,556,1,0,0,0,558,557,
+  	1,0,0,0,559,85,1,0,0,0,560,565,5,86,0,0,561,562,5,58,0,0,562,564,5,86,
+  	0,0,563,561,1,0,0,0,564,567,1,0,0,0,565,563,1,0,0,0,565,566,1,0,0,0,566,
+  	572,1,0,0,0,567,565,1,0,0,0,568,569,5,12,0,0,569,570,3,88,44,0,570,571,
+  	5,13,0,0,571,573,1,0,0,0,572,568,1,0,0,0,572,573,1,0,0,0,573,87,1,0,0,
+  	0,574,576,7,7,0,0,575,574,1,0,0,0,575,576,1,0,0,0,576,577,1,0,0,0,577,
+  	578,5,82,0,0,578,89,1,0,0,0,68,92,107,119,124,137,142,156,162,169,174,
+  	179,198,206,211,220,226,232,238,246,250,256,261,269,275,277,285,291,297,
+  	305,309,313,320,333,345,359,367,376,384,393,402,410,419,425,430,432,436,
+  	438,442,447,458,469,481,489,497,502,506,510,514,520,524,538,543,550,552,
+  	558,565,572,575
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -1124,25 +1124,8 @@ BabyCobolParser::ProcedureContext* BabyCobolParser::procedure() {
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0)) {
+      ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0)) {
       setState(153);
       sentence();
       setState(158);
@@ -1233,25 +1216,8 @@ BabyCobolParser::ParagraphContext* BabyCobolParser::paragraph() {
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+      ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0));
    
   }
   catch (RecognitionException &e) {
@@ -1318,25 +1284,8 @@ BabyCobolParser::SentenceContext* BabyCobolParser::sentence() {
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+      ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0));
     setState(176);
     match(BabyCobolParser::DOT);
    
@@ -1985,10 +1934,7 @@ BabyCobolParser::SubtractContext* BabyCobolParser::subtract() {
     } while (_la == BabyCobolParser::T__1
 
     || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-      | (1ULL << (BabyCobolParser::DOUBLE - 82))
-      | (1ULL << (BabyCobolParser::LITERAL - 82))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+      ((1ULL << (_la - 82)) & 23) != 0));
     setState(234);
     match(BabyCobolParser::FROM);
     setState(235);
@@ -2297,25 +2243,8 @@ BabyCobolParser::IfStatementContext* BabyCobolParser::ifStatement() {
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+      ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0));
     setState(277);
     _errHandler->sync(this);
 
@@ -2334,25 +2263,8 @@ BabyCobolParser::IfStatementContext* BabyCobolParser::ifStatement() {
         _errHandler->sync(this);
         _la = _input->LA(1);
       } while ((((_la & ~ 0x3fULL) == 0) &&
-        ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-        | (1ULL << BabyCobolParser::T__1)
-        | (1ULL << BabyCobolParser::DISPLAY)
-        | (1ULL << BabyCobolParser::STOP)
-        | (1ULL << BabyCobolParser::MOVE)
-        | (1ULL << BabyCobolParser::SUBTRACT)
-        | (1ULL << BabyCobolParser::MULTIPLY)
-        | (1ULL << BabyCobolParser::PERFORM)
-        | (1ULL << BabyCobolParser::IF)
-        | (1ULL << BabyCobolParser::ACCEPT)
-        | (1ULL << BabyCobolParser::ADD)
-        | (1ULL << BabyCobolParser::DIVIDE)
-        | (1ULL << BabyCobolParser::EVALUATE)
-        | (1ULL << BabyCobolParser::NEXT)
-        | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-        ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-        | (1ULL << (BabyCobolParser::SIGNAL - 64))
-        | (1ULL << (BabyCobolParser::ALTER - 64))
-        | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+        ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+        ((1ULL << (_la - 64)) & 657) != 0));
     }
     setState(279);
     _la = _input->LA(1);
@@ -2516,10 +2428,7 @@ BabyCobolParser::AddContext* BabyCobolParser::add() {
     } while (_la == BabyCobolParser::T__1
 
     || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-      | (1ULL << (BabyCobolParser::DOUBLE - 82))
-      | (1ULL << (BabyCobolParser::LITERAL - 82))
-      | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
+      ((1ULL << (_la - 82)) & 23) != 0));
     setState(293);
     match(BabyCobolParser::TO);
     setState(294);
@@ -2812,16 +2721,20 @@ tree::TerminalNode* BabyCobolParser::LoopContext::LOOP() {
   return getToken(BabyCobolParser::LOOP, 0);
 }
 
+BabyCobolParser::LoopExpressionContext* BabyCobolParser::LoopContext::loopExpression() {
+  return getRuleContext<BabyCobolParser::LoopExpressionContext>(0);
+}
+
 tree::TerminalNode* BabyCobolParser::LoopContext::END() {
   return getToken(BabyCobolParser::END, 0);
 }
 
-std::vector<BabyCobolParser::LoopExpressionContext *> BabyCobolParser::LoopContext::loopExpression() {
-  return getRuleContexts<BabyCobolParser::LoopExpressionContext>();
+std::vector<BabyCobolParser::StatementContext *> BabyCobolParser::LoopContext::statement() {
+  return getRuleContexts<BabyCobolParser::StatementContext>();
 }
 
-BabyCobolParser::LoopExpressionContext* BabyCobolParser::LoopContext::loopExpression(size_t i) {
-  return getRuleContext<BabyCobolParser::LoopExpressionContext>(i);
+BabyCobolParser::StatementContext* BabyCobolParser::LoopContext::statement(size_t i) {
+  return getRuleContext<BabyCobolParser::StatementContext>(i);
 }
 
 
@@ -2853,39 +2766,21 @@ BabyCobolParser::LoopContext* BabyCobolParser::loop() {
     enterOuterAlt(_localctx, 1);
     setState(328);
     match(BabyCobolParser::LOOP);
-    setState(332);
+    setState(329);
+    loopExpression();
+    setState(333);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::DISPLAY)
-      | (1ULL << BabyCobolParser::STOP)
-      | (1ULL << BabyCobolParser::MOVE)
-      | (1ULL << BabyCobolParser::SUBTRACT)
-      | (1ULL << BabyCobolParser::MULTIPLY)
-      | (1ULL << BabyCobolParser::PERFORM)
-      | (1ULL << BabyCobolParser::IF)
-      | (1ULL << BabyCobolParser::ACCEPT)
-      | (1ULL << BabyCobolParser::ADD)
-      | (1ULL << BabyCobolParser::DIVIDE)
-      | (1ULL << BabyCobolParser::EVALUATE)
-      | (1ULL << BabyCobolParser::NEXT)
-      | (1ULL << BabyCobolParser::LOOP)
-      | (1ULL << BabyCobolParser::VARYING)
-      | (1ULL << BabyCobolParser::WHILE)
-      | (1ULL << BabyCobolParser::UNTIL))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-      | (1ULL << (BabyCobolParser::SIGNAL - 64))
-      | (1ULL << (BabyCobolParser::ALTER - 64))
-      | (1ULL << (BabyCobolParser::CALL - 64)))) != 0)) {
-      setState(329);
-      loopExpression();
-      setState(334);
+      ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 657) != 0)) {
+      setState(330);
+      statement();
+      setState(335);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(335);
+    setState(336);
     match(BabyCobolParser::END);
    
   }
@@ -2942,11 +2837,11 @@ BabyCobolParser::GotoStatementContext* BabyCobolParser::gotoStatement() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(337);
-    match(BabyCobolParser::GO);
     setState(338);
-    match(BabyCobolParser::TO);
+    match(BabyCobolParser::GO);
     setState(339);
+    match(BabyCobolParser::TO);
+    setState(340);
     name();
    
   }
@@ -3007,19 +2902,19 @@ BabyCobolParser::SignalContext* BabyCobolParser::signal() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(341);
+    setState(342);
     match(BabyCobolParser::SIGNAL);
-    setState(344);
+    setState(345);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case BabyCobolParser::IDENTIFIER: {
-        setState(342);
+        setState(343);
         label();
         break;
       }
 
       case BabyCobolParser::OFF: {
-        setState(343);
+        setState(344);
         match(BabyCobolParser::OFF);
         break;
       }
@@ -3027,7 +2922,7 @@ BabyCobolParser::SignalContext* BabyCobolParser::signal() {
     default:
       throw NoViableAltException(this);
     }
-    setState(346);
+    setState(347);
     match(BabyCobolParser::ONERROR);
    
   }
@@ -3096,17 +2991,17 @@ BabyCobolParser::AlterContext* BabyCobolParser::alter() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(348);
-    match(BabyCobolParser::ALTER);
     setState(349);
-    antlrcpp::downCast<AlterContext *>(_localctx)->l1 = label();
+    match(BabyCobolParser::ALTER);
     setState(350);
-    match(BabyCobolParser::TO);
+    antlrcpp::downCast<AlterContext *>(_localctx)->l1 = label();
     setState(351);
-    match(BabyCobolParser::PROCEED);
-    setState(352);
     match(BabyCobolParser::TO);
+    setState(352);
+    match(BabyCobolParser::PROCEED);
     setState(353);
+    match(BabyCobolParser::TO);
+    setState(354);
     antlrcpp::downCast<AlterContext *>(_localctx)->l2 = label();
    
   }
@@ -3229,16 +3124,16 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(355);
+    setState(356);
     match(BabyCobolParser::CALL);
-    setState(358);
+    setState(359);
     _errHandler->sync(this);
 
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 34, _ctx)) {
     case 1: {
-      setState(356);
-      antlrcpp::downCast<CallStatementContext *>(_localctx)->function_name = match(BabyCobolParser::IDENTIFIER);
       setState(357);
+      antlrcpp::downCast<CallStatementContext *>(_localctx)->function_name = match(BabyCobolParser::IDENTIFIER);
+      setState(358);
       match(BabyCobolParser::OF);
       break;
     }
@@ -3246,192 +3141,174 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
     default:
       break;
     }
-    setState(360);
+    setState(361);
     antlrcpp::downCast<CallStatementContext *>(_localctx)->program_name = match(BabyCobolParser::IDENTIFIER);
-    setState(437);
+    setState(438);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == BabyCobolParser::USING) {
-      setState(361);
+      setState(362);
       match(BabyCobolParser::USING);
-      setState(433); 
+      setState(434); 
       _errHandler->sync(this);
       alt = 1;
       do {
         switch (alt) {
           case 1: {
-                setState(431);
+                setState(432);
                 _errHandler->sync(this);
                 switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 44, _ctx)) {
                 case 1: {
-                  setState(362);
+                  setState(363);
                   match(BabyCobolParser::BYVALUE);
-                  setState(364); 
+                  setState(365); 
                   _errHandler->sync(this);
                   _la = _input->LA(1);
                   do {
-                    setState(363);
+                    setState(364);
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->byvalueatomicsprim.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
-                    setState(366); 
+                    setState(367); 
                     _errHandler->sync(this);
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
                   || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
-                  setState(368);
-                  match(BabyCobolParser::AS);
+                    ((1ULL << (_la - 82)) & 23) != 0));
                   setState(369);
+                  match(BabyCobolParser::AS);
+                  setState(370);
                   match(BabyCobolParser::PRIMITIVE);
                   break;
                 }
 
                 case 2: {
-                  setState(371);
+                  setState(372);
                   match(BabyCobolParser::BYREFERENCE);
-                  setState(373); 
+                  setState(374); 
                   _errHandler->sync(this);
                   _la = _input->LA(1);
                   do {
-                    setState(372);
+                    setState(373);
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->byreferenceatomicsprim.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
-                    setState(375); 
+                    setState(376); 
                     _errHandler->sync(this);
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
                   || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
-                  setState(377);
-                  match(BabyCobolParser::AS);
+                    ((1ULL << (_la - 82)) & 23) != 0));
                   setState(378);
+                  match(BabyCobolParser::AS);
+                  setState(379);
                   match(BabyCobolParser::PRIMITIVE);
                   break;
                 }
 
                 case 3: {
-                  setState(381); 
+                  setState(382); 
                   _errHandler->sync(this);
                   _la = _input->LA(1);
                   do {
-                    setState(380);
+                    setState(381);
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->byvalueatomicsprim.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
-                    setState(383); 
+                    setState(384); 
                     _errHandler->sync(this);
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
                   || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
-                  setState(385);
-                  match(BabyCobolParser::AS);
+                    ((1ULL << (_la - 82)) & 23) != 0));
                   setState(386);
+                  match(BabyCobolParser::AS);
+                  setState(387);
                   match(BabyCobolParser::PRIMITIVE);
                   break;
                 }
 
                 case 4: {
-                  setState(388);
+                  setState(389);
                   match(BabyCobolParser::BYVALUE);
-                  setState(390); 
+                  setState(391); 
                   _errHandler->sync(this);
                   _la = _input->LA(1);
                   do {
-                    setState(389);
+                    setState(390);
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->byvalueatomicsstruct.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
-                    setState(392); 
+                    setState(393); 
                     _errHandler->sync(this);
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
                   || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
-                  setState(394);
-                  match(BabyCobolParser::AS);
+                    ((1ULL << (_la - 82)) & 23) != 0));
                   setState(395);
+                  match(BabyCobolParser::AS);
+                  setState(396);
                   match(BabyCobolParser::STRUCT);
                   break;
                 }
 
                 case 5: {
-                  setState(397);
+                  setState(398);
                   match(BabyCobolParser::BYREFERENCE);
-                  setState(399); 
+                  setState(400); 
                   _errHandler->sync(this);
                   _la = _input->LA(1);
                   do {
-                    setState(398);
+                    setState(399);
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->byreferenceatomicsstruct.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
-                    setState(401); 
+                    setState(402); 
                     _errHandler->sync(this);
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
                   || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
-                  setState(403);
-                  match(BabyCobolParser::AS);
+                    ((1ULL << (_la - 82)) & 23) != 0));
                   setState(404);
+                  match(BabyCobolParser::AS);
+                  setState(405);
                   match(BabyCobolParser::STRUCT);
                   break;
                 }
 
                 case 6: {
-                  setState(407); 
+                  setState(408); 
                   _errHandler->sync(this);
                   _la = _input->LA(1);
                   do {
-                    setState(406);
+                    setState(407);
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                     antlrcpp::downCast<CallStatementContext *>(_localctx)->byvalueatomicsstruct.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
-                    setState(409); 
+                    setState(410); 
                     _errHandler->sync(this);
                     _la = _input->LA(1);
                   } while (_la == BabyCobolParser::T__1
 
                   || _la == BabyCobolParser::T__2 || ((((_la - 82) & ~ 0x3fULL) == 0) &&
-                    ((1ULL << (_la - 82)) & ((1ULL << (BabyCobolParser::INT - 82))
-                    | (1ULL << (BabyCobolParser::DOUBLE - 82))
-                    | (1ULL << (BabyCobolParser::LITERAL - 82))
-                    | (1ULL << (BabyCobolParser::IDENTIFIER - 82)))) != 0));
-                  setState(411);
-                  match(BabyCobolParser::AS);
+                    ((1ULL << (_la - 82)) & 23) != 0));
                   setState(412);
+                  match(BabyCobolParser::AS);
+                  setState(413);
                   match(BabyCobolParser::STRUCT);
                   break;
                 }
 
                 case 7: {
-                  setState(414);
+                  setState(415);
                   match(BabyCobolParser::BYVALUE);
-                  setState(416); 
+                  setState(417); 
                   _errHandler->sync(this);
                   alt = 1;
                   do {
                     switch (alt) {
                       case 1: {
-                            setState(415);
+                            setState(416);
                             antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                             antlrcpp::downCast<CallStatementContext *>(_localctx)->byvalueatomicsprim.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
                             break;
@@ -3440,7 +3317,7 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     default:
                       throw NoViableAltException(this);
                     }
-                    setState(418); 
+                    setState(419); 
                     _errHandler->sync(this);
                     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 41, _ctx);
                   } while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER);
@@ -3448,15 +3325,15 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                 }
 
                 case 8: {
-                  setState(420);
+                  setState(421);
                   match(BabyCobolParser::BYREFERENCE);
-                  setState(422); 
+                  setState(423); 
                   _errHandler->sync(this);
                   alt = 1;
                   do {
                     switch (alt) {
                       case 1: {
-                            setState(421);
+                            setState(422);
                             antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                             antlrcpp::downCast<CallStatementContext *>(_localctx)->byreferenceatomicsprim.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
                             break;
@@ -3465,7 +3342,7 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     default:
                       throw NoViableAltException(this);
                     }
-                    setState(424); 
+                    setState(425); 
                     _errHandler->sync(this);
                     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 42, _ctx);
                   } while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER);
@@ -3473,13 +3350,13 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                 }
 
                 case 9: {
-                  setState(427); 
+                  setState(428); 
                   _errHandler->sync(this);
                   alt = 1;
                   do {
                     switch (alt) {
                       case 1: {
-                            setState(426);
+                            setState(427);
                             antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext = atomic();
                             antlrcpp::downCast<CallStatementContext *>(_localctx)->byvalueatomicsprim.push_back(antlrcpp::downCast<CallStatementContext *>(_localctx)->atomicContext);
                             break;
@@ -3488,7 +3365,7 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
                     default:
                       throw NoViableAltException(this);
                     }
-                    setState(429); 
+                    setState(430); 
                     _errHandler->sync(this);
                     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 43, _ctx);
                   } while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER);
@@ -3504,19 +3381,19 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
         default:
           throw NoViableAltException(this);
         }
-        setState(435); 
+        setState(436); 
         _errHandler->sync(this);
         alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 45, _ctx);
       } while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER);
     }
-    setState(441);
+    setState(442);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == BabyCobolParser::RETURNING
 
     || _la == BabyCobolParser::RETURNINGBYREFERENCE) {
-      setState(439);
+      setState(440);
       _la = _input->LA(1);
       if (!(_la == BabyCobolParser::RETURNING
 
@@ -3527,7 +3404,7 @@ BabyCobolParser::CallStatementContext* BabyCobolParser::callStatement() {
         _errHandler->reportMatch(this);
         consume();
       }
-      setState(440);
+      setState(441);
       antlrcpp::downCast<CallStatementContext *>(_localctx)->returning = match(BabyCobolParser::IDENTIFIER);
     }
    
@@ -3584,26 +3461,26 @@ BabyCobolParser::AnyExpressionContext* BabyCobolParser::anyExpression() {
     exitRule();
   });
   try {
-    setState(446);
+    setState(447);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 48, _ctx)) {
     case 1: {
       enterOuterAlt(_localctx, 1);
-      setState(443);
+      setState(444);
       arithmeticExpression(0);
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
-      setState(444);
+      setState(445);
       stringExpression(0);
       break;
     }
 
     case 3: {
       enterOuterAlt(_localctx, 3);
-      setState(445);
+      setState(446);
       booleanExpression(0);
       break;
     }
@@ -3705,10 +3582,10 @@ BabyCobolParser::ArithmeticExpressionContext* BabyCobolParser::arithmeticExpress
     _ctx = _localctx;
     previousContext = _localctx;
 
-    setState(449);
+    setState(450);
     atomic();
     _ctx->stop = _input->LT(-1);
-    setState(457);
+    setState(458);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 49, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -3720,15 +3597,15 @@ BabyCobolParser::ArithmeticExpressionContext* BabyCobolParser::arithmeticExpress
         _localctx = newContext;
         newContext->left = previousContext;
         pushNewRecursionContext(newContext, startState, RuleArithmeticExpression);
-        setState(451);
+        setState(452);
 
         if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
-        setState(452);
-        arithmeticOp();
         setState(453);
+        arithmeticOp();
+        setState(454);
         antlrcpp::downCast<ArithOpArithmeticExpContext *>(_localctx)->right = arithmeticExpression(2); 
       }
-      setState(459);
+      setState(460);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 49, _ctx);
     }
@@ -3820,10 +3697,10 @@ BabyCobolParser::StringExpressionContext* BabyCobolParser::stringExpression(int 
     _ctx = _localctx;
     previousContext = _localctx;
 
-    setState(461);
+    setState(462);
     atomic();
     _ctx->stop = _input->LT(-1);
-    setState(468);
+    setState(469);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 50, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -3835,15 +3712,15 @@ BabyCobolParser::StringExpressionContext* BabyCobolParser::stringExpression(int 
         _localctx = newContext;
         newContext->left = previousContext;
         pushNewRecursionContext(newContext, startState, RuleStringExpression);
-        setState(463);
+        setState(464);
 
         if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
-        setState(464);
-        match(BabyCobolParser::T__2);
         setState(465);
+        match(BabyCobolParser::T__2);
+        setState(466);
         antlrcpp::downCast<AdditionStringExpContext *>(_localctx)->right = stringExpression(2); 
       }
-      setState(470);
+      setState(471);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 50, _ctx);
     }
@@ -4023,7 +3900,7 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(488);
+    setState(489);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 52, _ctx)) {
     case 1: {
@@ -4031,7 +3908,7 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       _ctx = _localctx;
       previousContext = _localctx;
 
-      setState(472);
+      setState(473);
       match(BabyCobolParser::TRUE);
       break;
     }
@@ -4040,7 +3917,7 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       _localctx = _tracker.createInstance<FalseBooleanExpContext>(_localctx);
       _ctx = _localctx;
       previousContext = _localctx;
-      setState(473);
+      setState(474);
       match(BabyCobolParser::FALSE);
       break;
     }
@@ -4049,19 +3926,19 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       _localctx = _tracker.createInstance<ContractedBooleanExpContext>(_localctx);
       _ctx = _localctx;
       previousContext = _localctx;
-      setState(474);
-      antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->left = atomic();
       setState(475);
-      comparisonOp();
+      antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->left = atomic();
       setState(476);
+      comparisonOp();
+      setState(477);
       antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->right = arithmeticExpression(0);
-      setState(478); 
+      setState(479); 
       _errHandler->sync(this);
       alt = 1;
       do {
         switch (alt) {
           case 1: {
-                setState(477);
+                setState(478);
                 antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->contractedBooleanPartContext = contractedBooleanPart();
                 antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->contract.push_back(antlrcpp::downCast<ContractedBooleanExpContext *>(_localctx)->contractedBooleanPartContext);
                 break;
@@ -4070,7 +3947,7 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
         default:
           throw NoViableAltException(this);
         }
-        setState(480); 
+        setState(481); 
         _errHandler->sync(this);
         alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 51, _ctx);
       } while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER);
@@ -4081,11 +3958,11 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       _localctx = _tracker.createInstance<CompareOpBooleanExpContext>(_localctx);
       _ctx = _localctx;
       previousContext = _localctx;
-      setState(482);
-      antlrcpp::downCast<CompareOpBooleanExpContext *>(_localctx)->left = arithmeticExpression(0);
       setState(483);
-      comparisonOp();
+      antlrcpp::downCast<CompareOpBooleanExpContext *>(_localctx)->left = arithmeticExpression(0);
       setState(484);
+      comparisonOp();
+      setState(485);
       antlrcpp::downCast<CompareOpBooleanExpContext *>(_localctx)->right = arithmeticExpression(0);
       break;
     }
@@ -4094,9 +3971,9 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       _localctx = _tracker.createInstance<NotBooleanExpContext>(_localctx);
       _ctx = _localctx;
       previousContext = _localctx;
-      setState(486);
-      match(BabyCobolParser::NOT);
       setState(487);
+      match(BabyCobolParser::NOT);
+      setState(488);
       booleanExpression(2);
       break;
     }
@@ -4105,7 +3982,7 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
       break;
     }
     _ctx->stop = _input->LT(-1);
-    setState(496);
+    setState(497);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 53, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -4117,15 +3994,15 @@ BabyCobolParser::BooleanExpressionContext* BabyCobolParser::booleanExpression(in
         _localctx = newContext;
         newContext->left = previousContext;
         pushNewRecursionContext(newContext, startState, RuleBooleanExpression);
-        setState(490);
+        setState(491);
 
         if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
-        setState(491);
-        booleanOp();
         setState(492);
+        booleanOp();
+        setState(493);
         antlrcpp::downCast<BoolOpBooleanExpContext *>(_localctx)->right = booleanExpression(2); 
       }
-      setState(498);
+      setState(499);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 53, _ctx);
     }
@@ -4192,21 +4069,6 @@ std::any BabyCobolParser::VaryingLoopExpContext::accept(tree::ParseTreeVisitor *
   else
     return visitor->visitChildren(this);
 }
-//----------------- LoopStatementContext ------------------------------------------------------------------
-
-BabyCobolParser::StatementContext* BabyCobolParser::LoopStatementContext::statement() {
-  return getRuleContext<BabyCobolParser::StatementContext>(0);
-}
-
-BabyCobolParser::LoopStatementContext::LoopStatementContext(LoopExpressionContext *ctx) { copyFrom(ctx); }
-
-
-std::any BabyCobolParser::LoopStatementContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
-    return parserVisitor->visitLoopStatement(this);
-  else
-    return visitor->visitChildren(this);
-}
 //----------------- UntilLoopExpContext ------------------------------------------------------------------
 
 tree::TerminalNode* BabyCobolParser::UntilLoopExpContext::UNTIL() {
@@ -4264,44 +4126,44 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
       case BabyCobolParser::VARYING: {
         _localctx = _tracker.createInstance<BabyCobolParser::VaryingLoopExpContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(499);
+        setState(500);
         match(BabyCobolParser::VARYING);
-        setState(501);
+        setState(502);
         _errHandler->sync(this);
 
         _la = _input->LA(1);
         if (_la == BabyCobolParser::IDENTIFIER) {
-          setState(500);
+          setState(501);
           antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->id = identifiers();
         }
-        setState(505);
+        setState(506);
         _errHandler->sync(this);
 
         _la = _input->LA(1);
         if (_la == BabyCobolParser::FROM) {
-          setState(503);
-          match(BabyCobolParser::FROM);
           setState(504);
+          match(BabyCobolParser::FROM);
+          setState(505);
           antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->from = atomic();
         }
-        setState(509);
+        setState(510);
         _errHandler->sync(this);
 
         _la = _input->LA(1);
         if (_la == BabyCobolParser::TO) {
-          setState(507);
-          match(BabyCobolParser::TO);
           setState(508);
+          match(BabyCobolParser::TO);
+          setState(509);
           antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->to = atomic();
         }
-        setState(513);
+        setState(514);
         _errHandler->sync(this);
 
         _la = _input->LA(1);
         if (_la == BabyCobolParser::BY) {
-          setState(511);
-          match(BabyCobolParser::BY);
           setState(512);
+          match(BabyCobolParser::BY);
+          setState(513);
           antlrcpp::downCast<VaryingLoopExpContext *>(_localctx)->by = atomic();
         }
         break;
@@ -4310,9 +4172,9 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
       case BabyCobolParser::WHILE: {
         _localctx = _tracker.createInstance<BabyCobolParser::WhileLoopExpContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(515);
-        match(BabyCobolParser::WHILE);
         setState(516);
+        match(BabyCobolParser::WHILE);
+        setState(517);
         booleanExpression(0);
         break;
       }
@@ -4320,36 +4182,10 @@ BabyCobolParser::LoopExpressionContext* BabyCobolParser::loopExpression() {
       case BabyCobolParser::UNTIL: {
         _localctx = _tracker.createInstance<BabyCobolParser::UntilLoopExpContext>(_localctx);
         enterOuterAlt(_localctx, 3);
-        setState(517);
-        match(BabyCobolParser::UNTIL);
         setState(518);
-        booleanExpression(0);
-        break;
-      }
-
-      case BabyCobolParser::T__0:
-      case BabyCobolParser::T__1:
-      case BabyCobolParser::DISPLAY:
-      case BabyCobolParser::STOP:
-      case BabyCobolParser::MOVE:
-      case BabyCobolParser::SUBTRACT:
-      case BabyCobolParser::MULTIPLY:
-      case BabyCobolParser::PERFORM:
-      case BabyCobolParser::IF:
-      case BabyCobolParser::ACCEPT:
-      case BabyCobolParser::ADD:
-      case BabyCobolParser::DIVIDE:
-      case BabyCobolParser::EVALUATE:
-      case BabyCobolParser::NEXT:
-      case BabyCobolParser::LOOP:
-      case BabyCobolParser::GO:
-      case BabyCobolParser::SIGNAL:
-      case BabyCobolParser::ALTER:
-      case BabyCobolParser::CALL: {
-        _localctx = _tracker.createInstance<BabyCobolParser::LoopStatementContext>(_localctx);
-        enterOuterAlt(_localctx, 4);
+        match(BabyCobolParser::UNTIL);
         setState(519);
-        statement();
+        booleanExpression(0);
         break;
       }
 
@@ -4419,12 +4255,7 @@ BabyCobolParser::ContractedBooleanPartContext* BabyCobolParser::contractedBoolea
 
     _la = _input->LA(1);
     if ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__3)
-      | (1ULL << BabyCobolParser::T__4)
-      | (1ULL << BabyCobolParser::T__5)
-      | (1ULL << BabyCobolParser::T__6)
-      | (1ULL << BabyCobolParser::T__7)
-      | (1ULL << BabyCobolParser::T__8))) != 0)) {
+      ((1ULL << _la) & 1008) != 0)) {
       setState(523);
       comparisonOp();
     }
@@ -4477,12 +4308,7 @@ BabyCobolParser::ComparisonOpContext* BabyCobolParser::comparisonOp() {
     setState(528);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__3)
-      | (1ULL << BabyCobolParser::T__4)
-      | (1ULL << BabyCobolParser::T__5)
-      | (1ULL << BabyCobolParser::T__6)
-      | (1ULL << BabyCobolParser::T__7)
-      | (1ULL << BabyCobolParser::T__8))) != 0))) {
+      ((1ULL << _la) & 1008) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -4548,9 +4374,7 @@ BabyCobolParser::BooleanOpContext* BabyCobolParser::booleanOp() {
     setState(530);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::OR)
-      | (1ULL << BabyCobolParser::AND)
-      | (1ULL << BabyCobolParser::XOR))) != 0))) {
+      ((1ULL << _la) & 1970324836974592) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -4604,11 +4428,7 @@ BabyCobolParser::ArithmeticOpContext* BabyCobolParser::arithmeticOp() {
     setState(532);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-      | (1ULL << BabyCobolParser::T__1)
-      | (1ULL << BabyCobolParser::T__2)
-      | (1ULL << BabyCobolParser::T__9)
-      | (1ULL << BabyCobolParser::T__10))) != 0))) {
+      ((1ULL << _la) & 3086) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -4749,25 +4569,8 @@ BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
         _errHandler->sync(this);
         _la = _input->LA(1);
       } while ((((_la & ~ 0x3fULL) == 0) &&
-        ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-        | (1ULL << BabyCobolParser::T__1)
-        | (1ULL << BabyCobolParser::DISPLAY)
-        | (1ULL << BabyCobolParser::STOP)
-        | (1ULL << BabyCobolParser::MOVE)
-        | (1ULL << BabyCobolParser::SUBTRACT)
-        | (1ULL << BabyCobolParser::MULTIPLY)
-        | (1ULL << BabyCobolParser::PERFORM)
-        | (1ULL << BabyCobolParser::IF)
-        | (1ULL << BabyCobolParser::ACCEPT)
-        | (1ULL << BabyCobolParser::ADD)
-        | (1ULL << BabyCobolParser::DIVIDE)
-        | (1ULL << BabyCobolParser::EVALUATE)
-        | (1ULL << BabyCobolParser::NEXT)
-        | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-        ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-        | (1ULL << (BabyCobolParser::SIGNAL - 64))
-        | (1ULL << (BabyCobolParser::ALTER - 64))
-        | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+        ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+        ((1ULL << (_la - 64)) & 657) != 0));
       break;
     }
 
@@ -4788,25 +4591,8 @@ BabyCobolParser::WhenBlockContext* BabyCobolParser::whenBlock() {
         _errHandler->sync(this);
         _la = _input->LA(1);
       } while ((((_la & ~ 0x3fULL) == 0) &&
-        ((1ULL << _la) & ((1ULL << BabyCobolParser::T__0)
-        | (1ULL << BabyCobolParser::T__1)
-        | (1ULL << BabyCobolParser::DISPLAY)
-        | (1ULL << BabyCobolParser::STOP)
-        | (1ULL << BabyCobolParser::MOVE)
-        | (1ULL << BabyCobolParser::SUBTRACT)
-        | (1ULL << BabyCobolParser::MULTIPLY)
-        | (1ULL << BabyCobolParser::PERFORM)
-        | (1ULL << BabyCobolParser::IF)
-        | (1ULL << BabyCobolParser::ACCEPT)
-        | (1ULL << BabyCobolParser::ADD)
-        | (1ULL << BabyCobolParser::DIVIDE)
-        | (1ULL << BabyCobolParser::EVALUATE)
-        | (1ULL << BabyCobolParser::NEXT)
-        | (1ULL << BabyCobolParser::LOOP))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-        ((1ULL << (_la - 64)) & ((1ULL << (BabyCobolParser::GO - 64))
-        | (1ULL << (BabyCobolParser::SIGNAL - 64))
-        | (1ULL << (BabyCobolParser::ALTER - 64))
-        | (1ULL << (BabyCobolParser::CALL - 64)))) != 0));
+        ((1ULL << _la) & 20272543249203206) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+        ((1ULL << (_la - 64)) & 657) != 0));
       break;
     }
 
@@ -5171,5 +4957,5 @@ bool BabyCobolParser::booleanExpressionSempred(BooleanExpressionContext *_localc
 }
 
 void BabyCobolParser::initialize() {
-  std::call_once(babycobolParserOnceFlag, babycobolParserInitialize);
+  ::antlr4::internal::call_once(babycobolParserOnceFlag, babycobolParserInitialize);
 }

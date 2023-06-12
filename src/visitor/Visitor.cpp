@@ -234,7 +234,7 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
                     function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
                                                                           bcModule->getNumberStructType()));
                 } else if (type == DataType::STRING) {
-                    new_function = bcModule->getOrInsertFunction("bstd_print_picture", new_function_types);
+                    new_function = bcModule->getOrInsertFunction("bstd_print_picture", new_function_types); // todo: delete this, replace with bstd_to_str
                     auto function = cast<Function>(new_function.getCallee());
                     function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
                                                                           bcModule->getPictureStructType()));
@@ -482,7 +482,59 @@ std::any Visitor::visitNextSentence(BabyCobolParser::NextSentenceContext *ctx) {
 }
 
 std::any Visitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
-    return BabyCobolBaseVisitor::visitLoop(ctx);
+
+    auto current_scope = this->builder->GetInsertBlock();
+
+    Function* TheFunction = builder->GetInsertBlock()->getParent();
+    // create new basic block, set our current insertion point to it
+    llvm::BasicBlock* loop_body = llvm::BasicBlock::Create(this->builder->getContext(), "loop_body", TheFunction, nullptr);
+    // create a new block (label) for the code to continue after the loop
+    llvm::BasicBlock* loop_end = llvm::BasicBlock::Create(this->builder->getContext(), "loop_end", TheFunction, nullptr);
+
+    // visit loop conditional expression
+    auto a = visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression());
+    auto conditional = std::any_cast<llvm::Value*>(a);
+
+    auto int64t = llvm::Type::getInt64Ty(this->builder->getContext());
+
+    llvm::Constant* zeroInit = llvm::ConstantInt::get(int64t, 0);
+    auto alloc = new llvm::GlobalVariable(*(llvm::Module*)this->bcModule, int64t, false,
+                                     llvm::GlobalVariable::CommonLinkage, zeroInit, "my_lovely_val",
+                                     nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
+
+    auto temp = builder->CreateLoad(int64t, alloc, "deref_lovely_val");
+
+//    auto lhs = llvm::ConstantInt::get(int64t, 4, true);
+//    auto rhs = llvm::ConstantInt::get(int64t, 5, true);
+//    auto conditional = this->builder->CreateICmpSLT(lhs, rhs);
+
+    // no forward conditional (fall through)
+    this->builder->CreateCondBr(conditional, loop_body, loop_end);
+
+    // set builder insertion point
+    this->builder->SetInsertPoint(loop_body);
+
+    // todo: remove this hard coded stuff
+//    llvm::Value *val = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(64, 0, false));
+//    builder->llvm::IRBuilderBase::CreateAdd(temp, val, "mAdd");
+
+    // todo: visit loop body
+    auto statements = ctx->statement();
+    for (auto c : statements) {
+        BabyCobolBaseVisitor::visitStatement(c);
+    }
+
+    // Backward conditional, or exit loop body basic block
+    auto b = visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression());
+    auto conditional_b = std::any_cast<llvm::Value*>(b);
+
+    this->builder->CreateCondBr(conditional_b, loop_body, loop_end); // maybe should be a "return from block"?
+
+    this->builder->SetInsertPoint(loop_end);
+    // todo: remove this hard coded stuff
+//    builder->llvm::IRBuilderBase::CreateAdd(temp, val, "mAdd");
+
+    return nullptr;
 }
 
 std::any Visitor::visitGotoStatement(BabyCobolParser::GotoStatementContext *ctx) {
@@ -538,7 +590,39 @@ std::any Visitor::visitNotBooleanExp(BabyCobolParser::NotBooleanExpContext *ctx)
 }
 
 std::any Visitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) {
-    return BabyCobolBaseVisitor::visitCompareOpBooleanExp(ctx);
+    auto int64t = llvm::Type::getInt64Ty(this->builder->getContext());
+
+    //TODO: dyncast to field* = continue; dyncast to record* = fail;
+
+    // visit lhs
+    DataTree* a = any_cast<DataTree*>(visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->left));
+    auto lhs_ = dynamic_cast<Field*>(a);
+    auto lhs = lhs_->getLlvmValue();
+    // marshall number to int
+
+    // todo: check if this is a bstd value or an atomic.
+//    if (bstd) {
+//        marshall;
+//    }
+
+    // todo: replace the hard coded statements with the one above
+    auto c = builder->CreateNumberToIntPtrCall(lhs);
+    auto marshalled_lhs = builder->CreateLoad(int64t, c);
+
+    // visit rhs
+    auto b = visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->right);
+    auto rhs = llvm::ConstantInt::get(int64t, std::any_cast<int>(b), true); // todo: *((int*)&b)
+
+    // do comparison and return as llvm value
+
+    // todo: make some parsing and enums happen
+    // visit comparison operator
+//    if (visit(ctx->comparisonOp()) == Comparison::LT) {
+//
+//    }
+
+    // todo: remove this hard coded comparison
+    return this->builder->CreateICmpSLT(marshalled_lhs, rhs);
 }
 
 std::any Visitor::visitVaryingLoopExp(BabyCobolParser::VaryingLoopExpContext *ctx) {
@@ -546,15 +630,12 @@ std::any Visitor::visitVaryingLoopExp(BabyCobolParser::VaryingLoopExpContext *ct
 }
 
 std::any Visitor::visitWhileLoopExp(BabyCobolParser::WhileLoopExpContext *ctx) {
-    return BabyCobolBaseVisitor::visitWhileLoopExp(ctx);
+    // todo: other forms of boolean expressions. Just restructure the grammar...
+    return visitCompareOpBooleanExp((BabyCobolParser::CompareOpBooleanExpContext*)ctx->booleanExpression());
 }
 
 std::any Visitor::visitUntilLoopExp(BabyCobolParser::UntilLoopExpContext *ctx) {
     return BabyCobolBaseVisitor::visitUntilLoopExp(ctx);
-}
-
-std::any Visitor::visitLoopStatement(BabyCobolParser::LoopStatementContext *ctx) {
-    return BabyCobolBaseVisitor::visitLoopStatement(ctx);
 }
 
 std::any Visitor::visitContractedBooleanPart(BabyCobolParser::ContractedBooleanPartContext *ctx) {
@@ -582,8 +663,11 @@ std::any Visitor::visitWhenOther(BabyCobolParser::WhenOtherContext *ctx) {
 }
 
 std::any Visitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *ctx) {
-    // TODO: Check
-    return stoi(ctx->getText());
+    auto int64t = llvm::Type::getInt64Ty(this->bcModule->getContext());
+
+    int val = stoi(ctx->getText());
+
+    return llvm::ConstantInt::get(int64t, val, true);
 }
 
 std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) {

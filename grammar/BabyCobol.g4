@@ -55,7 +55,7 @@ add             :   ADD atomic+ TO to=atomic (GIVING id=identifiers)?;
 divide          :   DIVIDE at=atomic INTO as+=atomic+ (GIVING id=identifiers)? (REMAINDER rem=identifiers)?;
 evaluate        :   EVALUATE anyExpression whenBlock* END;
 nextSentence    :   NEXT SENTENCE;
-loop            :   LOOP loopExpression* END;
+loop            :   LOOP loopExpression statement* END;
 gotoStatement   :   GO TO name;
 signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
@@ -103,7 +103,6 @@ booleanExpression       :   TRUE                                                
 loopExpression          :   VARYING id=identifiers? (FROM from=atomic)? (TO to=atomic)? (BY by=atomic)?             #varyingLoopExp
                         |   WHILE booleanExpression                                                                 #whileLoopExp
                         |   UNTIL booleanExpression                                                                 #untilLoopExp
-                        |   statement                                                                               #loopStatement
                         ;
 
 contractedBooleanPart   :   booleanOp comparisonOp? arithmeticExpression;

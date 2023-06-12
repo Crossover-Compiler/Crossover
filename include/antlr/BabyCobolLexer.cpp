@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/manzi/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.12.0
 
 
 #include "BabyCobolLexer.h"
@@ -41,7 +41,7 @@ struct BabyCobolLexerStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-std::once_flag babycobollexerLexerOnceFlag;
+::antlr4::internal::OnceFlag babycobollexerLexerOnceFlag;
 BabyCobolLexerStaticData *babycobollexerLexerStaticData = nullptr;
 
 void babycobollexerLexerInitialize() {
@@ -376,5 +376,5 @@ const atn::ATN& BabyCobolLexer::getATN() const {
 
 
 void BabyCobolLexer::initialize() {
-  std::call_once(babycobollexerLexerOnceFlag, babycobollexerLexerInitialize);
+  ::antlr4::internal::call_once(babycobollexerLexerOnceFlag, babycobollexerLexerInitialize);
 }

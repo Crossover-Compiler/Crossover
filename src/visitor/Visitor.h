@@ -132,8 +132,6 @@ public:
 
     std::any visitUntilLoopExp(BabyCobolParser::UntilLoopExpContext *ctx) override;
 
-    std::any visitLoopStatement(BabyCobolParser::LoopStatementContext *ctx) override;
-
     std::any visitContractedBooleanPart(BabyCobolParser::ContractedBooleanPartContext *ctx) override;
 
     std::any visitComparisonOp(BabyCobolParser::ComparisonOpContext *ctx) override;

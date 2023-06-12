@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/manzi/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.12.0
 
 #pragma once
 
@@ -595,9 +595,10 @@ public:
     LoopContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *LOOP();
+    LoopExpressionContext *loopExpression();
     antlr4::tree::TerminalNode *END();
-    std::vector<LoopExpressionContext *> loopExpression();
-    LoopExpressionContext* loopExpression(size_t i);
+    std::vector<StatementContext *> statement();
+    StatementContext* statement(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -898,15 +899,6 @@ public:
     IdentifiersContext *identifiers();
     std::vector<AtomicContext *> atomic();
     AtomicContext* atomic(size_t i);
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  LoopStatementContext : public LoopExpressionContext {
-  public:
-    LoopStatementContext(LoopExpressionContext *ctx);
-
-    StatementContext *statement();
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };

@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/manzi/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.12.0
 
 #pragma once
 
@@ -110,8 +110,6 @@ public:
     virtual std::any visitWhileLoopExp(BabyCobolParser::WhileLoopExpContext *context) = 0;
 
     virtual std::any visitUntilLoopExp(BabyCobolParser::UntilLoopExpContext *context) = 0;
-
-    virtual std::any visitLoopStatement(BabyCobolParser::LoopStatementContext *context) = 0;
 
     virtual std::any visitContractedBooleanPart(BabyCobolParser::ContractedBooleanPartContext *context) = 0;
 
