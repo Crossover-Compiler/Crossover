@@ -769,12 +769,13 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
             /** DATA DIV STUFF */
             if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i]) != nullptr) {
-                // atomic is an item in the datatree. So either a field or record
-                if (dynamic_cast<Field *>(any_cast<DataTree *>(visit(ctx->atomic()[i]))) != nullptr) {
-                    auto field = *dynamic_cast<Field *>(any_cast<DataTree *>(visit(ctx->atomic()[i])));
-                    if (field.getPrimitiveType() == DataType::UNDEFINED) {
-                        throw CompileException("unable to pass field: " + field.getName());
-                    } else if (field.getPrimitiveType() == DataType::INT) {
+
+                auto field = any_cast<llvm::Value*>(visit(ctx->atomic()[i]));
+                parameters.push_back(field);
+
+                if (false) {
+
+                    if (field->getType()->isIntegerTy()) {
                         if (get<0>(currentType) && get<1>(currentType)) {
                             // int
                             llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
@@ -783,21 +784,21 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             auto *new_function = new llvm::FunctionCallee();
                             *(new_function) = bcModule->getOrInsertFunction("bstd_number_to_int", new_function_types);
 
-                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+                            llvm::ArrayRef<llvm::Value *> args = field;
 
                             llvm::Value *alloc = builder->CreateCall(*new_function, args);
                             parameters.push_back(alloc);
 
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)
-                            parameters.push_back(field.getLlvmValue());
+                            parameters.push_back(field);
                             byvalTracker.emplace_back(i, bcModule->getNumberStructType());
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // int*
 
                             // convert number to integer pointer
-                            auto original = field.getLlvmValue();
+                            auto original = field;
                             auto intPtr = builder->CreateNumberToIntPtrCall(original);
 
                             // use integer pointer as call parameter
@@ -811,10 +812,10 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(int)*
                             // TODO: At re-entry we should marshall this value!
-                            parameters.push_back(field.getLlvmValue());
+                            parameters.push_back(field);
                         }
 
-                    } else if (field.getPrimitiveType() == DataType::DOUBLE) {
+                    } else if (field->getType()->isFloatTy() || field->getType()->isDoubleTy()) {
                         if (get<0>(currentType) && get<1>(currentType)) {
                             // double
                             llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
@@ -823,13 +824,13 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             auto *new_function = new llvm::FunctionCallee();
                             *(new_function) = bcModule->getOrInsertFunction("bstd_number_to_double", new_function_types);
 
-                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+                            llvm::ArrayRef<llvm::Value *> args = field;
 
                             llvm::Value *alloc = builder->CreateCall(*new_function, args);
                             parameters.push_back(alloc);
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)
-                            parameters.push_back(field.getLlvmValue());
+                            parameters.push_back(field);
                             byvalTracker.emplace_back(i, bcModule->getNumberStructType());
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // double*
@@ -842,7 +843,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                             auto *bstd_get_double = new llvm::FunctionCallee();
                             *(bstd_get_double) = bcModule->getOrInsertFunction("bstd_number_to_double", new_function_types);
 
-                            llvm::ArrayRef<llvm::Value *> args = field.getLlvmValue();
+                            llvm::ArrayRef<llvm::Value *> args = field;
 
                             llvm::Value *value = builder->CreateCall(*bstd_get_double, args);
                             llvm::Value *alloc = builder->CreateAlloca(double_ptr_t);
@@ -853,22 +854,22 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(double)*
                             // TODO: At re-entry we should marshall this value!
-                            parameters.push_back(field.getLlvmValue());
+                            parameters.push_back(field);
                         }
-                    } else if (field.getPrimitiveType() == DataType::STRING) {
+                    } else if (field->getType()->isArrayTy()) { // STRING
 
                         if (get<0>(currentType) && get<1>(currentType)) {
-                            pushStringOnParameterList(&parameters, field.getValue());
+//                            pushStringOnParameterList(&parameters, field->getName()); // todo: @mart, what case is this?
                         } else if (get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(string)
 
-                            parameters.push_back(field.getLlvmValue());
+                            parameters.push_back(field);
                             byvalTracker.emplace_back(i, bcModule->getPictureStructType());
 
                         } else if (!get<0>(currentType) && get<1>(currentType)) {
                             // string*
 
-                            auto original = field.getLlvmValue();
+                            auto original = field;
                             auto cstr = builder->CreatePictureToCStrCall(original);
                             parameters.push_back(cstr);
 
@@ -879,11 +880,11 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                         } else if (!get<0>(currentType) && !get<1>(currentType)) {
                             // wrap(string)*
-                            parameters.push_back(field.getLlvmValue());
+                            parameters.push_back(field);
                         }
                     }
 
-                } else if (dynamic_cast<Record *>(any_cast<DataTree *>(visit(ctx->atomic()[i]))) != nullptr) {
+                } else if (false && dynamic_cast<Record *>(any_cast<DataTree *>(visit(ctx->atomic()[i]))) != nullptr) {
                     // Identifier was a Record
                     auto record = *dynamic_cast<Record*>(any_cast<DataTree *>(visit(ctx->atomic()[i])));
                     parameters.push_back(record.getLlvmValue());

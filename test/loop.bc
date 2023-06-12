@@ -10,7 +10,7 @@ MAIN.
 
     LOOP WHILE A < 5
         ADD 1 TO A
-        DISPLAY A
+        CALL foo OF overhead USING BY REFERENCE A AS STRUCT
     END.
 
     DISPLAY A.
