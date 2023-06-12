@@ -15,6 +15,8 @@ private:
     // assignment
     llvm::FunctionCallee* assign_int_func;
 
+    llvm::FunctionCallee* add_int_func;
+
     llvm::StructType* numberStructType;
     llvm::StructType* pictureStructType;
 
@@ -95,6 +97,11 @@ public:
      * @return Returns the function callee for assigning integers to bstd_numbers.
      */
     llvm::FunctionCallee* getAssignIntFunc();
+
+    /**
+     * @return Returns the function callee for adding and integer to a bstd_numbers (bstd_add_int(bstd_number*, int)).
+     */
+    llvm::FunctionCallee* getAddIntFunc();
 
     /**
      * @return Returns the function callee for assigning c-style strings to bstd_pictures.

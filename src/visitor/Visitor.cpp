@@ -205,48 +205,34 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
         } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
             printDisplayItem(to_string(any_cast<double>(visit(ctx->atomic()[i]))), spacer);
         } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i]) != nullptr) {
-            auto dataTree = any_cast<DataTree *>(visit(ctx->atomic()[i]));
-            if (dynamic_cast<Field *>(dataTree) != nullptr) {
 
-                auto field = dynamic_cast<Field *>(dataTree);
-                std::vector<llvm::Value *> parameters;
-                parameters.reserve(2);
-                parameters.push_back(field->getLlvmValue());
-                if (spacer) {
-                    parameters.push_back(llvm::ConstantInt::getTrue(bcModule->getContext()));
-                } else {
-                    parameters.push_back(llvm::ConstantInt::getFalse(bcModule->getContext()));
-                }
+            auto field = any_cast<llvm::Value *>(visit(ctx->atomic()[i]));
 
-                std::vector<llvm::Type *> param_types;
-                param_types.reserve(parameters.size());
-                transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
-
-                llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
-                llvm::FunctionType *new_function_types = llvm::FunctionType::get(void_t, param_types, true);
-                FunctionCallee new_function;
-
-
-                auto type = field->getPrimitiveType();
-                if (type == DataType::INT || type == DataType::DOUBLE) {
-                    new_function = bcModule->getOrInsertFunction("bstd_print_number", new_function_types);
-                    auto function = cast<Function>(new_function.getCallee());
-                    function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
-                                                                          bcModule->getNumberStructType()));
-                } else if (type == DataType::STRING) {
-                    new_function = bcModule->getOrInsertFunction("bstd_print_picture", new_function_types); // todo: delete this, replace with bstd_to_str
-                    auto function = cast<Function>(new_function.getCallee());
-                    function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
-                                                                          bcModule->getPictureStructType()));
-                } else {
-                    throw CompileException(
-                            "Can't print Field '" + field->getName() + "' in display type == DataType::UNDEFINED");
-                }
-
-                builder->CreateCall(new_function, parameters);
-            } else if (dynamic_cast<Record *>(dataTree) != nullptr) {
-                throw NotImplemented("Visitor:visitDisplay() Printing by identifier->Record is not implemented...");
+            std::vector<llvm::Value *> parameters;
+            parameters.reserve(2);
+            parameters.push_back(field);
+            if (spacer) {
+                parameters.push_back(llvm::ConstantInt::getTrue(bcModule->getContext()));
+            } else {
+                parameters.push_back(llvm::ConstantInt::getFalse(bcModule->getContext()));
             }
+
+            std::vector<llvm::Type *> param_types;
+            param_types.reserve(parameters.size());
+            transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
+
+            llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
+            llvm::FunctionType *new_function_types = llvm::FunctionType::get(void_t, param_types, true);
+            FunctionCallee new_function;
+
+
+            // todo: support other types here too
+            new_function = bcModule->getOrInsertFunction("bstd_print_number", new_function_types);
+            auto function = cast<Function>(new_function.getCallee());
+            function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
+                                                                  bcModule->getNumberStructType()));
+
+            builder->CreateCall(new_function, parameters);
         } else {
             throw NotImplemented("Visitor:visitDisplay() We should never reach this statement!!!");
         }
@@ -458,15 +444,17 @@ std::any Visitor::visitAccept(BabyCobolParser::AcceptContext *ctx) {
 }
 
 std::any Visitor::visitAdd(BabyCobolParser::AddContext *ctx) {
-    current_id = "baseValue";
-    visit(ctx->atomic()[ctx->atomic().size() - 1]);
-    for (int i = 0; i < ctx->atomic().size() - 1; i++) {
-        current_id = "visitAdd_" + std::to_string(i);
-        visit(ctx->atomic()[i]);
-        values["baseValue"] = builder->llvm::IRBuilderBase::CreateAdd(values[current_id], values["baseValue"],
-                                                                      "mAdd");
-    }
-    return BabyCobolBaseVisitor::visitAdd(ctx);
+
+    auto atomics = ctx->atomic();
+
+    auto base = any_cast<llvm::Value*>(visit(ctx->to));
+
+    auto operand = any_cast<llvm::ConstantInt*>(visit(ctx->atomic()[0]));
+
+    // todo: we're assuming _base_ is an identifier. Extend this
+    builder->CreateAddIntToNumber(base, operand);
+
+    return base;
 }
 
 std::any Visitor::visitDivide(BabyCobolParser::DivideContext *ctx) {
@@ -492,8 +480,7 @@ std::any Visitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
     llvm::BasicBlock* loop_end = llvm::BasicBlock::Create(this->builder->getContext(), "loop_end", TheFunction, nullptr);
 
     // visit loop conditional expression
-    auto a = visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression());
-    auto conditional = std::any_cast<llvm::Value*>(a);
+    auto conditional = std::any_cast<llvm::Value*>(visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression()));
 
     auto int64t = llvm::Type::getInt64Ty(this->builder->getContext());
 
@@ -525,8 +512,7 @@ std::any Visitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
     }
 
     // Backward conditional, or exit loop body basic block
-    auto b = visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression());
-    auto conditional_b = std::any_cast<llvm::Value*>(b);
+    auto conditional_b = std::any_cast<llvm::Value*>(visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression()));
 
     this->builder->CreateCondBr(conditional_b, loop_body, loop_end); // maybe should be a "return from block"?
 
@@ -595,9 +581,7 @@ std::any Visitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpC
     //TODO: dyncast to field* = continue; dyncast to record* = fail;
 
     // visit lhs
-    DataTree* a = any_cast<DataTree*>(visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->left));
-    auto lhs_ = dynamic_cast<Field*>(a);
-    auto lhs = lhs_->getLlvmValue();
+    auto lhs = any_cast<llvm::Value*>(visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->left));
     // marshall number to int
 
     // todo: check if this is a bstd value or an atomic.
@@ -610,8 +594,8 @@ std::any Visitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpC
     auto marshalled_lhs = builder->CreateLoad(int64t, c);
 
     // visit rhs
-    auto b = visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->right);
-    auto rhs = llvm::ConstantInt::get(int64t, std::any_cast<int>(b), true); // todo: *((int*)&b)
+    auto a = visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->right);
+    auto rhs = any_cast<llvm::ConstantInt*>(a);
 
     // do comparison and return as llvm value
 
@@ -679,13 +663,18 @@ std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx)
 }
 
 std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
-    // TODO: Add OF IDENTIFIERS
+
     string name = ctx->identifiers()[0].getText();
+
     int resultsAmount = 0;
     DataTree *result = nullptr;
+
     for (DataTree *dt: dataStructures) {
+
         DataTree *tempResult = dt->findDataTreeByName(name);
+
         if (tempResult != nullptr) {
+
             resultsAmount++;
             result = tempResult;
         }
@@ -696,7 +685,8 @@ std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
     } else if (resultsAmount == 0) {
         throw CompileException("No Value " + ctx->identifiers()->IDENTIFIER()[0]->getText() + " found!");
     }
-    return result;
+
+    return result->getLlvmValue();
 }
 
 std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
@@ -716,15 +706,10 @@ std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
     } else if (resultsAmount == 0) {
         throw CompileException("No Value " + ctx->IDENTIFIER()[0]->getText() + " found!");
     }
-    return result;
+    return result->getLlvmValue();
 }
 
 any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
-    // TODO: This code might be useful somewhere:
-    // string value = ctx->INT()->getText();
-    // values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
-    // return value;
-
     return stoi(ctx->getText());
 }
 

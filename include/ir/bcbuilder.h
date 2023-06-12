@@ -106,10 +106,33 @@ public:
     /**
      * Creates a call to the bstd runtime library marshaller function bstd_number_to_int(Number*)
      * @param number The number to marshall
-     * @return Returns an pointer value referencing the integer representation of the specified number.
+     * @return Returns a pointer value referencing the integer representation of the specified number.
      */
     llvm::Value* CreateNumberToIntPtrCall(llvm::Value* number);
 
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_int(bstd_number*, int)
+     * @param number The number to assign to
+     * @param value The integer to assign to the specified number
+     * @return Returns void.
+     */
+    void CreateAssignIntToNumber(llvm::Value* number, int value);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_int(bstd_number*, int)
+     * @param number The number to assign to
+     * @param value The integer value to assign to the specified number
+     * @return Returns void.
+     */
+    void CreateAssignIntToNumber(llvm::Value* number, llvm::Value* value);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_add_int(bstd_number*, int)
+     * @param number The number to add to
+     * @param value The integer value to add to the specified number
+     * @return Returns void.
+     */
+    void CreateAddIntToNumber(llvm::Value* number, llvm::Value* value);
 
     int LiteralCount = 0;
 };

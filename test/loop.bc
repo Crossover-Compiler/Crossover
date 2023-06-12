@@ -10,4 +10,7 @@ MAIN.
 
     LOOP WHILE A < 5
         ADD 1 TO A
+        DISPLAY A
     END.
+
+    DISPLAY A.

@@ -47,6 +47,10 @@ void BCModule::initialize() {
     this->assign_int_func = new llvm::FunctionCallee();
     *(this->assign_int_func) = this->getOrInsertFunction("bstd_assign_int", assign_i_to_n_types);
 
+    llvm::FunctionType *add_i_to_n_types = llvm::FunctionType::get(void_t, { number_struct_ptr_t, int64_t }, false);
+    this->add_int_func = new llvm::FunctionCallee();
+    *(this->add_int_func) = this->getOrInsertFunction("bstd_add_int", add_i_to_n_types);
+
 }
 
 llvm::FunctionCallee* BCModule::getPrintf() {
@@ -132,4 +136,8 @@ llvm::FunctionCallee* BCModule::getMarshallIntFunc() {
 
 llvm::FunctionCallee *BCModule::getAssignIntFunc() {
     return this->assign_int_func;
+}
+
+llvm::FunctionCallee *BCModule::getAddIntFunc() {
+    return this->add_int_func;
 }

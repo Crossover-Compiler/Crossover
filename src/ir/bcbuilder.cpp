@@ -167,6 +167,29 @@ llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
     return alloc;
 }
 
+void BCBuilder::CreateAssignIntToNumber(llvm::Value* number, int value) {
+
+    llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());
+    llvm::ConstantInt* val = llvm::ConstantInt::get(int_t, value);
+
+    CreateAssignIntToNumber(number, val);
+}
+
+void BCBuilder::CreateAssignIntToNumber(llvm::Value* number, llvm::Value* value) {
+
+    auto assign_int = module->getAssignIntFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = { number, value };
+    this->CreateCall(*assign_int, args);
+}
+
+void BCBuilder::CreateAddIntToNumber(llvm::Value* number, llvm::Value* value) {
+    auto add_int = module->getAddIntFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = { number, value };
+    this->CreateCall(*add_int, args);
+}
+
 llvm::Value *BCBuilder::CreatePicture(BabyCobolParser::StringLiteralContext *context) {
     // Create picture from string literal as mask = XXX...
     string value = context->LITERAL()->getText().substr(1, context->LITERAL()->getText().size() - 2);
