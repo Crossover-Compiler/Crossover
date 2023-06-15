@@ -31,6 +31,8 @@
 #include <system_error>
 #include <vector>
 
+#define LABEL_MAIN "main"
+
 using namespace std;
 using namespace antlr4;
 using namespace llvm;
@@ -75,27 +77,40 @@ int main(int argc, char **argv) {
     BabyCobolParser::ProgramContext* tree = parser.program();
 
     // init  llvm
-    llvm::LLVMContext* llvmContext = new llvm::LLVMContext();
-    BCModule* module = new BCModule("module", *llvmContext);
+    auto llvmContext = new llvm::LLVMContext();
+    auto module = new BCModule("module", *llvmContext);
 
     llvm::FunctionType* FT = llvm::FunctionType::get(llvm::Type::getVoidTy(*llvmContext), false);
-    llvm::Function* F;
-    if(presentInArgs(argc, argv, "-not-main")){
-        F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "procedureDivision", module);
-    } else{
-        F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", module);
-    }
+    llvm::Function* init_function = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "init", module);
+//    if(presentInArgs(argc, argv, "-not-main")){
+//        init_function = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "procedureDivision", module);
+//    } else{
+//        init_function = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", module);
+//    }
 
-    // Run compiler
-    llvm::BasicBlock* block = llvm::BasicBlock::Create(*llvmContext, "root_block", F);
+//    // Run compiler
+    llvm::BasicBlock* block = llvm::BasicBlock::Create(*llvmContext, "", init_function);
 
     BCBuilder builder(module, block);
 
     Visitor visitor(module, &builder, &extTable, presentInArgs(argc, argv,"-generate-structs"));
     visitor.visitProgram(tree);
 
-
+    // insert return on init function
+    builder.SetInsertPoint(block);
     builder.CreateRetVoid();
+
+    // insert call to initialize function if BabyCobol is the entry point
+    if (!presentInArgs(argc, argv, "-not-main")) {
+        if (auto main_procedure = module->findProcedure(LABEL_MAIN)) {
+            builder.SetInsertPoint(&main_procedure->getBasicBlockList().front().front());
+            builder.CreateCall(init_function);
+        } else {
+            cout << "Could not find entry point \"" << LABEL_MAIN << "\"! If this is intentional, please specify the -not-main compiler flag." << endl;
+            return 0xD5;
+        }
+    }
+
     cout << "Finished Compiling!" << endl;
 
     module->print(llvm::outs(), nullptr);

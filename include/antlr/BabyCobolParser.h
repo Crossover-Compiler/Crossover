@@ -273,8 +273,6 @@ public:
     antlr4::tree::TerminalNode *PROCEDURE();
     antlr4::tree::TerminalNode *DIVISION();
     antlr4::tree::TerminalNode *DOT();
-    std::vector<SentenceContext *> sentence();
-    SentenceContext* sentence(size_t i);
     std::vector<ParagraphContext *> paragraph();
     ParagraphContext* paragraph(size_t i);
 
@@ -291,8 +289,11 @@ public:
     virtual size_t getRuleIndex() const override;
     LabelContext *label();
     antlr4::tree::TerminalNode *DOT();
+    antlr4::tree::TerminalNode *USING();
     std::vector<SentenceContext *> sentence();
     SentenceContext* sentence(size_t i);
+    std::vector<AtomicContext *> atomic();
+    AtomicContext* atomic(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;

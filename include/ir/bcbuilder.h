@@ -10,6 +10,7 @@
 #include "bcmodule.h"
 #include "../../Crossover_bstd_lib/include/picture.h"
 #include "../antlr/BabyCobolParser.h"
+#include <string>
 
 class BCBuilder : public llvm::IRBuilder<> {
 
@@ -133,6 +134,8 @@ public:
      * @return Returns void.
      */
     void CreateAddIntToNumber(llvm::Value* number, llvm::Value* value);
+
+    llvm::Function* CreateProcedure(llvm::FunctionType*, llvm::GlobalValue::LinkageTypes, std::string&);
 
     int LiteralCount = 0;
 };

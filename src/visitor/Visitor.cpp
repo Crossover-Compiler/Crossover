@@ -3,7 +3,6 @@
 #include <llvm/IR/Constants.h>
 #include <regex>
 #include "llvm/MC/TargetRegistry.h"
-#include "llvm/Support/FileSystem.h"
 #include "llvm/Support/Host.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/IR/DerivedTypes.h"
@@ -11,8 +10,9 @@
 #include "llvm/IR/ValueSymbolTable.h"
 #include "../Exceptions/CompileException.h"
 #include "../datastructures/Field.h"
-#include "../datastructures/Record.h"
 #include "../../include/utils/utils.h"
+#include <algorithm>
+#include <cctype>
 
 using namespace std;
 using namespace utils;
@@ -57,7 +57,7 @@ std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
     std::vector<llvm::Value *> values;
     // compile the data division
     for (DataTree *tree: dataStructures) {
-        llvm::Value *v = tree->codegen(builder, bcModule, false);
+        llvm::Value *v = tree->codegen(builder, bcModule, true);
         tree->setLlvmValue(v);
         values.push_back(v);
     }
@@ -173,7 +173,35 @@ std::any Visitor::visitProcedure(BabyCobolParser::ProcedureContext *ctx) {
 }
 
 std::any Visitor::visitParagraph(BabyCobolParser::ParagraphContext *ctx) {
-    return BabyCobolBaseVisitor::visitParagraph(ctx);
+
+    // find parameters in symbol table
+    vector<llvm::Type*> paramType;
+    for (auto param : ctx->atomic()) {
+        auto v = any_cast<llvm::Value*>(visit(param));
+        paramType.push_back(v->getType());
+    }
+
+    // return type
+    auto void_type = llvm::Type::getVoidTy(this->bcModule->getContext());
+
+    // create function callee
+    string procedureName = ctx->label()->getText(); //todo: lower case this // this label is just a string literal, not (yet) a value reference
+
+    llvm::FunctionType *function_type = llvm::FunctionType::get(void_type, paramType, false);
+    auto function = builder->CreateProcedure(function_type, llvm::GlobalValue::CommonLinkage, procedureName);
+
+    // visit body
+    auto bodyBlock = llvm::BasicBlock::Create(this->bcModule->getContext(), "", function);
+    this->builder->SetInsertPoint(bodyBlock);
+    for (auto sentence : ctx->sentence()) {
+        visit(sentence);
+    }
+
+    // insert return (void)
+    builder->CreateRetVoid();
+
+    // return function callee
+    return function;
 }
 
 std::any Visitor::visitSentence(BabyCobolParser::SentenceContext *ctx) {
@@ -181,7 +209,6 @@ std::any Visitor::visitSentence(BabyCobolParser::SentenceContext *ctx) {
 }
 
 std::any Visitor::visitStatement(BabyCobolParser::StatementContext *ctx) {
-
     return BabyCobolBaseVisitor::visitStatement(ctx);
 }
 
@@ -475,7 +502,7 @@ std::any Visitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
 
     Function* TheFunction = builder->GetInsertBlock()->getParent();
     // create new basic block, set our current insertion point to it
-    llvm::BasicBlock* loop_body = llvm::BasicBlock::Create(this->builder->getContext(), "loop_body", TheFunction, nullptr);
+    llvm::BasicBlock* loop_body = llvm::BasicBlock::Create(this->builder->getContext(), "loop_start", TheFunction, nullptr);
     // create a new block (label) for the code to continue after the loop
     llvm::BasicBlock* loop_end = llvm::BasicBlock::Create(this->builder->getContext(), "loop_end", TheFunction, nullptr);
 
@@ -750,6 +777,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     // True, True if -> BY VALUE, AS PRIMITIVE
     // False, False if -> BY REFERENCE, AS STRUCT
     vector<tuple<bool, bool>> passType(ctx->atomic().size());
+
     std::vector<llvm::Value *> parameters;
     parameters.reserve(ctx->atomic().size());
 
@@ -994,44 +1022,68 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
 
     //create function call w/ no output (void)
-    string programName = ctx->program_name->getText();
+    bool hasProgramName = ctx->program_name;
 
     llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
     llvm::FunctionType *new_function_types = llvm::FunctionType::get(void_t, param_types, true);
     auto *new_function = new llvm::FunctionCallee();
 
-    vector<string> programFunctions;
-    if(!generate_structs){ // if user wants to generate structs these errors should not be thrown since the program will not be linked yet
-        if (extTable->find(programName) != extTable->end()) {
-            programFunctions = extTable->find(programName)->second;
+    if (!generate_structs) { // if user wants to generate structs these errors should not be thrown since the program will not be linked yet
+
+        if (!hasProgramName) {
+            // try to find the procedure in our internal shadow symbol table
+
+            if (auto procedure = this->bcModule->findProcedure(functionName)) {
+                // call the procedure
+
+                builder->CreateCall(procedure, parameters);
+
+            } else {
+                // we can not find a match. Throw a compile exception.
+                auto format = "No function named %s found in this baby cobol file. Specify an OF clause to search another file.";
+                auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), functionName.c_str());
+                std::string errormessage(size + 1, '\0');
+                std::sprintf(&errormessage[0], format, functionName.c_str(), functionName.c_str());
+                throw CompileException(errormessage);
+            }
+
         } else {
-            auto format = "No program named %s provided.";
-            auto size = std::snprintf(nullptr, 0, format, programName.c_str());
-            std::string errormessage(size + 1, '\0');
-            std::sprintf(&errormessage[0], format, programName.c_str());
-            throw CompileException(errormessage);
-        }
 
-        if (std::find(programFunctions.begin(), programFunctions.end(), functionName) == programFunctions.end()) {
-            auto format = "No function named %s found in program %s.";
-            auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
-            std::string errormessage(size + 1, '\0');
-            std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
-            throw CompileException(errormessage);
+            string programName = ctx->program_name->getText();
+            if (extTable->find(programName) != extTable->end()) {
+
+                vector<string> programFunctions = extTable->find(programName)->second;
+
+                if (std::find(programFunctions.begin(), programFunctions.end(), functionName) ==
+                    programFunctions.end()) {
+                    auto format = "No function named %s found in program %s.";
+                    auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
+                    std::string errormessage(size + 1, '\0');
+                    std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
+                    throw CompileException(errormessage);
+                }
+
+                *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
+                Function *function = cast<Function>(new_function->getCallee());
+                for (auto currentAttributeTuple: byvalTracker) {
+                    function->addParamAttr(get<0>(currentAttributeTuple),
+                                           Attribute::getWithByValType(bcModule->getContext(),
+                                                                       get<1>(currentAttributeTuple)));
+                }
+
+                llvm::ArrayRef<llvm::Value *> args = parameters;
+
+                builder->CreateCall(*new_function, args);
+
+            } else {
+                auto format = "No program named %s provided.";
+                auto size = std::snprintf(nullptr, 0, format, programName.c_str());
+                std::string errormessage(size + 1, '\0');
+                std::sprintf(&errormessage[0], format, programName.c_str());
+                throw CompileException(errormessage);
+            }
         }
     }
-
-
-    *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
-    Function *function = cast<Function>(new_function->getCallee());
-    for (auto currentAttributeTuple: byvalTracker) {
-        function->addParamAttr(get<0>(currentAttributeTuple),
-                               Attribute::getWithByValType(bcModule->getContext(), get<1>(currentAttributeTuple)));
-    }
-
-    llvm::ArrayRef<llvm::Value *> args = parameters;
-
-    builder->CreateCall(*new_function, args);
 
     // generate re-entry handlers
     for (auto &it: re_entry_cache) {

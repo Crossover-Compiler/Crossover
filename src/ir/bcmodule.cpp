@@ -141,3 +141,18 @@ llvm::FunctionCallee *BCModule::getAssignIntFunc() {
 llvm::FunctionCallee *BCModule::getAddIntFunc() {
     return this->add_int_func;
 }
+
+llvm::Function* BCModule::findProcedure(const std::string& _procedure_name) {
+
+    std::string procedure_name = std::string(_procedure_name);
+
+    // procedure names are lower case. Lookup is case-insensitive.
+    std::transform(procedure_name.begin(), procedure_name.end(), procedure_name.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+
+    if (function_shadow_symbol_table.count(procedure_name)) {
+        return function_shadow_symbol_table.at(procedure_name);
+    }
+
+    return nullptr;
+}

@@ -2,11 +2,15 @@
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/IR/IRBuilder.h"
+#include <map>
+#include <string>
 
 #ifndef BCMODULE_H
 #define BCMODULE_H
 
 class BCModule : public llvm::Module {
+
+    friend class BCBuilder;
 
 private:
     llvm::FunctionCallee* printf_func;
@@ -19,6 +23,8 @@ private:
 
     llvm::StructType* numberStructType;
     llvm::StructType* pictureStructType;
+
+    std::map<std::string, llvm::Function*> function_shadow_symbol_table;
 
 private:
 
@@ -36,7 +42,8 @@ public:
             marshall_int_func(nullptr),
             assign_int_func(nullptr),
             numberStructType(nullptr),
-            pictureStructType(nullptr) {
+            pictureStructType(nullptr),
+            function_shadow_symbol_table() {
         initialize();
     };
 
@@ -108,6 +115,12 @@ public:
      */
     llvm::FunctionCallee* getAssignCStrFunc();
 
+    /**
+     * Finds a procedure (function) by its name, case-insensitive. Procedures can not be overloaded.
+     * @param procedure_name The name of the function to find.
+     * @return Returns a pointer to the function with the specified name, or nullptr if no such function could be found.
+     */
+    llvm::Function* findProcedure(const std::string& procedure_name);
 
 };
 

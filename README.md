@@ -44,7 +44,29 @@ Options:
 
 -generate-structs : Generates c structs from babycobol record types.
 
--not-main : If this option is present the babycobol procedure is compiled as "procedureDivision". If it is not present the procedure is compiled as "main".
+-not-main : If this option is present the babycobol file needs an entry point "main" procedure.
 ```
 
+# Programming guide
 
+## Naming
+
+BabyCobol paragraph names are internally case-insensitive. Across the FFI, paragraph names can be accessed in lower case only. Make sure to keep this in mind. Example:
+```
+BabyCobol
+-------------------
+PROCEDURE DIVISION.
+FOO.
+    CALL Foo.       <-- this is fine
+
+
+C
+-------------------
+void bar() {
+    FOO();          <-- this does not work
+    foo();          <-- this works
+}
+```
+
+## Additional notes
+Paragraphs are not hoisted. This means that a paragraph needs to be defined before it can be called.

@@ -40,7 +40,7 @@ llvm::Value *BCBuilder::CreateNumber(BabyCobolParser::IntLiteralContext *context
     std::cout << "Creating uint64_t from: " << intText << std::endl;
     uint64_t m_value = std::stoi(intText);
 
-    return CreateNumberValue(name, m_value, m_scale, m_length, m_isSigned, m_isPositive, false);
+    return CreateNumberValue(name, m_value, m_scale, m_length, m_isSigned, m_isPositive, true);
 }
 
 llvm::Value *BCBuilder::CreateNumber(BabyCobolParser::DoubleLiteralContext *context) {
@@ -69,7 +69,7 @@ llvm::Value *BCBuilder::CreateNumber(BabyCobolParser::DoubleLiteralContext *cont
     doubleText.erase(remove(doubleText.begin(), doubleText.end(), ','), doubleText.end());
     uint64_t m_value = std::stoi(doubleText);
 
-    return CreateNumberValue(name, m_value, m_scale, m_length, m_isSigned, m_isPositive, false);
+    return CreateNumberValue(name, m_value, m_scale, m_length, m_isSigned, m_isPositive, true);
 }
 
 llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_value, uint64_t m_scale, uint8_t m_length, bool m_isSigned, bool m_isPositive, bool global) {
@@ -275,4 +275,17 @@ llvm::Value *BCBuilder::CreatePicture(const std::string& name, unsigned char* m_
     this->CreateStore(length, length_ptr);
 
     return alloc;
+}
+
+llvm::Function* BCBuilder::CreateProcedure(llvm::FunctionType* function_type, llvm::GlobalValue::LinkageTypes linkage_type, std::string& procedure_name) {
+
+    // procedure names are lower case
+    std::transform(procedure_name.begin(), procedure_name.end(), procedure_name.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+
+    auto function = llvm::Function::Create(function_type, linkage_type, procedure_name, *this->module);
+
+    this->module->function_shadow_symbol_table.insert({procedure_name, function});
+
+    return function;
 }
