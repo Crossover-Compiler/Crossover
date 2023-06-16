@@ -144,6 +144,17 @@ llvm::Value* BCBuilder::CreateCStrToPictureCall(llvm::Value* picture, llvm::Valu
     return this->CreateCall(*assign_cstr_to_pic, args);
 }
 
+llvm::Value* BCBuilder::CreateNumberToIntCall(llvm::Value *number) {
+
+    llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());
+    llvm::ConstantInt* const_i64 = llvm::ConstantInt::get(int_t, 64);
+
+    auto num_to_int = module->getMarshallIntFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = number;
+    return this->CreateCall(*num_to_int, args);
+}
+
 llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
 
     llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());
@@ -178,6 +189,14 @@ void BCBuilder::CreateAssignIntToNumber(llvm::Value* number, llvm::Value* value)
 
     llvm::ArrayRef<llvm::Value *> args = { number, value };
     this->CreateCall(*assign_int, args);
+}
+
+void BCBuilder::CreateAssignCStrToPicture(llvm::Value* picture, llvm::Value* value) {
+
+    auto assign_cstr = module->getAssignCStrFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = { picture, value };
+    this->CreateCall(*assign_cstr, args);
 }
 
 void BCBuilder::CreateAddIntToNumber(llvm::Value* number, llvm::Value* value) {

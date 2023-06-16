@@ -48,6 +48,10 @@ void BCModule::initialize() {
     this->assign_int_func = new llvm::FunctionCallee();
     *(this->assign_int_func) = this->getOrInsertFunction("bstd_assign_int", assign_i_to_n_types);
 
+    llvm::FunctionType *assign_cstr_to_pic_types = llvm::FunctionType::get(void_t, { this->pictureStructType, int8ptr_t }, false);
+    this->assign_cstr_to_picture_func = new llvm::FunctionCallee();
+    *(this->assign_cstr_to_picture_func) = this->getOrInsertFunction("bstd_assign_str", assign_cstr_to_pic_types);
+
     llvm::FunctionType *add_i_to_n_types = llvm::FunctionType::get(void_t, { number_struct_ptr_t, int64_t }, false);
     this->add_int_func = new llvm::FunctionCallee();
     *(this->add_int_func) = this->getOrInsertFunction("bstd_add_int", add_i_to_n_types);
@@ -129,14 +133,7 @@ llvm::FunctionCallee* BCModule::getPictureToCStrFunc() {
 }
 
 llvm::FunctionCallee* BCModule::getAssignCStrFunc() {
-
-    llvm::Type* void_t = llvm::Type::getVoidTy(this->getContext());
-    llvm::Type* int8ptr_t = llvm::Type::getInt8PtrTy(this->getContext());
-
-    llvm::FunctionType *assign_cstr_to_pic_types = llvm::FunctionType::get(void_t, { this->pictureStructType, int8ptr_t }, false);
-    auto assign_cstr_to_picture_func = new llvm::FunctionCallee();
-    *(assign_cstr_to_picture_func) = this->getOrInsertFunction("bstd_assign_str", assign_cstr_to_pic_types);
-    return assign_cstr_to_picture_func;
+    return this->assign_cstr_to_picture_func;
 }
 
 llvm::FunctionCallee* BCModule::getMarshallIntFunc() {

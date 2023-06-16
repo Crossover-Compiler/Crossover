@@ -214,9 +214,12 @@ std::any Visitor::visitLabel(BabyCobolParser::LabelContext *ctx) {
 }
 
 std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
+
     // TODO: Add delimiter
     bool nextLine = ctx->ADVANCING() == nullptr;
     bool spacer = false;
+
+    llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
 
     for (int i = 0; i < ctx->atomic().size(); ++i) {
         if (i == 1) {
@@ -228,13 +231,25 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
             printDisplayItem(any_cast<string>(visit(ctx->atomic()[i])), spacer);
         } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
             printDisplayItem(to_string(any_cast<double>(visit(ctx->atomic()[i]))), spacer);
-        } else if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i]) != nullptr) {
+        } else if (auto identifierContext = dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i])) {
 
-            auto field = any_cast<llvm::Value *>(visit(ctx->atomic()[i]));
+            auto value = any_cast<llvm::Value *>(visit(ctx->atomic()[i]));
+
+            // find more meta-data about this value in the symbol table
+            DataTree* dataTreeEntry = nullptr;
+            auto it = this->dataStructures.begin();
+            while (dataTreeEntry == nullptr && it != this->dataStructures.end()) {
+                // todo: this is hacky...
+                dataTreeEntry = (*it++)->findDataTreeByName(identifierContext->identifiers()->IDENTIFIER()[0]->getText());
+            }
+
+            if (!dataTreeEntry) {
+                throw CompileException("Could not find value " + identifierContext->identifiers()->IDENTIFIER()[0]->getText());
+            }
 
             std::vector<llvm::Value *> parameters;
             parameters.reserve(2);
-            parameters.push_back(field);
+            parameters.push_back(value);
             if (spacer) {
                 parameters.push_back(llvm::ConstantInt::getTrue(bcModule->getContext()));
             } else {
@@ -245,18 +260,29 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
             param_types.reserve(parameters.size());
             transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
 
-            llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
-            llvm::FunctionType *new_function_types = llvm::FunctionType::get(void_t, param_types, true);
-            FunctionCallee new_function;
+            // todo: support record types here too
+            if (dataTreeEntry->isRecord()) {
+                throw CompileException("Unimplemented feature: cannot DISPLAY Records.");
+            }
 
+            auto field = dynamic_cast<Field*>(dataTreeEntry);
 
-            // todo: support other types here too
-            new_function = bcModule->getOrInsertFunction("bstd_print_number", new_function_types);
-            auto function = cast<Function>(new_function.getCallee());
-            function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(),
-                                                                  bcModule->getNumberStructType()));
+            FunctionCallee print_func;
 
-            builder->CreateCall(new_function, parameters);
+            if (field->isNumber()) {
+                llvm::FunctionType *print_func_types = llvm::FunctionType::get(void_t, param_types, true);
+                print_func = bcModule->getOrInsertFunction("bstd_print_number", print_func_types);
+            } else {
+                // todo: there is a "spacer" parameter. We will probably get some interesting stochastic behaviour here...
+                llvm::FunctionType *print_func_types = llvm::FunctionType::get(void_t, param_types, true);
+                print_func = bcModule->getOrInsertFunction("bstd_print_picture", print_func_types);
+            }
+
+            auto function = cast<Function>(print_func.getCallee());
+            function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(), bcModule->getNumberStructType()));
+
+            builder->CreateCall(print_func, parameters);
+
         } else {
             throw NotImplemented("Visitor:visitDisplay() We should never reach this statement!!!");
         }
@@ -1009,6 +1035,10 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     llvm::Value* return_target = nullptr;
     llvm::Type* return_type = llvm::Type::getVoidTy(bcModule->getContext());
 
+    const auto int64_type = llvm::IntegerType::getInt64Ty(bcModule->getContext());
+    auto int8_type = llvm::IntegerType::getInt8Ty(bcModule->getContext());
+    auto int8_ptr_type = llvm::PointerType::get(int8_type, 4);
+
     // todo: hacky!
     DataTree* dataTreeEntry = nullptr;
 
@@ -1036,11 +1066,22 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
             } else if (auto field = dynamic_cast<Field*>(dataTreeEntry)) {
 
                 if (field->isNumber()) {
-                    // return type is bstd_number by value
-                    return_type = bcModule->getNumberStructType();
+                    if (ctx->primitive_return) {
+                        // return type is integer
+                        return_type = int64_type;
+                    } else {
+                        // return type is bstd_number by value
+                        return_type = bcModule->getNumberStructType();
+                    }
                 } else {
-                    // return type is bstd_number by value
-                    return_type = bcModule->getPictureStructType();
+
+                    if (ctx->primitive_return) {
+                        // return type is char pointer
+                        return_type = int8_ptr_type;
+                    } else {
+                        // return type is bstd_picture by value
+                        return_type = bcModule->getPictureStructType();
+                    }
                 }
             }
         }
@@ -1052,9 +1093,6 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
     //create function call w/ no output (void)
     bool hasProgramName = ctx->program_name;
-
-    llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, param_types, true);
-    auto *new_function = new llvm::FunctionCallee();
 
     // todo: the code for constructing the call instructions below is technical debt.
     llvm::Value* call = nullptr;
@@ -1075,7 +1113,35 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                 auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), functionName.c_str());
                 std::string errormessage(size + 1, '\0');
                 std::sprintf(&errormessage[0], format, functionName.c_str(), functionName.c_str());
-                throw CompileException(errormessage);
+                cerr << errormessage << endl;
+
+                // construct it anyway, and hope it is available when we link
+
+                if (!ctx->byvalueatomicsprim.empty()) {
+
+                    // todo: function types are not OK...
+                    // todo: let's generate an int for PIC 9*, a double for PIC 9*V9*, and a char* for PIC (X|A|9)*
+                    std::vector<llvm::Type *> primitive_types;
+                    primitive_types.reserve(parameters.size());
+                    transform(parameters.begin(), parameters.end(), back_inserter(primitive_types),
+                              [&int64_type](auto param) { return int64_type; });
+
+                    // marshall parameters...
+                    std::vector<llvm::Value *> marshalled_params;
+                    marshalled_params.reserve(parameters.size());
+                    for (auto param : parameters) {
+                        // todo: support pics... (check the data tree, etc)
+                        auto v = builder->CreateNumberToIntCall(param);
+                        marshalled_params.push_back(v);
+                    }
+
+                    llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, primitive_types,
+                                                                                     true);
+                    auto new_function = bcModule->getOrInsertFunction(functionName, new_function_types);
+                    call = builder->CreateCall(new_function, marshalled_params);
+
+                }
+
             }
 
         } else {
@@ -1094,8 +1160,10 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                     throw CompileException(errormessage);
                 }
 
-                *(new_function) = bcModule->getOrInsertFunction(functionName, new_function_types);
-                Function *function = cast<Function>(new_function->getCallee());
+                llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, param_types, true);
+                auto new_function = bcModule->getOrInsertFunction(functionName, new_function_types);
+
+                auto function = cast<Function>(new_function.getCallee());
                 for (auto currentAttributeTuple: byvalTracker) {
                     function->addParamAttr(get<0>(currentAttributeTuple),
                                            Attribute::getWithByValType(bcModule->getContext(),
@@ -1104,7 +1172,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                 llvm::ArrayRef<llvm::Value *> args = parameters;
 
-                call = builder->CreateCall(*new_function, args);
+                call = builder->CreateCall(new_function, args);
 
             } else {
                 auto format = "No program named %s provided.";
@@ -1122,7 +1190,43 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
         if (ctx->primitive_return != nullptr) {
             // we expect a basic data type, so we need to marshall
+
+            if (dataTreeEntry->isRecord()) {
+                throw CompileException("Can not use \"AS PRIMITIVE\" return clause modifier on a Record target.");
+            }
+
+            // determine which it is - number or picture
+            auto field = dynamic_cast<Field*>(dataTreeEntry);
+
+            llvm::Value* value;
+
             // todo: we need to make a distinction between assigning doubles/floats and assigning integers
+            if (ctx->reference_return != nullptr) {
+
+                // returning by reference, so load the primitive
+                if (field->isNumber()) {
+
+                    value = builder->CreateLoad(int64_type, call);
+
+                } else {
+
+                    value = builder->CreateLoad(int8_ptr_type, call);
+
+                }
+
+            } else {
+                // returning by vale, so we do not need to load
+                value = call;
+            }
+
+            if (field->isNumber()) {
+                // we're assigning the return value to a number
+                builder->CreateAssignIntToNumber(return_target, value);
+            } else {
+                builder->CreateAssignCStrToPicture(return_target, value);
+            }
+
+
         } else {    // We know the return value is either bstd_number or bstd_bstd_picture, so no marshalling is needed
 //        else if (return_target->getType() == bcModule->getPictureStructType() || return_target->getType() == bcModule->getNumberStructType()) {
 
@@ -1136,7 +1240,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                 auto alloc = builder->CreateAlloca(bcModule->getNumberStructType());
                 builder->CreateMemCpy(alloc, llvm::MaybeAlign(), call, llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
 
-                value = alloc; // todo, we should get a pointer to this instead
+                value = alloc;
             }
 
             // we are assigning the result to a picture or a number

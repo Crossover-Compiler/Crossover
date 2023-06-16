@@ -138,7 +138,7 @@ atomic          :   int                         #intLiteral
                 ;
 //program_name    : IDENTIFIER;
 
-identifiers     :   IDENTxIFIER (OF IDENTIFIER)* ('(' int ')')?;
+identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
 
 int             :   ('-'|'+')? INT;
 

@@ -18,6 +18,7 @@ private:
     llvm::FunctionCallee* marshall_int_func;
     // assignment
     llvm::FunctionCallee* assign_int_func;
+    llvm::FunctionCallee* assign_cstr_to_picture_func;
     llvm::FunctionCallee* assign_number_func;
     llvm::FunctionCallee* assign_picture_func;
 
@@ -43,6 +44,7 @@ public:
             printf_func(nullptr),
             marshall_int_func(nullptr),
             assign_int_func(nullptr),
+            assign_cstr_to_picture_func(nullptr),
             assign_number_func(nullptr),
             assign_picture_func(nullptr),
             numberStructType(nullptr),

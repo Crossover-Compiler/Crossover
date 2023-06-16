@@ -104,12 +104,14 @@ public:
      */
     llvm::Value* CreateCStrToPictureCall(llvm::Value* picture, llvm::Value* str);
 
+    llvm::Value* CreateNumberToIntPtrCall(llvm::Value* number);
+
     /**
      * Creates a call to the bstd runtime library marshaller function bstd_number_to_int(Number*)
      * @param number The number to marshall
      * @return Returns a pointer value referencing the integer representation of the specified number.
      */
-    llvm::Value* CreateNumberToIntPtrCall(llvm::Value* number);
+    llvm::Value* CreateNumberToIntCall(llvm::Value* number);
 
     /**
      * Creates a call to the bstd runtime library assignment function bstd_assign_int(bstd_number*, int)
@@ -126,6 +128,8 @@ public:
      * @return Returns void.
      */
     void CreateAssignIntToNumber(llvm::Value* number, llvm::Value* value);
+
+    void CreateAssignCStrToPicture(llvm::Value* picture, llvm::Value* value);
 
     /**
      * Creates a call to the bstd runtime library assignment function bstd_add_int(bstd_number*, int)
