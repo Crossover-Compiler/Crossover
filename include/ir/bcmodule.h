@@ -18,6 +18,8 @@ private:
     llvm::FunctionCallee* marshall_int_func;
     // assignment
     llvm::FunctionCallee* assign_int_func;
+    llvm::FunctionCallee* assign_number_func;
+    llvm::FunctionCallee* assign_picture_func;
 
     llvm::FunctionCallee* add_int_func;
 
@@ -30,7 +32,7 @@ private:
 
     /**
      * @brief Initializes this module
-     * 
+     *
      */
     void initialize();
 
@@ -41,6 +43,8 @@ public:
             printf_func(nullptr),
             marshall_int_func(nullptr),
             assign_int_func(nullptr),
+            assign_number_func(nullptr),
+            assign_picture_func(nullptr),
             numberStructType(nullptr),
             pictureStructType(nullptr),
             function_shadow_symbol_table() {

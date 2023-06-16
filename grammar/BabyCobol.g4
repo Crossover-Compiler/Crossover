@@ -77,7 +77,7 @@ callStatement   :   CALL function_name=IDENTIFIER (OF program_name=IDENTIFIER)?
                                 )
                             )+
                         )?
-                        ((RETURNING | RETURNINGBYREFERENCE) returning=IDENTIFIER)?; // TODO: Test if the identifiers and literals are added to the lists correctly
+                        (RETURNING (BYVALUE | reference_return=BYREFERENCE)? returning=identifiers (AS (primitive_return=PRIMITIVE | STRUCT))?)?; // TODO: Test if the identifiers and literals are added to the lists correctly
 
 anyExpression   :   arithmeticExpression
                 |   stringExpression
@@ -138,7 +138,7 @@ atomic          :   int                         #intLiteral
                 ;
 //program_name    : IDENTIFIER;
 
-identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
+identifiers     :   IDENTxIFIER (OF IDENTIFIER)* ('(' int ')')?;
 
 int             :   ('-'|'+')? INT;
 

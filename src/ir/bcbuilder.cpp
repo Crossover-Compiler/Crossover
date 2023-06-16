@@ -37,7 +37,6 @@ llvm::Value *BCBuilder::CreateNumber(BabyCobolParser::IntLiteralContext *context
         intText.erase(remove(intText.begin(), intText.end(), '+'), intText.end());
     }
 
-    std::cout << "Creating uint64_t from: " << intText << std::endl;
     uint64_t m_value = std::stoi(intText);
 
     return CreateNumberValue(name, m_value, m_scale, m_length, m_isSigned, m_isPositive, true);
@@ -78,14 +77,12 @@ llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_v
     llvm::Value *alloc;
 
     if (global) {
-        std::cout << "Creating global var: " << name << std::endl;
         // we should allocate global memory
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(number_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, number_struct_type, false,
                                          llvm::GlobalVariable::CommonLinkage, zeroInit, name,
                                          nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
     } else {
-        std::cout << "Creating local var: " << name << std::endl;
         // we should allocate local memory
         alloc = this->CreateAlloca(number_struct_type, nullptr, name);
     }
@@ -188,6 +185,22 @@ void BCBuilder::CreateAddIntToNumber(llvm::Value* number, llvm::Value* value) {
 
     llvm::ArrayRef<llvm::Value *> args = { number, value };
     this->CreateCall(*add_int, args);
+}
+
+void BCBuilder::CreateAssignNumberToNumber(llvm::Value* number_ptr, llvm::Value* value_ptr) {
+
+    auto assign_func = module->assign_number_func;
+
+    llvm::ArrayRef<llvm::Value *> args = { number_ptr, value_ptr };
+    this->CreateCall(*assign_func, args);
+}
+
+void BCBuilder::CreateAssignPictureToPicture(llvm::Value* picture_ptr, llvm::Value* value_ptr) {
+
+    auto assign_func = module->assign_picture_func;
+
+    llvm::ArrayRef<llvm::Value *> args = { picture_ptr, value_ptr };
+    this->CreateCall(*assign_func, args);
 }
 
 llvm::Value *BCBuilder::CreatePicture(BabyCobolParser::StringLiteralContext *context) {

@@ -668,7 +668,9 @@ public:
     std::vector<AtomicContext *> byreferenceatomicsprim;
     std::vector<AtomicContext *> byvalueatomicsstruct;
     std::vector<AtomicContext *> byreferenceatomicsstruct;
-    antlr4::Token *returning = nullptr;
+    antlr4::Token *reference_return = nullptr;
+    BabyCobolParser::IdentifiersContext *returning = nullptr;
+    antlr4::Token *primitive_return = nullptr;
     CallStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *CALL();
@@ -677,17 +679,17 @@ public:
     antlr4::tree::TerminalNode *OF();
     antlr4::tree::TerminalNode *USING();
     antlr4::tree::TerminalNode *RETURNING();
-    antlr4::tree::TerminalNode *RETURNINGBYREFERENCE();
+    IdentifiersContext *identifiers();
     std::vector<antlr4::tree::TerminalNode *> BYVALUE();
     antlr4::tree::TerminalNode* BYVALUE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> AS();
     antlr4::tree::TerminalNode* AS(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> PRIMITIVE();
-    antlr4::tree::TerminalNode* PRIMITIVE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> BYREFERENCE();
     antlr4::tree::TerminalNode* BYREFERENCE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> STRUCT();
     antlr4::tree::TerminalNode* STRUCT(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> PRIMITIVE();
+    antlr4::tree::TerminalNode* PRIMITIVE(size_t i);
     std::vector<AtomicContext *> atomic();
     AtomicContext* atomic(size_t i);
 

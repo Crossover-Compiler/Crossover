@@ -25,7 +25,6 @@ private:
     string current_id;
     BCModule* bcModule;
     BCBuilder* builder;
-    int callCount = 0;
 
     /**
      * Re-entry handler factories take care of generating IR which handle exposed values upon re-entry.

@@ -36,6 +36,7 @@ void BCModule::initialize() {
     this->pictureStructType = llvm::StructType::create(this->getContext(), *picture_struct_types, "Struct.Picture");
 
     llvm::Type* number_struct_ptr_t = llvm::PointerType::get(this->numberStructType, 0);
+    llvm::Type* picture_struct_ptr_t = llvm::PointerType::get(this->pictureStructType, 0);
 
     // instantiate marshalling functions
     llvm::FunctionType *n_to_i_types = llvm::FunctionType::get(int64_t, number_struct_ptr_t, false);
@@ -50,6 +51,14 @@ void BCModule::initialize() {
     llvm::FunctionType *add_i_to_n_types = llvm::FunctionType::get(void_t, { number_struct_ptr_t, int64_t }, false);
     this->add_int_func = new llvm::FunctionCallee();
     *(this->add_int_func) = this->getOrInsertFunction("bstd_add_int", add_i_to_n_types);
+
+    llvm::FunctionType *bstd_assign_number_types = llvm::FunctionType::get(void_t, { number_struct_ptr_t, number_struct_ptr_t }, false);
+    this->assign_number_func = new llvm::FunctionCallee();
+    *(this->assign_number_func) = this->getOrInsertFunction("bstd_assign_number", bstd_assign_number_types);
+
+    llvm::FunctionType *bstd_assign_picture_types = llvm::FunctionType::get(void_t, { picture_struct_ptr_t, picture_struct_ptr_t }, false);
+    this->assign_picture_func = new llvm::FunctionCallee();
+    *(this->assign_picture_func) = this->getOrInsertFunction("bstd_assign_picture", bstd_assign_picture_types);
 
 }
 

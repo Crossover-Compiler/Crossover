@@ -46,8 +46,6 @@ std::any Visitor::visitValue(BabyCobolParser::ValueContext *ctx) {
 
 std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
 
-    cout << "Starting DATA DIVISION" << endl;
-
     for (auto l: ctx->line()) {
         visitLine(l);
     }
@@ -62,7 +60,6 @@ std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
         values.push_back(v);
     }
 
-    cout << "Finished DATA DIVISION" << endl;
     return nullptr;
 }
 
@@ -273,7 +270,6 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
 void Visitor::printDisplayItem(const string &value, bool spacer) {
     llvm::FunctionCallee *printf_func = bcModule->getPrintf();
 
-    cout << value << endl;
     llvm::Value *raw = builder->CreateGlobalStringPtr(value);
     llvm::Value *strPtr;
     if (spacer) {
@@ -771,7 +767,6 @@ void Visitor::cstr_re_entry_handler_generator(BCBuilder* builder, BCModule* modu
 }
 
 any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
-    callCount++;
 
     // todo: replace these tuples with enums.
     // True, True if -> BY VALUE, AS PRIMITIVE
@@ -789,6 +784,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     map<BabyCobolParser::AtomicContext *, int *> intsToMutate;
     vector<tuple<int, Type *>> byvalTracker;
 
+    // todo: the body of this branch is technical debt
     if (ctx->USING() != nullptr) {
         populatePassTypeVector(&passType, ctx);
 
@@ -1009,12 +1005,45 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     }
 
     string functionName = ctx->function_name->getText();
-//    cout << functionName << endl;
+
+    llvm::Value* return_target = nullptr;
+    llvm::Type* return_type = llvm::Type::getVoidTy(bcModule->getContext());
+
+    // todo: hacky!
+    DataTree* dataTreeEntry = nullptr;
 
     if (ctx->RETURNING() != nullptr) {
-        // TODO: return type is a value. So get the value
-    } else if (ctx->RETURNINGBYREFERENCE() != nullptr) {
-        // TODO: return type is a pointer. So get the value from the pointer
+
+        return_target = any_cast<llvm::Value*>(visit(ctx->returning));
+
+        // Find the data tree entry that the return clause is referring to
+        auto it = this->dataStructures.begin();
+        while (dataTreeEntry == nullptr && it != this->dataStructures.end()) {
+            dataTreeEntry = (*it++)->findDataTreeByName(ctx->returning->IDENTIFIER()[0]->getText());
+        }
+
+        if (!dataTreeEntry) {
+            throw CompileException("Could not find field " + ctx->returning->IDENTIFIER()[0]->getText());
+        }
+
+        if (ctx->reference_return != nullptr) {
+            // return type is a pointer to our identifier
+            return_type = llvm::PointerType::get(return_type, 4); // pointers are opaque
+        } else {
+            if (dataTreeEntry->isRecord()) {
+                // todo: implement
+                throw CompileException("Returning to Record types is currently unimplemented.");
+            } else if (auto field = dynamic_cast<Field*>(dataTreeEntry)) {
+
+                if (field->isNumber()) {
+                    // return type is bstd_number by value
+                    return_type = bcModule->getNumberStructType();
+                } else {
+                    // return type is bstd_number by value
+                    return_type = bcModule->getPictureStructType();
+                }
+            }
+        }
     }
 
     std::vector<llvm::Type *> param_types;
@@ -1024,9 +1053,11 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     //create function call w/ no output (void)
     bool hasProgramName = ctx->program_name;
 
-    llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
-    llvm::FunctionType *new_function_types = llvm::FunctionType::get(void_t, param_types, true);
+    llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, param_types, true);
     auto *new_function = new llvm::FunctionCallee();
+
+    // todo: the code for constructing the call instructions below is technical debt.
+    llvm::Value* call = nullptr;
 
     if (!generate_structs) { // if user wants to generate structs these errors should not be thrown since the program will not be linked yet
 
@@ -1036,7 +1067,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
             if (auto procedure = this->bcModule->findProcedure(functionName)) {
                 // call the procedure
 
-                builder->CreateCall(procedure, parameters);
+                call = builder->CreateCall(procedure, parameters);
 
             } else {
                 // we can not find a match. Throw a compile exception.
@@ -1073,7 +1104,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                 llvm::ArrayRef<llvm::Value *> args = parameters;
 
-                builder->CreateCall(*new_function, args);
+                call = builder->CreateCall(*new_function, args);
 
             } else {
                 auto format = "No program named %s provided.";
@@ -1083,6 +1114,52 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                 throw CompileException(errormessage);
             }
         }
+    }
+
+    // if we have a returning clause
+    if (call && return_target) {
+        // assign result of the call to the return value.
+
+        if (ctx->primitive_return != nullptr) {
+            // we expect a basic data type, so we need to marshall
+            // todo: we need to make a distinction between assigning doubles/floats and assigning integers
+        } else {    // We know the return value is either bstd_number or bstd_bstd_picture, so no marshalling is needed
+//        else if (return_target->getType() == bcModule->getPictureStructType() || return_target->getType() == bcModule->getNumberStructType()) {
+
+            llvm::Value* value;
+
+            if (ctx->reference_return != nullptr) {
+                // returning by reference, so no need to create a pointer
+                value = call;
+            } else {
+                // returned by value, so create a pointer to it
+                auto alloc = builder->CreateAlloca(bcModule->getNumberStructType());
+                builder->CreateMemCpy(alloc, llvm::MaybeAlign(), call, llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
+
+                value = alloc; // todo, we should get a pointer to this instead
+            }
+
+            // we are assigning the result to a picture or a number
+
+            if (dataTreeEntry->isRecord()) {
+                // todo: implement this
+                throw CompileException("Returning to Record types is currently unimplemented.");
+            } else {
+
+                // determine which it is - number or picture
+                auto field = dynamic_cast<Field*>(dataTreeEntry);
+
+                if (field->isNumber()) {
+                    // we're assigning the return value to a number
+                    builder->CreateAssignNumberToNumber(return_target, value);
+                } else {
+                    // we're assigning the return value to a picture
+                    builder->CreateAssignPictureToPicture(return_target, value);
+                }
+
+            }
+        }
+
     }
 
     // generate re-entry handlers
@@ -1133,7 +1210,7 @@ void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::Represe
 
 
         if (match) {
-            cout << "Correct Picture: " << pictureString << endl;
+
             field->setPicture(pictureString);
             field->setCardinality(pictureString.size());
 

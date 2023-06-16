@@ -135,6 +135,10 @@ public:
      */
     void CreateAddIntToNumber(llvm::Value* number, llvm::Value* value);
 
+    void CreateAssignNumberToNumber(llvm::Value* number_ptr, llvm::Value* value_ptr);
+
+    void CreateAssignPictureToPicture(llvm::Value* picture_ptr, llvm::Value* value_ptr);
+
     llvm::Function* CreateProcedure(llvm::FunctionType*, llvm::GlobalValue::LinkageTypes, std::string&);
 
     int LiteralCount = 0;
