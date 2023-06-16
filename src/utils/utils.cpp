@@ -216,8 +216,8 @@ namespace utils{
                 encounteredForwardslash = true;
             }
             if (encounteredForwardslash){
-                string filename = path.substr(i);
-                string result = filename.substr(i-1 ,filename.length()-3);
+                string filename = path.substr(i+1);
+                string result = filename.substr(0 ,filename.length()-2);
                 return result;
             }
         }
