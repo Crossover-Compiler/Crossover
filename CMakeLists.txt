@@ -50,13 +50,15 @@ antlr_target(SampleGrammarLexer ${CMAKE_CURRENT_SOURCE_DIR}/grammar/BabyCobol.g4
 include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
 
 add_executable(output main.cpp
+        src/visitor/DataDivisionVisitor.cpp
+        src/visitor/DataDivisionVisitor.h
         src/visitor/Visitor.cpp
         src/visitor/Visitor.h
         src/ir/bcmodule.cpp
         src/Exceptions/NotImplemented.h
         src/Exceptions/CompileException.h
-        src/datastructures/DataTree.cpp
-        src/datastructures/DataTree.h
+        src/datastructures/DataEntry.cpp
+        src/datastructures/DataEntry.h
         include/antlr/BabyCobolLexer.h
         include/antlr/BabyCobolLexer.cpp
         include/antlr/BabyCobolParser.h

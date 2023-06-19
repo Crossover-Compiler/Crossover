@@ -31,8 +31,8 @@ public:
 
   enum {
     RuleProgram = 0, RuleIdentification = 1, RuleName = 2, RuleValue = 3, 
-    RuleData = 4, RuleLine = 5, RuleRecord = 6, RuleField = 7, RuleLevel = 8, 
-    RuleRepresentation = 9, RuleProcedure = 10, RuleParagraph = 11, RuleSentence = 12, 
+    RuleDataDivision = 4, RuleLine = 5, RuleRecord = 6, RuleField = 7, RuleLevel = 8, 
+    RuleMask = 9, RuleProcedure = 10, RuleParagraph = 11, RuleSentence = 12, 
     RuleStatement = 13, RuleLabel = 14, RuleDisplay = 15, RuleStop = 16, 
     RuleMove = 17, RuleSubtract = 18, RuleMultiply = 19, RulePerform = 20, 
     RuleIfStatement = 21, RuleAccept = 22, RuleAdd = 23, RuleDivide = 24, 
@@ -65,12 +65,12 @@ public:
   class IdentificationContext;
   class NameContext;
   class ValueContext;
-  class DataContext;
+  class DataDivisionContext;
   class LineContext;
   class RecordContext;
   class FieldContext;
   class LevelContext;
-  class RepresentationContext;
+  class MaskContext;
   class ProcedureContext;
   class ParagraphContext;
   class SentenceContext;
@@ -114,7 +114,7 @@ public:
     IdentificationContext *identification();
     ProcedureContext *procedure();
     antlr4::tree::TerminalNode *EOF();
-    DataContext *data();
+    DataDivisionContext *dataDivision();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -169,11 +169,11 @@ public:
 
   ValueContext* value();
 
-  class  DataContext : public antlr4::ParserRuleContext {
+  class  DataDivisionContext : public antlr4::ParserRuleContext {
   public:
     BabyCobolParser::LineContext *lineContext = nullptr;
     std::vector<LineContext *> lines;
-    DataContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    DataDivisionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *DATA();
     antlr4::tree::TerminalNode *DIVISION();
@@ -185,7 +185,7 @@ public:
    
   };
 
-  DataContext* data();
+  DataDivisionContext* dataDivision();
 
   class  LineContext : public antlr4::ParserRuleContext {
   public:
@@ -225,7 +225,7 @@ public:
     antlr4::tree::TerminalNode *DOT();
     antlr4::tree::TerminalNode *PICTURE();
     antlr4::tree::TerminalNode *IS();
-    RepresentationContext *representation();
+    MaskContext *mask();
     antlr4::tree::TerminalNode *LIKE();
     IdentifiersContext *identifiers();
     antlr4::tree::TerminalNode *OCCURS();
@@ -252,9 +252,9 @@ public:
 
   LevelContext* level();
 
-  class  RepresentationContext : public antlr4::ParserRuleContext {
+  class  MaskContext : public antlr4::ParserRuleContext {
   public:
-    RepresentationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    MaskContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *INT();
@@ -264,7 +264,7 @@ public:
    
   };
 
-  RepresentationContext* representation();
+  MaskContext* mask();
 
   class  ProcedureContext : public antlr4::ParserRuleContext {
   public:

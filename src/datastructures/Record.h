@@ -5,23 +5,36 @@
 #ifndef CROSSOVER_RECORD_H
 #define CROSSOVER_RECORD_H
 
-#include "DataTree.h"
+#include "DataEntry.h"
 
-class Record : public DataTree {
+class Record : public DataEntry {
+
+private:
+    std::vector<DataEntry*> children;
+    Record* parent;
 
 public:
-    Record(std::string name, int level) : DataTree(std::move(name), level) {};
-
-    /**
-     * todo: doc
-     */
-    static llvm::Type* getType(llvm::Value *value);
+    Record(std::string& name, int level) :
+            DataEntry(name, level),
+            children(),
+            parent(nullptr) {}
 
     llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, bool global) override;
-    llvm::Value* codegen(BCBuilder* builder, BCModule* bcModule, bool global, string name) override;
 
-    string toString();
+    void addChild(DataEntry* dataTree);
+
+    std::vector<DataEntry*> getChildren();
+
+    Record* getParent();
+
+    DataEntry* findDataEntry(std::string& name);
+
+    std::string toString() override;
+
+    bool isRecord() override {
+        return true;
+    };
+
 };
-
 
 #endif //CROSSOVER_RECORD_H

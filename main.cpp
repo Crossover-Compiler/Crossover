@@ -26,6 +26,7 @@
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
+#include "src/visitor/DataDivisionVisitor.h"
 #include <map>
 #include <memory>
 #include <system_error>
@@ -74,7 +75,7 @@ int main(int argc, char **argv) {
     CommonTokenStream tokens(&lexer);
     BabyCobolParser parser(&tokens);
 
-    BabyCobolParser::ProgramContext* tree = parser.program();
+    BabyCobolParser::ProgramContext* ast = parser.program();
 
     // init  llvm
     auto llvmContext = new llvm::LLVMContext();
@@ -82,19 +83,19 @@ int main(int argc, char **argv) {
 
     llvm::FunctionType* FT = llvm::FunctionType::get(llvm::Type::getVoidTy(*llvmContext), false);
     llvm::Function* init_function = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "init", module);
-//    if(presentInArgs(argc, argv, "-not-main")){
-//        init_function = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "procedureDivision", module);
-//    } else{
-//        init_function = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "main", module);
-//    }
 
-//    // Run compiler
+    // Run compiler
     llvm::BasicBlock* block = llvm::BasicBlock::Create(*llvmContext, "", init_function);
 
     BCBuilder builder(module, block);
 
-    Visitor visitor(module, &builder, &extTable, presentInArgs(argc, argv,"-generate-structs"));
-    visitor.visitProgram(tree);
+    const bool generate_structs = presentInArgs(argc, argv, "-generate-structs");
+
+    DataDivisionVisitor dataDivisionVisitor(generate_structs, module, &builder);
+    dataDivisionVisitor.visitProgram(ast);
+
+    Visitor procedureVisitor(module, &builder, &extTable, generate_structs);
+    procedureVisitor.visitProgram(ast);
 
     // insert return on init function
     builder.SetInsertPoint(block);
@@ -171,7 +172,7 @@ int main(int argc, char **argv) {
     llvm::outs() << "Wrote " << Filename << "\n";
 
     if (presentInArgs(argc, argv,"-generate-structs")) {
-        generateStructs(visitor.dataStructures);
+        generateStructs(module->getDataSymbolTable());
     }
 
     if (!presentInArgs(argc, argv,"-generate-structs")) {

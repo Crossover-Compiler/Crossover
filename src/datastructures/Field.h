@@ -5,59 +5,59 @@
 #ifndef CROSSOVER_FIELD_H
 #define CROSSOVER_FIELD_H
 
-#include "DataTree.h"
+#include "DataEntry.h"
 #include "Record.h"
 
-enum class DataType {INT, DOUBLE, STRING, UNDEFINED};
-constexpr const char* dataTypeToString(DataType dt) noexcept(false)
-{
-    switch (dt)
-    {
-        case DataType::INT: return "INT";
-        case DataType::DOUBLE: return "DOUBLE";
-        case DataType::STRING: return "STRING";
-        case DataType::UNDEFINED: return "UNDEFINED";
-        default: throw std::invalid_argument("Unimplemented item");
-    }
-}
-
-class Field : public DataTree {
+class Field : public DataEntry {
 
 public:
-    Field(std::string name, int level, std::string value) : DataTree(std::move(name), level) {
-        this->value = std::move(value);
-    };
+    enum class Type {INT, DOUBLE, STRING, UNDEFINED};
 
+private:
     int cardinality;
     int scale;
-    string picture;
-    DataType primitiveType;
-    string value;
+    std::string mask;
+    Type type;
+    std::string value;
     bool isSigned;
     bool isPositive;
 
+public:
+    Field(std::string& name, int level, std::string& value) :
+            DataEntry(name, level),
+            value(value),
+            cardinality(0),
+            scale(0),
+            type(Type::UNDEFINED),
+            isSigned(false),
+            isPositive(false) {}
+
     llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global) override;
-    llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global, string name) override;
 
-    void setPicture(string picture);
+    void setMask(std::string& mask);
 
-    string getPicture();
-
-    string getValue();
-
-    void setValue(string value);
-
-    int getCardinality();
+    std::string getMask();
 
     void setCardinality(int cardinality);
 
-    string toString();
+    void setIsSigned(bool isSigned);
+
+    void setIsPositive(bool isPositive);
+
+    void setScale(int scale);
+
+    std::string toString() override;
 
     bool isNumber();
 
-    [[nodiscard]] DataType getPrimitiveType() const;
+    Type getType() const;
 
-    void setPrimitiveType(DataType primitiveType);
+    void setType(Type type);
+
+    bool isRecord() override {
+      return false;
+    };
+
 };
 
 

@@ -183,12 +183,12 @@ program
 identification
 name
 value
-data
+dataDivision
 line
 record
 field
 level
-representation
+mask
 procedure
 paragraph
 sentence

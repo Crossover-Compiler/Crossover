@@ -4,11 +4,10 @@
 
 #ifndef CROSSOVER_UTILS_H
 #define CROSSOVER_UTILS_H
-#include "../../src/datastructures/DataTree.h"
 #include "../../src/datastructures/Record.h"
 #include "../../src/datastructures/Field.h"
 #include <fstream>
-
+#include <map>
 
 using namespace std;
 
@@ -19,14 +18,14 @@ namespace utils {
      * @param structure
      * @return the string of structs
      */
-    string generateSubStruct(string* ancestorsPtr,DataTree* structure);
+    string generateSubStruct(string* ancestorsPtr, DataEntry* structure);
 
     /**
      * main function for generating structs, creates a cpp header file with generated structs based on the provided
      * DataTree vector
-     * @param dataStructures
+     * @param symbol_table
      */
-    void generateStructs(vector<DataTree*> dataStructures);
+    void generateStructs(map<string, DataEntry*> symbol_table);
 
     /**
      *

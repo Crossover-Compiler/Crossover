@@ -1,20 +1,19 @@
 grammar BabyCobol;
 
-program     : identification (data)? procedure EOF;
+program     : identification (dataDivision)? procedure EOF;
 
 identification  :   IDENTIFICATION DIVISION DOT (name DOT value DOT)*;
 name            :   IDENTIFIER;
 value           :   LITERAL;
 
-data            :   DATA DIVISION lines+=line*;
+dataDivision   :   DATA DIVISION lines+=line*;
 line            :   record | field;
 record          :   level IDENTIFIER DOT;
-field           :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers) (OCCURS INT TIMES)? DOT;
+field           :   level IDENTIFIER (PICTURE IS mask | LIKE identifiers) (OCCURS INT TIMES)? DOT;
 level           :   int; // todo: should be exactly two numbers
 
 // TODO: AVX is recognised as VAR. A V X is recognised as valid picture. TODO: Find a way to not need the spaces. Hint: this has to do with the greedy-ness of the VAR rule.
-representation  :   IDENTIFIER | INT;
-//picrep          :   ;
+mask            :   IDENTIFIER | INT;
 
 procedure       :   PROCEDURE DIVISION DOT paragraph*;
 paragraph       :   label (USING atomic+)? DOT sentence+;
@@ -141,7 +140,6 @@ atomic          :   int                         #intLiteral
 identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
 
 int             :   ('-'|'+')? INT;
-
 
 // Keywords & symbol names
 STRUCT: 'STRUCT';

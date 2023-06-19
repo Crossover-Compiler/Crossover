@@ -8,45 +8,54 @@
 using namespace std;
 
 namespace utils{
-    string generateSubStruct(string* ancestorsPtr,DataTree* structure){
+
+    string generateSubStruct(string* ancestorsPtr, Record *record) {
 
         string result;
-        string name = structure->getName();
+        string name = record->getName();
         result.append("typedef struct");
         result.append(" ");
         result.append(*ancestorsPtr);
         result.append("_t {");
 
-        vector<DataTree*> children = structure->getNext();
-        while(!children.empty()){
+        vector<DataEntry*> children = record->getChildren();
+
+        for (auto child : children) {
+
             result.append("\n\t");
-            DataTree* subtreeptr = children[0];
-            if(dynamic_cast<Record*>(subtreeptr) != nullptr){
+
+            if(auto record = dynamic_cast<Record*>(child)){
+
                 string ancestors = *ancestorsPtr;
                 result.append(ancestors);
                 result.append("_");
-                result.append(subtreeptr->getName());
+                result.append(record->getName());
                 result.append("_t* ");
-                result.append(subtreeptr->getName());
+                result.append(record->getName());
                 result.append(";");
                 ancestors.append("_");
-                ancestors.append(subtreeptr->getName());
-                result.insert(0, generateSubStruct(&ancestors ,subtreeptr)); // generate substructs recursively and prepend to result
-            } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
-                auto* subTreePtrAsField = dynamic_cast<Field*>(subtreeptr);
-                if(subTreePtrAsField->isNumber()) {
+                ancestors.append(record->getName());
+                result.insert(0, generateSubStruct(&ancestors ,record)); // generate substructs recursively and prepend to result
+
+            } else if(auto field = dynamic_cast<Field*>(child)){
+
+                if(field->isNumber()) {
+
                     result.append("bstd_number* ");
-                    result.append(subTreePtrAsField->getName());
+                    result.append(field->getName());
                     result.append("; // expected format: ");
-                    result.append(subTreePtrAsField->getValue());
+                    result.append(field->getMask());
+
                 } else {
+
                     result.append("bstd_picture* ");
-                    result.append(subTreePtrAsField->getName());
+                    result.append(field->getName());
                     result.append("; // expected format: ");
-                    result.append(subTreePtrAsField->getValue());
+                    result.append(field->getMask());
                 }
+
             }
-            children.erase(children.begin());
+
         }
 
         result.append("\n} ");
@@ -55,7 +64,9 @@ namespace utils{
         return result;
     }
 
-    void generateStructs(vector<DataTree*> dataStructures){
+    void generateStructs(map<string, DataEntry*> symbol_table) {
+
+        // todo: use program name or file name here
         std::ofstream outputFile("BBCBLAPI.h");
 
         string firstLines = "// Generated with Crossover\n"
@@ -64,68 +75,83 @@ namespace utils{
                             "\n// ***"
                             "\n";
 
-        string middleLines= "\n" ;
+        string middleLines= "\n";
         string lastLines = "\n";
 
-        while(!dataStructures.empty()){
-            DataTree* treeptr = dataStructures[0];
-            string structname = treeptr->getName();
-            if (dynamic_cast<Record*>(treeptr) != nullptr){
+        for(const auto& mapEntry : symbol_table) {
+
+            const auto dataEntry = mapEntry.second;
+
+            if (auto record = dynamic_cast<Record*>(dataEntry)) {
+
+                string struct_name = dataEntry->getName();
+
                 lastLines.append("typedef struct ");
-                lastLines.append(structname);
+                lastLines.append(struct_name);
                 lastLines.append("_t {");
-                //add members here
-                vector<DataTree*> children = treeptr->getNext();
-                while(!children.empty()){
+
+                vector<DataEntry*> children = record->getChildren();
+
+                for (auto child : children) {
+
                     lastLines.append("\n\t");
-                    DataTree* subtreeptr = children[0];
-                    if(dynamic_cast<Record*>(subtreeptr) != nullptr){
-                        lastLines.append(structname);
+
+                    if(auto child_record = dynamic_cast<Record*>(child)) {
+
+                        lastLines.append(struct_name);
                         lastLines.append("_");
-                        lastLines.append(subtreeptr->getName());
+                        lastLines.append(child_record->getName());
                         lastLines.append("_t* ");
-                        lastLines.append(subtreeptr->getName());
+                        lastLines.append(child_record->getName());
                         lastLines.append(";");
 
-                        string currentPath = structname;
+                        string currentPath = struct_name;
                         currentPath.append("_");
-                        currentPath.append(subtreeptr->getName());
-                        middleLines.append(generateSubStruct(&currentPath, subtreeptr));
-                    } else if(dynamic_cast<Field*>(subtreeptr) != nullptr){
-                        auto* subTreePtrAsField = dynamic_cast<Field*>(subtreeptr);
-                        if(subTreePtrAsField->isNumber()) {
+                        currentPath.append(child_record->getName());
+                        middleLines.append(generateSubStruct(&currentPath, child_record));
+
+                    } else if(auto field = dynamic_cast<Field*>(child)) {
+
+                        if(field->isNumber()) {
+
                             lastLines.append("bstd_number* ");
-                            lastLines.append(subTreePtrAsField->getName());
+                            lastLines.append(field->getName());
                             lastLines.append("; // expected format: ");
-                            lastLines.append(subTreePtrAsField->getValue());
+                            lastLines.append(field->getMask());
+
                         } else {
+
                             lastLines.append("bstd_picture* ");
-                            lastLines.append(subTreePtrAsField->getName());
+                            lastLines.append(field->getName());
                             lastLines.append("; // expected format: ");
-                            lastLines.append(subTreePtrAsField->getValue());
+                            lastLines.append(field->getMask());
                         }
                     }
-                    children.erase(children.begin());
+
                 }
                 lastLines.append("\n} ");
-                lastLines.append(structname);
+                lastLines.append(struct_name);
                 lastLines.append("_t;\n\n");
-            }
-            else if(dynamic_cast<Field*>(treeptr) != nullptr){
-                auto* treePtrAsField = dynamic_cast<Field*>(treeptr);
-                if(treePtrAsField->isNumber()) {
+
+            } else if(auto field = dynamic_cast<Field*>(dataEntry)) {
+
+                if(field->isNumber()) {
+
                     lastLines.append("bstd_number* ");
-                    lastLines.append(treePtrAsField->getName());
+                    lastLines.append(field->getName());
                     lastLines.append("; // expected format: ");
-                    lastLines.append(treePtrAsField->getValue());
+                    lastLines.append(field->getMask());
+
                 } else {
+
                     lastLines.append("bstd_picture* ");
-                    lastLines.append(treePtrAsField->getName());
+                    lastLines.append(field->getName());
                     lastLines.append("; // expected format: ");
-                    lastLines.append(treePtrAsField->getValue());
+                    lastLines.append(field->getMask());
+
                 }
             }
-            dataStructures.erase(dataStructures.begin());
+
         }
 
         // Write to the file

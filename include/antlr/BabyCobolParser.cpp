@@ -43,8 +43,8 @@ void babycobolParserInitialize() {
   assert(babycobolParserStaticData == nullptr);
   auto staticData = std::make_unique<BabyCobolParserStaticData>(
     std::vector<std::string>{
-      "program", "identification", "name", "value", "data", "line", "record", 
-      "field", "level", "representation", "procedure", "paragraph", "sentence", 
+      "program", "identification", "name", "value", "dataDivision", "line", 
+      "record", "field", "level", "mask", "procedure", "paragraph", "sentence", 
       "statement", "label", "display", "stop", "move", "subtract", "multiply", 
       "perform", "ifStatement", "accept", "add", "divide", "evaluate", "nextSentence", 
       "loop", "gotoStatement", "signal", "alter", "callStatement", "anyExpression", 
@@ -356,8 +356,8 @@ tree::TerminalNode* BabyCobolParser::ProgramContext::EOF() {
   return getToken(BabyCobolParser::EOF, 0);
 }
 
-BabyCobolParser::DataContext* BabyCobolParser::ProgramContext::data() {
-  return getRuleContext<BabyCobolParser::DataContext>(0);
+BabyCobolParser::DataDivisionContext* BabyCobolParser::ProgramContext::dataDivision() {
+  return getRuleContext<BabyCobolParser::DataDivisionContext>(0);
 }
 
 
@@ -395,7 +395,7 @@ BabyCobolParser::ProgramContext* BabyCobolParser::program() {
     _la = _input->LA(1);
     if (_la == BabyCobolParser::DATA) {
       setState(91);
-      data();
+      dataDivision();
     }
     setState(94);
     procedure();
@@ -608,44 +608,44 @@ BabyCobolParser::ValueContext* BabyCobolParser::value() {
   return _localctx;
 }
 
-//----------------- DataContext ------------------------------------------------------------------
+//----------------- DataDivisionContext ------------------------------------------------------------------
 
-BabyCobolParser::DataContext::DataContext(ParserRuleContext *parent, size_t invokingState)
+BabyCobolParser::DataDivisionContext::DataDivisionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* BabyCobolParser::DataContext::DATA() {
+tree::TerminalNode* BabyCobolParser::DataDivisionContext::DATA() {
   return getToken(BabyCobolParser::DATA, 0);
 }
 
-tree::TerminalNode* BabyCobolParser::DataContext::DIVISION() {
+tree::TerminalNode* BabyCobolParser::DataDivisionContext::DIVISION() {
   return getToken(BabyCobolParser::DIVISION, 0);
 }
 
-std::vector<BabyCobolParser::LineContext *> BabyCobolParser::DataContext::line() {
+std::vector<BabyCobolParser::LineContext *> BabyCobolParser::DataDivisionContext::line() {
   return getRuleContexts<BabyCobolParser::LineContext>();
 }
 
-BabyCobolParser::LineContext* BabyCobolParser::DataContext::line(size_t i) {
+BabyCobolParser::LineContext* BabyCobolParser::DataDivisionContext::line(size_t i) {
   return getRuleContext<BabyCobolParser::LineContext>(i);
 }
 
 
-size_t BabyCobolParser::DataContext::getRuleIndex() const {
-  return BabyCobolParser::RuleData;
+size_t BabyCobolParser::DataDivisionContext::getRuleIndex() const {
+  return BabyCobolParser::RuleDataDivision;
 }
 
 
-std::any BabyCobolParser::DataContext::accept(tree::ParseTreeVisitor *visitor) {
+std::any BabyCobolParser::DataDivisionContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
-    return parserVisitor->visitData(this);
+    return parserVisitor->visitDataDivision(this);
   else
     return visitor->visitChildren(this);
 }
 
-BabyCobolParser::DataContext* BabyCobolParser::data() {
-  DataContext *_localctx = _tracker.createInstance<DataContext>(_ctx, getState());
-  enterRule(_localctx, 8, BabyCobolParser::RuleData);
+BabyCobolParser::DataDivisionContext* BabyCobolParser::dataDivision() {
+  DataDivisionContext *_localctx = _tracker.createInstance<DataDivisionContext>(_ctx, getState());
+  enterRule(_localctx, 8, BabyCobolParser::RuleDataDivision);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -668,8 +668,8 @@ BabyCobolParser::DataContext* BabyCobolParser::data() {
 
     || _la == BabyCobolParser::T__2 || _la == BabyCobolParser::INT) {
       setState(116);
-      antlrcpp::downCast<DataContext *>(_localctx)->lineContext = line();
-      antlrcpp::downCast<DataContext *>(_localctx)->lines.push_back(antlrcpp::downCast<DataContext *>(_localctx)->lineContext);
+      antlrcpp::downCast<DataDivisionContext *>(_localctx)->lineContext = line();
+      antlrcpp::downCast<DataDivisionContext *>(_localctx)->lines.push_back(antlrcpp::downCast<DataDivisionContext *>(_localctx)->lineContext);
       setState(121);
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -842,8 +842,8 @@ tree::TerminalNode* BabyCobolParser::FieldContext::IS() {
   return getToken(BabyCobolParser::IS, 0);
 }
 
-BabyCobolParser::RepresentationContext* BabyCobolParser::FieldContext::representation() {
-  return getRuleContext<BabyCobolParser::RepresentationContext>(0);
+BabyCobolParser::MaskContext* BabyCobolParser::FieldContext::mask() {
+  return getRuleContext<BabyCobolParser::MaskContext>(0);
 }
 
 tree::TerminalNode* BabyCobolParser::FieldContext::LIKE() {
@@ -906,7 +906,7 @@ BabyCobolParser::FieldContext* BabyCobolParser::field() {
         setState(133);
         match(BabyCobolParser::IS);
         setState(134);
-        representation();
+        mask();
         break;
       }
 
@@ -995,36 +995,36 @@ BabyCobolParser::LevelContext* BabyCobolParser::level() {
   return _localctx;
 }
 
-//----------------- RepresentationContext ------------------------------------------------------------------
+//----------------- MaskContext ------------------------------------------------------------------
 
-BabyCobolParser::RepresentationContext::RepresentationContext(ParserRuleContext *parent, size_t invokingState)
+BabyCobolParser::MaskContext::MaskContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* BabyCobolParser::RepresentationContext::IDENTIFIER() {
+tree::TerminalNode* BabyCobolParser::MaskContext::IDENTIFIER() {
   return getToken(BabyCobolParser::IDENTIFIER, 0);
 }
 
-tree::TerminalNode* BabyCobolParser::RepresentationContext::INT() {
+tree::TerminalNode* BabyCobolParser::MaskContext::INT() {
   return getToken(BabyCobolParser::INT, 0);
 }
 
 
-size_t BabyCobolParser::RepresentationContext::getRuleIndex() const {
-  return BabyCobolParser::RuleRepresentation;
+size_t BabyCobolParser::MaskContext::getRuleIndex() const {
+  return BabyCobolParser::RuleMask;
 }
 
 
-std::any BabyCobolParser::RepresentationContext::accept(tree::ParseTreeVisitor *visitor) {
+std::any BabyCobolParser::MaskContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<BabyCobolVisitor*>(visitor))
-    return parserVisitor->visitRepresentation(this);
+    return parserVisitor->visitMask(this);
   else
     return visitor->visitChildren(this);
 }
 
-BabyCobolParser::RepresentationContext* BabyCobolParser::representation() {
-  RepresentationContext *_localctx = _tracker.createInstance<RepresentationContext>(_ctx, getState());
-  enterRule(_localctx, 18, BabyCobolParser::RuleRepresentation);
+BabyCobolParser::MaskContext* BabyCobolParser::mask() {
+  MaskContext *_localctx = _tracker.createInstance<MaskContext>(_ctx, getState());
+  enterRule(_localctx, 18, BabyCobolParser::RuleMask);
   size_t _la = 0;
 
 #if __cplusplus > 201703L

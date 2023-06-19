@@ -7,21 +7,21 @@
 
 #include "../../include/antlr/BabyCobolBaseVisitor.h"
 #include "../../include/ir/bcmodule.h"
-#include "../datastructures/DataTree.h"
+#include "../../include/ir/bcbuilder.h"
+#include "../datastructures/DataEntry.h"
 #include <llvm/IR/IRBuilder.h>
 
 using namespace llvm;
 using namespace std;
 
-class Visitor: public BabyCobolBaseVisitor {
+class Visitor : public BabyCobolBaseVisitor {
 
 private:
-    vector<std::string> compiledVector;
+
     map<string, Value*> values;
     map<string,vector<string>>* extTable;
+
     bool generate_structs;
-    int topLevel;
-    DataTree* root;
     string current_id;
     BCModule* bcModule;
     BCBuilder* builder;
@@ -33,13 +33,12 @@ private:
     typedef void (*re_entry_handler_generator_t)(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* value);
 
 public:
-    vector<DataTree*> dataStructures;
 
-    Visitor(BCModule* bcModule, BCBuilder* builder, map<string,vector<string>>* extTable, bool generate_structs) : bcModule(bcModule), builder(builder), topLevel(-1), extTable(extTable), generate_structs(generate_structs) {}
-
-    void setPictureForDataTree(DataTree* dataTree, BabyCobolParser::RepresentationContext* picture);
-
-    static llvm::Type* getType(llvm::Value* value);
+    Visitor(BCModule* bcModule, BCBuilder* builder, map<string,vector<string>>* extTable, bool generate_structs) :
+        bcModule(bcModule),
+        builder(builder),
+        extTable(extTable),
+        generate_structs(generate_structs) {}
 
     std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override;
 
@@ -48,18 +47,6 @@ public:
     std::any visitName(BabyCobolParser::NameContext *ctx) override;
 
     std::any visitValue(BabyCobolParser::ValueContext *ctx) override;
-
-    std::any visitData(BabyCobolParser::DataContext *ctx) override;
-
-    std::any visitLine(BabyCobolParser::LineContext *ctx) override;
-
-    std::any visitField(BabyCobolParser::FieldContext *ctx) override;
-
-    std::any visitRecord(BabyCobolParser::RecordContext *ctx) override;
-
-    std::any visitLevel(BabyCobolParser::LevelContext *ctx) override;
-
-    std::any visitRepresentation(BabyCobolParser::RepresentationContext *ctx) override;
 
     std::any visitProcedure(BabyCobolParser::ProcedureContext *ctx) override;
 
@@ -147,8 +134,6 @@ public:
 
     std::any visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) override;
 
-    std::any visitIdentifier(BabyCobolParser::IdentifierContext *ctx) override;
-
     std::any visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) override;
 
     std::any visitInt(BabyCobolParser::IntContext *ctx) override;
@@ -156,10 +141,6 @@ public:
     std::any visitDoubleLiteral(BabyCobolParser::DoubleLiteralContext *ctx) override;
 
     std::any visitCallStatement(BabyCobolParser::CallStatementContext *ctx) override;
-
-    void reset();
-
-    vector<DataTree*> getNodes(string path);
 
     void pushIntOnParameterList(std::vector<llvm::Value*> *parameters, int value);
     void pushDoubleOnParameterList(std::vector<llvm::Value*> *parameters, double value);

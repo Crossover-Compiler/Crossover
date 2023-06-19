@@ -1,11 +1,14 @@
 #include "Field.h"
 #include "../Exceptions/CompileException.h"
+#include "../../include/ir/bcbuilder.h"
 
-llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global, string name) {
+llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {
 
-    switch (primitiveType) {
-        case DataType::INT: {
-            string temp_str = this->value;
+    switch (type) {
+
+        case Type::INT: {
+
+            std::string temp_str = this->value;
 
             int Z_count = 0;
             int S_count = 0;
@@ -30,16 +33,21 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             bool isSigned = this->isSigned;
             bool positive = this->isPositive;
 
-            return builder->CreateNumber(new bstd_number{
+            auto v = builder->CreateNumber(new bstd_number{
                     .value = value,
                     .scale = scale,
                     .length = length,
                     .isSigned = isSigned,
                     .positive = positive
             }, name, global);
+
+            this->setValue(v);
+
+            return v;
         }
-        case DataType::DOUBLE: {
-            string temp_str = this->value;
+
+        case Type::DOUBLE: {
+            std::string temp_str = this->value;
 
             int Z_count = 0;
             int V_count = 0;
@@ -78,15 +86,20 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
             bool signed_ = this->isSigned;
             bool positive = this->isPositive;
 
-            return builder->CreateNumber(new bstd_number{
+            auto v = builder->CreateNumber(new bstd_number{
                     .value = value,
                     .scale = scale,
                     .length = length,
                     .isSigned = signed_,
                     .positive = positive
             }, name, global);
+
+            this->setValue(v);
+
+            return v;
         }
-        case DataType::STRING: {
+
+        case Type::STRING: {
             char * mask = new char [this->cardinality];
             std::strcpy (mask, value.c_str());
 
@@ -104,59 +117,60 @@ llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global,
 
             uint8_t length = this->cardinality;
 
-            return builder->CreatePicture(new bstd_picture {
+            auto v = builder->CreatePicture(new bstd_picture {
                     .bytes = bytes,
                     .mask = mask,
                     .length = length
             }, name, global);
+
+            this->setValue(v);
+
+            return v;
         }
+
         default: {
             throw CompileException("primitiveType of Field: " + name + " could not be resolved!");
         }
     }
 }
 
-llvm::Value* Field::codegen(BCBuilder* builder, BCModule* bcModule, bool global) {
-    return codegen(builder, bcModule, global, name);
+void Field::setMask(std::string &m) {
+    this->mask = m;
 }
 
-void Field::setPicture(string picture) {
-    this->picture = picture;
+std::string Field::getMask() {
+    return mask;
 }
 
-string Field::getPicture() {
-    return picture;
+void Field::setCardinality(int c) {
+    this->cardinality = c;
 }
 
-string Field::getValue() {
-    return value;
+void Field::setIsSigned(bool s) {
+    this->isSigned = s;
 }
 
-void Field::setValue(string value) {
-    this->value = value;
+void Field::setIsPositive(bool p) {
+    this->isPositive = p;
 }
 
-string Field::toString() {
-    string result = to_string(level) + " " + value + " " + name + " " + picture + "\n";
+void Field::setScale(int s) {
+    this->scale = s;
+}
+
+std::string Field::toString() {
+    std::string result = std::to_string(level) + " " + value + " " + name + " " + mask + "\n";
     return result;
 }
 
-DataType Field::getPrimitiveType() const {
-    return primitiveType;
+Field::Type Field::getType() const {
+    return type;
 }
 
-void Field::setPrimitiveType(DataType primitiveType) {
-    Field::primitiveType = primitiveType;
-}
-
-int Field::getCardinality() {
-    return cardinality;
-}
-
-void Field::setCardinality(int cardinality) {
-    this->cardinality = cardinality;
+void Field::setType(Type t) {
+    Field::type = t;
 }
 
 bool Field::isNumber(){
-    return (primitiveType == DataType::INT || primitiveType == DataType::DOUBLE);
+    return (type == Type::INT || type == Type::DOUBLE);
 }

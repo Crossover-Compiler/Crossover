@@ -27,7 +27,7 @@ public:
 
     virtual std::any visitValue(BabyCobolParser::ValueContext *context) = 0;
 
-    virtual std::any visitData(BabyCobolParser::DataContext *context) = 0;
+    virtual std::any visitDataDivision(BabyCobolParser::DataDivisionContext *context) = 0;
 
     virtual std::any visitLine(BabyCobolParser::LineContext *context) = 0;
 
@@ -37,7 +37,7 @@ public:
 
     virtual std::any visitLevel(BabyCobolParser::LevelContext *context) = 0;
 
-    virtual std::any visitRepresentation(BabyCobolParser::RepresentationContext *context) = 0;
+    virtual std::any visitMask(BabyCobolParser::MaskContext *context) = 0;
 
     virtual std::any visitProcedure(BabyCobolParser::ProcedureContext *context) = 0;
 

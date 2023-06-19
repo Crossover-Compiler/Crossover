@@ -31,7 +31,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitData(BabyCobolParser::DataContext *ctx) override {
+  virtual std::any visitDataDivision(BabyCobolParser::DataDivisionContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -51,7 +51,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitRepresentation(BabyCobolParser::RepresentationContext *ctx) override {
+  virtual std::any visitMask(BabyCobolParser::MaskContext *ctx) override {
     return visitChildren(ctx);
   }
 

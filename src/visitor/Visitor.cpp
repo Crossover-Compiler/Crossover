@@ -17,23 +17,18 @@
 using namespace std;
 using namespace utils;
 
-llvm::Type *Visitor::getType(llvm::Value *value) {
-    return value->getType();
-}
-
 std::any Visitor::visitIdentification(BabyCobolParser::IdentificationContext *ctx) {
     return BabyCobolBaseVisitor::visitIdentification(ctx);
 }
 
 std::any Visitor::visitProgram(BabyCobolParser::ProgramContext *ctx) {
+
+    // todo: this should have its own visitor
     visit(ctx->identification());
 
-    if (ctx->data() != nullptr) {
-        visit(ctx->data());
-    }
-
     visit(ctx->procedure());
-    return compiledVector;
+
+    return nullptr;
 }
 
 std::any Visitor::visitName(BabyCobolParser::NameContext *ctx) {
@@ -42,127 +37,6 @@ std::any Visitor::visitName(BabyCobolParser::NameContext *ctx) {
 
 std::any Visitor::visitValue(BabyCobolParser::ValueContext *ctx) {
     return BabyCobolBaseVisitor::visitValue(ctx);
-}
-
-std::any Visitor::visitData(BabyCobolParser::DataContext *ctx) {
-
-    for (auto l: ctx->line()) {
-        visitLine(l);
-    }
-
-    reset();
-
-    std::vector<llvm::Value *> values;
-    // compile the data division
-    for (DataTree *tree: dataStructures) {
-        llvm::Value *v = tree->codegen(builder, bcModule, true);
-        tree->setLlvmValue(v);
-        values.push_back(v);
-    }
-
-    return nullptr;
-}
-
-std::any Visitor::visitLine(BabyCobolParser::LineContext *ctx) {
-
-    auto f = ctx->field();
-    auto r = ctx->record();
-
-    if (f != nullptr) {
-        visitField(f);
-    } else if (r != nullptr) {
-        visitRecord(r);
-    }
-
-    return nullptr;
-}
-
-std::any Visitor::visitField(BabyCobolParser::FieldContext *ctx) {
-    int level = stoi(ctx->level()->getText());
-    if (topLevel == -1) {
-        topLevel = level;
-    }
-    string identifier = ctx->IDENTIFIER()->getText();
-    auto picture = ctx->representation();
-    auto pictureString = any_cast<string>(visit(ctx->representation()));
-
-
-    // TODO: The values of Field should not be set to pictureString in every case.
-    if (level == topLevel) {
-        root = new Field(identifier, level, pictureString);
-        setPictureForDataTree(root, picture);
-        dataStructures.push_back(root);
-
-    } else if (level > topLevel) {
-        DataTree *child = new Field(identifier, level, pictureString);
-        setPictureForDataTree(child, picture);
-
-        while (root->getLevel() >= level) {
-            root = root->getPrevious();
-        }
-
-        child->setPrevious(root);
-        root->addNext(child);
-        root = child;
-
-    } else if (level < topLevel) {
-        string exceptionString =
-                "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
-        throw CompileException(exceptionString);
-    }
-
-    return nullptr;
-}
-
-std::any Visitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
-
-    int level = stoi(ctx->level()->getText());
-    if (topLevel == -1) {
-        topLevel = level;
-    }
-    string identifier = ctx->IDENTIFIER()->getText();
-
-
-    if (level == topLevel) {
-        root = new Record(identifier, level);
-        dataStructures.push_back(root);
-
-    } else if (level > topLevel) {
-        DataTree *child = new Record(identifier, level);
-
-        while (root != nullptr && root->getLevel() >= level) {
-            root = root->getPrevious();
-        }
-
-        if (root == nullptr) {
-            root = new Record(identifier, level);
-            dataStructures.push_back(root);
-        } else {
-            child->setPrevious(root);
-            root->addNext(child);
-            root = child;
-        }
-
-    } else if (level < topLevel) {
-        string exceptionString =
-                "Invalid level DATA level: " + to_string(level) + " is smaller than root level: " + to_string(topLevel);
-        throw CompileException(exceptionString);
-    }
-
-    return nullptr;
-}
-
-std::any Visitor::visitLevel(BabyCobolParser::LevelContext *ctx) {
-    return BabyCobolBaseVisitor::visitLevel(ctx);
-}
-
-std::any Visitor::visitRepresentation(BabyCobolParser::RepresentationContext *ctx) {
-    if (ctx->INT() != nullptr) {
-        if (!ctx->INT()->getText().empty()) {
-            return ctx->INT()->getText();
-        }
-    }
-    return ctx->IDENTIFIER()->getText();
 }
 
 std::any Visitor::visitProcedure(BabyCobolParser::ProcedureContext *ctx) {
@@ -236,14 +110,9 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
             auto value = any_cast<llvm::Value *>(visit(ctx->atomic()[i]));
 
             // find more meta-data about this value in the symbol table
-            DataTree* dataTreeEntry = nullptr;
-            auto it = this->dataStructures.begin();
-            while (dataTreeEntry == nullptr && it != this->dataStructures.end()) {
-                // todo: this is hacky...
-                dataTreeEntry = (*it++)->findDataTreeByName(identifierContext->identifiers()->IDENTIFIER()[0]->getText());
-            }
+            DataEntry* dataEntry = bcModule->findDataEntry(identifierContext->identifiers()->IDENTIFIER()[0]->getText()); // todo: array access without check
 
-            if (!dataTreeEntry) {
+            if (!dataEntry) {
                 throw CompileException("Could not find value " + identifierContext->identifiers()->IDENTIFIER()[0]->getText());
             }
 
@@ -258,14 +127,14 @@ std::any Visitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
 
             std::vector<llvm::Type *> param_types;
             param_types.reserve(parameters.size());
-            transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
+            transform(parameters.begin(), parameters.end(), back_inserter(param_types), [] (auto v) { return v->getType(); });
 
             // todo: support record types here too
-            if (dataTreeEntry->isRecord()) {
+            if (dataEntry->isRecord()) {
                 throw CompileException("Unimplemented feature: cannot DISPLAY Records.");
             }
 
-            auto field = dynamic_cast<Field*>(dataTreeEntry);
+            auto field = dynamic_cast<Field*>(dataEntry);
 
             FunctionCallee print_func;
 
@@ -320,29 +189,38 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
     bool isNum = false;
     std::string mask;
 
-    std::vector<DataTree*> identifiers = {};
+    std::vector<DataEntry*> identifiers = {};
+
     for (auto identifier: ctx->identifiers()) {
-        auto *tree = any_cast<DataTree *>(visit(identifier));
+        auto *tree = any_cast<DataEntry*>(visit(identifier));
         identifiers.push_back(tree);
     }
 
     // Get a Field that will be the figure
-    DataTree *tree = identifiers.at(0);
+    DataEntry *tree = identifiers.at(0);
+
     if (tree->isRecord()) {
+
         throw CompileException("MOVE TO record is not supported!");
+
     } else {
+
         auto *field = dynamic_cast<Field *>(tree);
-        mask = field->picture;
-        auto dataType = field->getPrimitiveType();
-        if (dataType == DataType::INT || dataType == DataType::DOUBLE) {
+        mask = field->getMask();
+        auto dataType = field->getType();
+
+        if (dataType == Field::Type::INT || dataType == Field::Type::DOUBLE) {
+
             // TODO: Check if this works
             numValue = builder->CreateAlloca(bcModule->getNumberStructType());
-            builder->CreateMemCpy(numValue,llvm::MaybeAlign(), field->getLlvmValue(),llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
+            builder->CreateMemCpy(numValue, llvm::MaybeAlign(), field->getValue(), llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
             isNum = true;
-        } else if (dataType == DataType::STRING) {
+
+        } else if (dataType == Field::Type::STRING) {
+
             picValue = builder->CreateAlloca(bcModule->getPictureStructType());
             llvm::Value *pictureToAssignBits = builder->CreateBitCast(picValue, llvm::Type::getInt8PtrTy(bcModule->getContext()));
-            llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getLlvmValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
+            llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
             builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
         }
     }
@@ -372,18 +250,18 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
     } else if (ctx->atomic() != nullptr) {
         if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()) != nullptr) {
             auto *identifier = dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic());
-            auto *currentTree = any_cast<DataTree *>(visit(identifier));
+            auto *currentTree = any_cast<DataEntry*>(visit(identifier));
             if (currentTree->isRecord()) {
                 throw CompileException("record MOVE TO is not supported!");
             } else {
                 auto *field = dynamic_cast<Field *>(currentTree);
-                auto dataType = field->getPrimitiveType();
-                if (dataType == DataType::INT || dataType == DataType::DOUBLE) {
+                auto dataType = field->getType();
+                if (dataType == Field::Type::INT || dataType == Field::Type::DOUBLE) {
                     if (isNum) {
                         // TODO: Check if this works
                         // take the Number to copy
                         llvm::Value *numberToAssign = builder->CreateAlloca(bcModule->getNumberStructType());
-                        builder->CreateMemCpy(numberToAssign,llvm::MaybeAlign(), field->getLlvmValue(),llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
+                        builder->CreateMemCpy(numberToAssign, llvm::MaybeAlign(), field->getValue(), llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
 
                         // then call assign Number with Number
                         callAssignNumber(numValue, numberToAssign);
@@ -391,13 +269,13 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
                         // TODO: What do we do in case the
                         throw CompileException("MOVE does not know what to do when assigning a Picture to Number...");
                     }
-                } else if (dataType == DataType::STRING) {
+                } else if (dataType == Field::Type::STRING) {
                     if (!isNum) {
                         // take the Picture to copy
                         llvm::Value *pictureToAssign = builder->CreateAlloca(bcModule->getPictureStructType());
 
                         llvm::Value *pictureToAssignBits = builder->CreateBitCast(pictureToAssign, llvm::Type::getInt8PtrTy(bcModule->getContext()));
-                        llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getLlvmValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
+                        llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
 
                         builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
 
@@ -448,20 +326,20 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
             throw CompileException("MOVE TO record is not supported!");
         } else {
             auto *field = dynamic_cast<Field *>(currentTree);
-            auto dataType = field->getPrimitiveType();
-            if (dataType == DataType::INT || dataType == DataType::DOUBLE) {
+            auto dataType = field->getType();
+            if (dataType == Field::Type::INT || dataType == Field::Type::DOUBLE) {
                 if (isNum) {
                     // take the Number to copy
                     // then call assign Number with Number
-                    callAssignNumber(field->getLlvmValue(), numValue);
+                    callAssignNumber(field->getValue(), numValue);
                 } else {
                     // TODO: What do we do in case the figure is not a Number?
                     throw CompileException("MOVE does not know what to do when assigning a Picture to Number...");
                 }
-            } else if (dataType == DataType::STRING) {
+            } else if (dataType == Field::Type::STRING) {
                 if (!isNum) {
                     // then call assign Picture with Picture
-                    callAssignPicture(field->getLlvmValue(), picValue);
+                    callAssignPicture(field->getValue(), picValue);
                 } else {
                     // TODO: What do we do in case the figure is not a Picture?
                     throw CompileException("MOVE does not know what to do when assigning a Number to Picture...");
@@ -532,13 +410,6 @@ std::any Visitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
     auto conditional = std::any_cast<llvm::Value*>(visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression()));
 
     auto int64t = llvm::Type::getInt64Ty(this->builder->getContext());
-
-    llvm::Constant* zeroInit = llvm::ConstantInt::get(int64t, 0);
-    auto alloc = new llvm::GlobalVariable(*(llvm::Module*)this->bcModule, int64t, false,
-                                     llvm::GlobalVariable::CommonLinkage, zeroInit, "my_lovely_val",
-                                     nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
-
-    auto temp = builder->CreateLoad(int64t, alloc, "deref_lovely_val");
 
 //    auto lhs = llvm::ConstantInt::get(int64t, 4, true);
 //    auto rhs = llvm::ConstantInt::get(int64t, 5, true);
@@ -625,6 +496,7 @@ std::any Visitor::visitNotBooleanExp(BabyCobolParser::NotBooleanExpContext *ctx)
 }
 
 std::any Visitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) {
+
     auto int64t = llvm::Type::getInt64Ty(this->builder->getContext());
 
     //TODO: dyncast to field* = continue; dyncast to record* = fail;
@@ -711,51 +583,18 @@ std::any Visitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx)
     return value;
 }
 
-std::any Visitor::visitIdentifier(BabyCobolParser::IdentifierContext *ctx) {
-
-    string name = ctx->identifiers()[0].getText();
-
-    int resultsAmount = 0;
-    DataTree *result = nullptr;
-
-    for (DataTree *dt: dataStructures) {
-
-        DataTree *tempResult = dt->findDataTreeByName(name);
-
-        if (tempResult != nullptr) {
-
-            resultsAmount++;
-            result = tempResult;
-        }
-    }
-
-    if (resultsAmount > 1) {
-        throw CompileException("Insufficient Qualification! Found multiple DataTree items with name: " + name);
-    } else if (resultsAmount == 0) {
-        throw CompileException("No Value " + ctx->identifiers()->IDENTIFIER()[0]->getText() + " found!");
-    }
-
-    return result->getLlvmValue();
-}
-
 std::any Visitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
+
+    // todo: implement searching through records
     string name = ctx->IDENTIFIER()[0]->getText();
-    int resultsAmount = 0;
-    DataTree *result = nullptr;
-    for (DataTree *dt: dataStructures) {
-        DataTree *tempResult = dt->findDataTreeByName(name);
-        if (tempResult != nullptr) {
-            resultsAmount++;
-            result = tempResult;
-        }
+
+    auto result = bcModule->findDataEntry(name);
+
+    if (!result) {
+        throw CompileException("Encountered unknown identifier \"" + name + "\".");
     }
 
-    if (resultsAmount > 1) {
-        throw CompileException("Insufficient Qualification! Found multiple DataTree items with name: " + name);
-    } else if (resultsAmount == 0) {
-        throw CompileException("No Value " + ctx->IDENTIFIER()[0]->getText() + " found!");
-    }
-    return result->getLlvmValue();
+    return result->getValue();
 }
 
 any Visitor::visitInt(BabyCobolParser::IntContext *ctx) {
@@ -934,10 +773,10 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         }
                     }
 
-                } else if (false && dynamic_cast<Record *>(any_cast<DataTree *>(visit(ctx->atomic()[i]))) != nullptr) {
+                } else if (false && dynamic_cast<Record *>(any_cast<DataEntry*>(visit(ctx->atomic()[i]))) != nullptr) {
                     // Identifier was a Record
-                    auto record = *dynamic_cast<Record*>(any_cast<DataTree *>(visit(ctx->atomic()[i])));
-                    parameters.push_back(record.getLlvmValue());
+                    auto record = *dynamic_cast<Record*>(any_cast<DataEntry*>(visit(ctx->atomic()[i])));
+                    parameters.push_back(record.getValue());
                     // Pass the record as class
                 }
 
@@ -1040,32 +879,37 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     auto int8_ptr_type = llvm::PointerType::get(int8_type, 4);
 
     // todo: hacky!
-    DataTree* dataTreeEntry = nullptr;
+    DataEntry* dataTreeEntry = nullptr;
 
     if (ctx->RETURNING() != nullptr) {
 
         return_target = any_cast<llvm::Value*>(visit(ctx->returning));
 
         // Find the data tree entry that the return clause is referring to
-        auto it = this->dataStructures.begin();
-        while (dataTreeEntry == nullptr && it != this->dataStructures.end()) {
-            dataTreeEntry = (*it++)->findDataTreeByName(ctx->returning->IDENTIFIER()[0]->getText());
-        }
+        dataTreeEntry = bcModule->findDataEntry(ctx->returning->IDENTIFIER()[0]->getText());
 
         if (!dataTreeEntry) {
             throw CompileException("Could not find field " + ctx->returning->IDENTIFIER()[0]->getText());
         }
 
         if (ctx->reference_return != nullptr) {
+
             // return type is a pointer to our identifier
             return_type = llvm::PointerType::get(return_type, 4); // pointers are opaque
+
         } else {
+
             if (dataTreeEntry->isRecord()) {
+
                 // todo: implement
                 throw CompileException("Returning to Record types is currently unimplemented.");
-            } else if (auto field = dynamic_cast<Field*>(dataTreeEntry)) {
+
+            }
+
+            if (auto field = dynamic_cast<Field*>(dataTreeEntry)) {
 
                 if (field->isNumber()) {
+
                     if (ctx->primitive_return) {
                         // return type is integer
                         return_type = int64_type;
@@ -1073,6 +917,7 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                         // return type is bstd_number by value
                         return_type = bcModule->getNumberStructType();
                     }
+
                 } else {
 
                     if (ctx->primitive_return) {
@@ -1085,11 +930,12 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                 }
             }
         }
+
     }
 
     std::vector<llvm::Type *> param_types;
     param_types.reserve(parameters.size());
-    transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
+    transform(parameters.begin(), parameters.end(), back_inserter(param_types), [] (auto v) { return v->getType(); });
 
     //create function call w/ no output (void)
     bool hasProgramName = ctx->program_name;
@@ -1283,76 +1129,6 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
  * ================
  */
 
-
-void Visitor::reset() {
-    for (DataTree *dataStructure: dataStructures) {
-        while (dataStructure->getPrevious() != nullptr) {
-            dataStructure = dataStructure->getPrevious();
-        }
-    }
-}
-
-void Visitor::setPictureForDataTree(DataTree *dataTree, BabyCobolParser::RepresentationContext *picture) {
-    auto *field = dynamic_cast<Field *>(dataTree);
-    if (picture != nullptr) {
-        string pictureString;
-        if (picture->INT() != nullptr) {
-            // This is when there are only 9s
-            pictureString = picture->INT()->getText();
-        } else if (picture->IDENTIFIER() != nullptr) {
-            pictureString = picture->IDENTIFIER()->getText();
-        } else {
-            throw CompileException("No picture found in INT or IDENTIFIER");
-        }
-
-        std::regex r("S?Z*(A|X|V|9)*S?");
-        bool match = std::regex_match(pictureString, r);
-        std::regex r_int("S?Z*9*S?");
-        bool match_int = std::regex_match(pictureString, r_int);
-        std::regex r_double("S?Z*9*V9*S?");
-        bool match_double = std::regex_match(pictureString, r_double);
-
-
-        if (match) {
-
-            field->setPicture(pictureString);
-            field->setCardinality(pictureString.size());
-
-            if (match_int) {
-                field->setPrimitiveType(DataType::INT);
-                field->isSigned = pictureString.find('S') != std::string::npos;
-                field->isPositive = true;
-                field->scale = 0;
-            } else if (match_double) {
-                field->setPrimitiveType(DataType::DOUBLE);
-                field->isSigned = pictureString.find('S') != std::string::npos;
-                field->isPositive = true;
-                field->scale = utils::split(pictureString, "V").at(1).length();
-            } else {
-                field->setPrimitiveType(DataType::STRING);
-            }
-
-            // TODO: Set default value if we want to
-        } else {
-            throw CompileException("Invalid PICTURE: " + pictureString);
-        }
-    }
-}
-
-
-vector<DataTree *> Visitor::getNodes(string path) {
-    reset();
-    vector<DataTree *> result;
-    for (auto d: dataStructures) {
-        vector<DataTree *> tempVec;
-        tempVec = d->getNodesFromPath(path, tempVec);
-        for (auto item: tempVec) {
-            result.push_back(item);
-        }
-    }
-    return result;
-}
-
 void Visitor::pushIntOnParameterList(std::vector<llvm::Value *> *parameters, int value) {
     auto v_t = llvm::Type::getInt64Ty(bcModule->getContext());
     auto v = llvm::ConstantInt::get(v_t, value, true);
@@ -1426,7 +1202,7 @@ void Visitor::callAssignNumber(llvm::Value *assignee, llvm::Value *value) {
 
     std::vector<llvm::Type *> param_types;
     param_types.reserve(parameters.size());
-    transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
+    transform(parameters.begin(), parameters.end(), back_inserter(param_types), [] (auto v) { return v->getType(); });
 
     llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
     llvm::FunctionType *bstd_assign_number_types = llvm::FunctionType::get(void_t, param_types, true);
@@ -1442,7 +1218,7 @@ void Visitor::callAssignPicture(llvm::Value *assignee, llvm::Value *value) {
 
     std::vector<llvm::Type *> param_types;
     param_types.reserve(parameters.size());
-    transform(parameters.begin(), parameters.end(), back_inserter(param_types), Visitor::getType);
+    transform(parameters.begin(), parameters.end(), back_inserter(param_types), [] (auto v) { return v->getType(); });
 
     llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
     llvm::FunctionType *bstd_assign_picture_types = llvm::FunctionType::get(void_t, param_types, true);

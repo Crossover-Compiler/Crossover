@@ -3,6 +3,7 @@
 #include "llvm/IR/IRBuilder.h"
 
 void BCModule::initialize() {
+
     llvm::Type* int8_t = llvm::Type::getInt8Ty(this->getContext());
     llvm::Type* int8ptr_t = llvm::Type::getInt8PtrTy(this->getContext());
     llvm::Type* int32_t = llvm::Type::getInt32Ty(this->getContext());
@@ -78,57 +79,14 @@ llvm::StructType* BCModule::getPictureStructType() {
     return this->pictureStructType;
 }
 
-llvm::FunctionCallee* BCModule::getPrintNumber() {
-//    printNumber(Number*)
-    auto r_type = llvm::Type::getVoidTy(this->getContext());
-    llvm::FunctionType* f_type = llvm::FunctionType::get(r_type, this->numberStructType, false);
-
-    auto f = new llvm::FunctionCallee();
-
-    *(f) = this->getOrInsertFunction("printNumber", f_type);
-
-    return f;
-}
-
-llvm::FunctionCallee* BCModule::getPrintPicture() {
-
-    auto r_type = llvm::Type::getVoidTy(this->getContext());
-    auto ptr_ty = llvm::PointerType::get(this->getContext(), 4);
-    llvm::FunctionType* f_type = llvm::FunctionType::get(r_type, ptr_ty, false);
-
-    auto f = new llvm::FunctionCallee();
-
-    *(f) = this->getOrInsertFunction("printPicture", f_type);
-
-    return f;
-}
-
-llvm::Value* BCModule::get(std::string identifier, llvm::IRBuilder<>* builder, float defaultValue) {
-
-    llvm::Value* v = this->getGlobalVariable(identifier);
-
-    if (v) {
-        // Corresponding value found
-        return v;
-    }
-
-    // else, it does not exist yet
-    
-    llvm::Constant* initializer;
-    llvm::Type* type;
-
-    // TODO: currently just casting it to string fix later
-    spdlog::warn("identifier type is assumed to be string (Pls fix me later)");
-    return builder->CreateGlobalStringPtr(identifier, identifier);
-}
-
 llvm::FunctionCallee* BCModule::getPictureToCStrFunc() {
 
     llvm::Type* int8ptr_t = llvm::IntegerType::getInt8PtrTy(this->getContext());
-
     llvm::FunctionType *pic_to_cstr_types = llvm::FunctionType::get(int8ptr_t, this->pictureStructType, false);
-    llvm::FunctionCallee* result = new llvm::FunctionCallee();
+
+    auto result = new llvm::FunctionCallee();
     (*result) = this->getOrInsertFunction("bstd_picture_to_cstr", pic_to_cstr_types);
+
     return result;
 }
 
@@ -161,4 +119,17 @@ llvm::Function* BCModule::findProcedure(const std::string& _procedure_name) {
     }
 
     return nullptr;
+}
+
+DataEntry* BCModule::findDataEntry(const std::string& name) {
+
+    if (data_entry_shadow_symbol_table.count(name)) {
+        return data_entry_shadow_symbol_table.at(name);
+    }
+
+    return nullptr;
+}
+
+std::map<std::string, DataEntry*> BCModule::getDataSymbolTable() {
+    return this->data_entry_shadow_symbol_table;
 }
