@@ -11,6 +11,7 @@
 #include "../Exceptions/CompileException.h"
 #include "../datastructures/Field.h"
 #include "../../include/utils/utils.h"
+#include "../datastructures/NumberField.h"
 #include <algorithm>
 #include <cctype>
 
@@ -186,7 +187,6 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
     // Prepare the struct we will be copying
     llvm::Value *picValue = nullptr;
     llvm::Value *numValue = nullptr;
-    bool isNum = false;
     std::string mask;
 
     std::vector<DataEntry*> identifiers = {};
@@ -197,153 +197,160 @@ std::any Visitor::visitMove(BabyCobolParser::MoveContext *ctx) {
     }
 
     // Get a Field that will be the figure
-    DataEntry *tree = identifiers.at(0);
+    DataEntry* tree = identifiers.at(0);
 
     if (tree->isRecord()) {
 
         throw CompileException("MOVE TO record is not supported!");
+    }
+
+    auto target = dynamic_cast<Field *>(tree);
+    mask = target->getMask();
+
+    if (target->isNumber()) {
+
+        numValue = builder->CreateAlloca(bcModule->getNumberStructType());
+        builder->CreateMemCpy(numValue, llvm::MaybeAlign(), target->getValue(), llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
 
     } else {
 
-        auto *field = dynamic_cast<Field *>(tree);
-        mask = field->getMask();
-        auto dataType = field->getType();
-
-        if (dataType == Field::Type::INT || dataType == Field::Type::DOUBLE) {
-
-            // TODO: Check if this works
-            numValue = builder->CreateAlloca(bcModule->getNumberStructType());
-            builder->CreateMemCpy(numValue, llvm::MaybeAlign(), field->getValue(), llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
-            isNum = true;
-
-        } else if (dataType == Field::Type::STRING) {
-
-            picValue = builder->CreateAlloca(bcModule->getPictureStructType());
-            llvm::Value *pictureToAssignBits = builder->CreateBitCast(picValue, llvm::Type::getInt8PtrTy(bcModule->getContext()));
-            llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
-            builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
-        }
+        picValue = builder->CreateAlloca(bcModule->getPictureStructType());
+        llvm::Value *pictureToAssignBits = builder->CreateBitCast(picValue, llvm::Type::getInt8PtrTy(bcModule->getContext()));
+        llvm::Value *pictureSourceBits = builder->CreateBitCast(target->getValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
+        builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
     }
 
     // Fill the struct we will be copying
     if (ctx->HIGH() != nullptr) {
         throw CompileException("MOVE HIGH TO is not implemented!");
-        if (isNum) {
+        if (target->isNumber()) {
             // TODO: assign value to numValue using mask
         } else {
             // TODO: assign value to picValue using mask
         }
     } else if (ctx->LOW() != nullptr) {
         throw CompileException("MOVE LOW TO is not implemented!");
-        if (isNum) {
+        if (target->isNumber()) {
             // TODO: assign value to numValue using mask
         } else {
             // TODO: assign value to picValue using mask
         }
     } else if (ctx->SPACES() != nullptr) {
         throw CompileException("MOVE SPACES TO is not implemented!");
-        if (isNum) {
+        if (target->isNumber()) {
             // TODO: assign value to numValue using mask
         } else {
             // TODO: assign value to picValue using mask
         }
     } else if (ctx->atomic() != nullptr) {
+
         if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()) != nullptr) {
+
             auto *identifier = dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic());
             auto *currentTree = any_cast<DataEntry*>(visit(identifier));
+
             if (currentTree->isRecord()) {
+
                 throw CompileException("record MOVE TO is not supported!");
-            } else {
-                auto *field = dynamic_cast<Field *>(currentTree);
-                auto dataType = field->getType();
-                if (dataType == Field::Type::INT || dataType == Field::Type::DOUBLE) {
-                    if (isNum) {
-                        // TODO: Check if this works
-                        // take the Number to copy
-                        llvm::Value *numberToAssign = builder->CreateAlloca(bcModule->getNumberStructType());
-                        builder->CreateMemCpy(numberToAssign, llvm::MaybeAlign(), field->getValue(), llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
-
-                        // then call assign Number with Number
-                        callAssignNumber(numValue, numberToAssign);
-                    } else {
-                        // TODO: What do we do in case the
-                        throw CompileException("MOVE does not know what to do when assigning a Picture to Number...");
-                    }
-                } else if (dataType == Field::Type::STRING) {
-                    if (!isNum) {
-                        // take the Picture to copy
-                        llvm::Value *pictureToAssign = builder->CreateAlloca(bcModule->getPictureStructType());
-
-                        llvm::Value *pictureToAssignBits = builder->CreateBitCast(pictureToAssign, llvm::Type::getInt8PtrTy(bcModule->getContext()));
-                        llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
-
-                        builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
-
-                        // then call assign Picture with Picture
-                        callAssignPicture(picValue, pictureToAssign);
-                    } else {
-                        // TODO: What do we do in case the figure is not a Picture?
-                        throw CompileException("MOVE does not know what to do when assigning a Number to Picture...");
-                    }
-                }
             }
+
+            auto field = dynamic_cast<Field*>(currentTree);
+
+            if (field->isNumber() != target->isNumber()) {
+                throw CompileException("Incompatible types between fields " + field->getName() + " and " + target->getName());
+            }
+
+            if (field->isNumber()) {
+
+                // take the Number to copy
+                llvm::Value *numberToAssign = builder->CreateAlloca(bcModule->getNumberStructType());
+                builder->CreateMemCpy(numberToAssign, llvm::MaybeAlign(), field->getValue(), llvm::MaybeAlign(), ConstantExpr::getSizeOf(bcModule->getNumberStructType()));
+
+                // then call assign Number with Number
+                callAssignNumber(numValue, numberToAssign);
+
+            } else {
+
+                // take the Picture to copy
+                llvm::Value *pictureToAssign = builder->CreateAlloca(bcModule->getPictureStructType());
+
+                llvm::Value *pictureToAssignBits = builder->CreateBitCast(pictureToAssign, llvm::Type::getInt8PtrTy(bcModule->getContext()));
+                llvm::Value *pictureSourceBits = builder->CreateBitCast(field->getValue(), llvm::Type::getInt8PtrTy(bcModule->getContext()));
+
+                builder->CreateMemCpy(pictureToAssignBits,llvm::MaybeAlign(), pictureSourceBits,llvm::MaybeAlign(), 24);
+
+                // then call assign Picture with Picture
+                callAssignPicture(picValue, pictureToAssign);
+            }
+
         } else if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()) != nullptr) {
-            if (isNum) {
+
+            if (target->isNumber()) {
+
                 // assign value to numValue
                 llvm::Value *value = builder->CreateNumber(
                         dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()));
 
                 callAssignNumber(numValue, value);
+
             } else {
                 // TODO: Cast int to string and try to assign
             }
+
         } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()) != nullptr) {
-            if (isNum) {
+
+            if (target->isNumber()) {
+
                 // assign value to numValue
                 llvm::Value *value = builder->CreateNumber(
                         dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()));
 
                 callAssignNumber(numValue, value);
+
             } else {
                 // TODO: Cast double to string and try to assign
             }
+
         } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()) != nullptr) {
-            if (isNum) {
+
+            if (target->isNumber()) {
+
                 // TODO: We don't know what to do...
                 throw CompileException("MOVE does not know what to do when parsing a String to Number...");
-            } else {
-                // assign value to picValue
-                llvm::Value *value = builder->CreatePicture(
-                        dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()));
-                callAssignPicture(picValue, value);
             }
+
+            // assign value to picValue
+            llvm::Value *value = builder->CreatePicture(
+                    dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()));
+            callAssignPicture(picValue, value);
         }
     }
 
     // Assign to identifiers
     for (auto currentTree: identifiers) {
+
         if (currentTree->isRecord()) {
+
             throw CompileException("MOVE TO record is not supported!");
+
         } else {
-            auto *field = dynamic_cast<Field *>(currentTree);
-            auto dataType = field->getType();
-            if (dataType == Field::Type::INT || dataType == Field::Type::DOUBLE) {
-                if (isNum) {
-                    // take the Number to copy
-                    // then call assign Number with Number
-                    callAssignNumber(field->getValue(), numValue);
-                } else {
-                    // TODO: What do we do in case the figure is not a Number?
-                    throw CompileException("MOVE does not know what to do when assigning a Picture to Number...");
-                }
-            } else if (dataType == Field::Type::STRING) {
-                if (!isNum) {
-                    // then call assign Picture with Picture
-                    callAssignPicture(field->getValue(), picValue);
-                } else {
-                    // TODO: What do we do in case the figure is not a Picture?
-                    throw CompileException("MOVE does not know what to do when assigning a Number to Picture...");
-                }
+
+            auto field = dynamic_cast<Field *>(currentTree);
+
+            if (field->isNumber() != target->isNumber()) {
+                throw CompileException("Incompatible types between fields " + field->getName() + " and " + target->getName());
+            }
+
+            if (field->isNumber()) {
+
+                // take the Number to copy
+                // then call assign Number with Number
+                callAssignNumber(field->getValue(), numValue);
+
+            } else {
+
+                // then call assign Picture with Picture
+                callAssignPicture(field->getValue(), picValue);
             }
         }
     }
@@ -782,8 +789,10 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                 /** LITERAL STUFF */
             } else {
+
                 // 0 == int, 1 == double, 2 == string.
                 int dataType = -1;
+
                 // atomic is a literal. So either an int, double or string
                 if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
                     BabyCobolParser::IntLiteralContext *intLiteralContext = dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]);
@@ -878,17 +887,16 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     auto int8_type = llvm::IntegerType::getInt8Ty(bcModule->getContext());
     auto int8_ptr_type = llvm::PointerType::get(int8_type, 4);
 
-    // todo: hacky!
-    DataEntry* dataTreeEntry = nullptr;
+    DataEntry* data_entry = nullptr;
 
-    if (ctx->RETURNING() != nullptr) {
+    if (ctx->RETURNING()) {
 
         return_target = any_cast<llvm::Value*>(visit(ctx->returning));
 
         // Find the data tree entry that the return clause is referring to
-        dataTreeEntry = bcModule->findDataEntry(ctx->returning->IDENTIFIER()[0]->getText());
+        data_entry = bcModule->findDataEntry(ctx->returning->IDENTIFIER()[0]->getText());
 
-        if (!dataTreeEntry) {
+        if (!data_entry) {
             throw CompileException("Could not find field " + ctx->returning->IDENTIFIER()[0]->getText());
         }
 
@@ -899,20 +907,20 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
         } else {
 
-            if (dataTreeEntry->isRecord()) {
+            if (data_entry->isRecord()) {
 
                 // todo: implement
                 throw CompileException("Returning to Record types is currently unimplemented.");
-
             }
 
-            if (auto field = dynamic_cast<Field*>(dataTreeEntry)) {
+            if (auto field = dynamic_cast<Field*>(data_entry)) {
 
-                if (field->isNumber()) {
+                if (auto number = dynamic_cast<NumberField*>(field)) {
 
                     if (ctx->primitive_return) {
-                        // return type is integer
-                        return_type = int64_type;
+
+                        return_type = field->getType(this->bcModule->getContext());
+
                     } else {
                         // return type is bstd_number by value
                         return_type = bcModule->getNumberStructType();
@@ -921,11 +929,15 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
                 } else {
 
                     if (ctx->primitive_return) {
+
                         // return type is char pointer
-                        return_type = int8_ptr_type;
+                        return_type = field->getType(this->bcModule->getContext());
+
                     } else {
+
                         // return type is bstd_picture by value
                         return_type = bcModule->getPictureStructType();
+
                     }
                 }
             }
@@ -937,7 +949,6 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
     param_types.reserve(parameters.size());
     transform(parameters.begin(), parameters.end(), back_inserter(param_types), [] (auto v) { return v->getType(); });
 
-    //create function call w/ no output (void)
     bool hasProgramName = ctx->program_name;
 
     // todo: the code for constructing the call instructions below is technical debt.
@@ -965,20 +976,35 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
                 if (!ctx->byvalueatomicsprim.empty()) {
 
-                    // todo: function types are not OK...
-                    // todo: let's generate an int for PIC 9*, a double for PIC 9*V9*, and a char* for PIC (X|A|9)*
-                    std::vector<llvm::Type *> primitive_types;
-                    primitive_types.reserve(parameters.size());
-                    transform(parameters.begin(), parameters.end(), back_inserter(primitive_types),
-                              [&int64_type](auto param) { return int64_type; });
+                    std::vector<Field*> data_entries;
+                    data_entries.reserve(parameters.size());
+                    transform(parameters.begin(), parameters.end(), back_inserter(data_entries),
+                              [this](auto param) {
+                        return (Field*)this->bcModule->findDataEntry(std::string(param->getName()));
+                    });
+
+                    std::vector<llvm::Type*> primitive_types;
+                    primitive_types.reserve(data_entries.size());
+                    transform(data_entries.begin(), data_entries.end(), back_inserter(primitive_types),
+                              [this](auto param) { return param->getType(this->bcModule->getContext()); });
 
                     // marshall parameters...
                     std::vector<llvm::Value *> marshalled_params;
-                    marshalled_params.reserve(parameters.size());
-                    for (auto param : parameters) {
+                    marshalled_params.reserve(data_entries.size());
+                    for (auto entry : data_entries) {
+
                         // todo: support pics... (check the data tree, etc)
-                        auto v = builder->CreateNumberToIntCall(param);
-                        marshalled_params.push_back(v);
+
+                        if (auto number_field = dynamic_cast<NumberField*>(entry)) {
+
+                            if (number_field->isInteger()) {
+                                marshalled_params.push_back(builder->CreateNumberToIntCall(number_field->getValue()));
+                            } else {
+                                // convert to a floating point
+                                marshalled_params.push_back(builder->CreateNumberToDoubleCall(number_field->getValue()));
+                            }
+                        }
+
                     }
 
                     llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, primitive_types,
@@ -1037,12 +1063,12 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
         if (ctx->primitive_return != nullptr) {
             // we expect a basic data type, so we need to marshall
 
-            if (dataTreeEntry->isRecord()) {
+            if (data_entry->isRecord()) {
                 throw CompileException("Can not use \"AS PRIMITIVE\" return clause modifier on a Record target.");
             }
 
             // determine which it is - number or picture
-            auto field = dynamic_cast<Field*>(dataTreeEntry);
+            auto field = dynamic_cast<Field*>(data_entry);
 
             llvm::Value* value;
 
@@ -1050,24 +1076,22 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
             if (ctx->reference_return != nullptr) {
 
                 // returning by reference, so load the primitive
-                if (field->isNumber()) {
-
-                    value = builder->CreateLoad(int64_type, call);
-
-                } else {
-
-                    value = builder->CreateLoad(int8_ptr_type, call);
-
-                }
+                value = builder->CreateLoad(field->getType(this->bcModule->getContext()), call);
 
             } else {
                 // returning by vale, so we do not need to load
                 value = call;
             }
 
-            if (field->isNumber()) {
+            if (auto number_field = dynamic_cast<NumberField*>(field)) {
+
                 // we're assigning the return value to a number
-                builder->CreateAssignIntToNumber(return_target, value);
+                if (number_field->isInteger()) {
+                    builder->CreateAssignIntToNumber(return_target, value);
+                } else {
+                    builder->CreateAssignDoubleToNumber(return_target, value);
+                }
+
             } else {
                 builder->CreateAssignCStrToPicture(return_target, value);
             }
@@ -1091,13 +1115,13 @@ any Visitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
 
             // we are assigning the result to a picture or a number
 
-            if (dataTreeEntry->isRecord()) {
+            if (data_entry->isRecord()) {
                 // todo: implement this
                 throw CompileException("Returning to Record types is currently unimplemented.");
             } else {
 
                 // determine which it is - number or picture
-                auto field = dynamic_cast<Field*>(dataTreeEntry);
+                auto field = dynamic_cast<Field*>(data_entry);
 
                 if (field->isNumber()) {
                     // we're assigning the return value to a number

@@ -114,6 +114,13 @@ public:
     llvm::Value* CreateNumberToIntCall(llvm::Value* number);
 
     /**
+     * Creates a call to the bstd runtime library marshaller function bstd_number_to_double(Number*)
+     * @param number The number to marshall
+     * @return Returns a pointer value referencing the double representation of the specified number.
+     */
+    llvm::Value* CreateNumberToDoubleCall(llvm::Value* number);
+
+    /**
      * Creates a call to the bstd runtime library assignment function bstd_assign_int(bstd_number*, int)
      * @param number The number to assign to
      * @param value The integer to assign to the specified number
@@ -128,6 +135,14 @@ public:
      * @return Returns void.
      */
     void CreateAssignIntToNumber(llvm::Value* number, llvm::Value* value);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_double(bstd_number*, double)
+     * @param number The number to assign to
+     * @param value The double value to assign to the specified number
+     * @return Returns void.
+     */
+    void CreateAssignDoubleToNumber(llvm::Value* number, llvm::Value* value);
 
     void CreateAssignCStrToPicture(llvm::Value* picture, llvm::Value* value);
 

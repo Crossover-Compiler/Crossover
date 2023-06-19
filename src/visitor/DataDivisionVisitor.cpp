@@ -10,6 +10,8 @@
 #include "../datastructures/Field.h"
 #include "../../include/utils/utils.h"
 #include "../../include/ir/bcmodule.h"
+#include "../datastructures/PictureField.h"
+#include "../datastructures/NumberField.h"
 
 std::any DataDivisionVisitor::visitLine(BabyCobolParser::LineContext *ctx) {
 
@@ -22,15 +24,11 @@ std::any DataDivisionVisitor::visitLine(BabyCobolParser::LineContext *ctx) {
 
 std::any DataDivisionVisitor::visitField(BabyCobolParser::FieldContext *ctx) {
 
-    // todo: create data entry
-    // todo: create create llvm value
-    // todo: assign llvm value to data entry
-
     const int level = stoi(ctx->level()->getText());
     std::string name = ctx->IDENTIFIER()->getText();
     auto mask = any_cast<std::string>(visit(ctx->mask()));
 
-    auto field = new Field(name, level, mask);
+    Field *field;
 
     std::regex r("S?Z*(A|X|V|9)*S?");
     bool match = std::regex_match(mask, r);
@@ -39,34 +37,31 @@ std::any DataDivisionVisitor::visitField(BabyCobolParser::FieldContext *ctx) {
         throw CompileException("Invalid PICTURE: " + mask);
     }
 
-    field->setMask(mask);
-    field->setCardinality(mask.size());
-
     std::regex r_number("S?Z*9*V?9*S?");
     bool match_number = std::regex_match(mask, r_number);
 
     if (match_number) {
 
-        field->setIsSigned(mask.find('S') != std::string::npos);
-        field->setIsPositive(true);
+        auto number_field = new NumberField(name, level);
 
         auto split = utils::split(mask, "V");
 
-        if (split.size() > 1) {
+        int scale = split.size() > 1 ? split.at(1).length() : 0;
 
-            field->setType(Field::Type::DOUBLE);
-            field->setScale(split.at(1).length());
+        number_field->setScale(scale);
 
-        } else {
+        number_field->setIsSigned(mask.find('S') != std::string::npos);
+        number_field->setIsPositive(true);
 
-            field->setType(Field::Type::INT);
-            field->setScale(0);
-        }
+        field = number_field;
 
     } else {
 
-        field->setType(Field::Type::STRING);
+        field = new PictureField(name, level);
     }
+
+    field->setMask(mask);
+    field->setCardinality(mask.size());
 
     // walk back until the find the record (or root) we should place this field at
     while (current_record && level >= current_record->getLevel()) {

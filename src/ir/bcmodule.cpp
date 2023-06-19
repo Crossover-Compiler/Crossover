@@ -8,6 +8,7 @@ void BCModule::initialize() {
     llvm::Type* int8ptr_t = llvm::Type::getInt8PtrTy(this->getContext());
     llvm::Type* int32_t = llvm::Type::getInt32Ty(this->getContext());
     llvm::Type* int64_t = llvm::Type::getInt64Ty(this->getContext());
+    llvm::Type* double_type = llvm::Type::getDoubleTy(this->getContext());
     llvm::Type* void_t = llvm::Type::getVoidTy(this->getContext());
 
     // instantiate printf function
@@ -44,10 +45,18 @@ void BCModule::initialize() {
     this->marshall_int_func = new llvm::FunctionCallee();
     *(this->marshall_int_func) = this->getOrInsertFunction("bstd_number_to_int", n_to_i_types);
 
+    llvm::FunctionType *n_to_double_types = llvm::FunctionType::get(double_type, number_struct_ptr_t, false);
+    this->marshall_double_func = new llvm::FunctionCallee();
+    *(this->marshall_double_func) = this->getOrInsertFunction("bstd_number_to_double", n_to_double_types);
+
     // instantiate assignment functions
     llvm::FunctionType *assign_i_to_n_types = llvm::FunctionType::get(void_t, { number_struct_ptr_t, int64_t }, false);
     this->assign_int_func = new llvm::FunctionCallee();
     *(this->assign_int_func) = this->getOrInsertFunction("bstd_assign_int", assign_i_to_n_types);
+
+    llvm::FunctionType *assign_double_to_n_types = llvm::FunctionType::get(void_t, { number_struct_ptr_t, double_type }, false);
+    this->assign_double_func = new llvm::FunctionCallee();
+    *(this->assign_double_func) = this->getOrInsertFunction("bstd_assign_double", assign_double_to_n_types);
 
     llvm::FunctionType *assign_cstr_to_pic_types = llvm::FunctionType::get(void_t, { this->pictureStructType, int8ptr_t }, false);
     this->assign_cstr_to_picture_func = new llvm::FunctionCallee();
@@ -98,8 +107,16 @@ llvm::FunctionCallee* BCModule::getMarshallIntFunc() {
     return this->marshall_int_func;
 }
 
+llvm::FunctionCallee *BCModule::getMarshallDoubleFunc() {
+    return this->marshall_double_func;
+}
+
 llvm::FunctionCallee *BCModule::getAssignIntFunc() {
     return this->assign_int_func;
+}
+
+llvm::FunctionCallee *BCModule::getAssignDoubleFunc() {
+    return this->assign_double_func;
 }
 
 llvm::FunctionCallee *BCModule::getAddIntFunc() {

@@ -50,6 +50,15 @@ antlr_target(SampleGrammarLexer ${CMAKE_CURRENT_SOURCE_DIR}/grammar/BabyCobol.g4
 include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
 
 add_executable(output main.cpp
+        Crossover_bstd_lib/include/picture.h
+        Crossover_bstd_lib/include/number.h
+        Crossover_bstd_lib/include/picutils.h
+        Crossover_bstd_lib/include/numutils.h
+        Crossover_bstd_lib/include/arithmetic.h
+        Crossover_bstd_lib/src/picutils.c
+        Crossover_bstd_lib/src/numutils.c
+        Crossover_bstd_lib/src/arithmetic.c
+
         src/visitor/DataDivisionVisitor.cpp
         src/visitor/DataDivisionVisitor.h
         src/visitor/Visitor.cpp
@@ -67,24 +76,21 @@ add_executable(output main.cpp
         src/Exceptions/CompileException.h
         src/datastructures/Field.cpp
         src/datastructures/Field.h
+        src/datastructures/NumberField.cpp
+        src/datastructures/NumberField.h
+        src/datastructures/PictureField.cpp
+        src/datastructures/PictureField.h
         src/datastructures/Record.cpp
         src/datastructures/Record.h
         include/utils/utils.h
         src/utils/utils.cpp
         src/Exceptions/CompileException.h
-        Crossover_bstd_lib/src/arithmetic.c
-        Crossover_bstd_lib/include/arithmetic.h
-        Crossover_bstd_lib/include/number.h
         src/datastructures/Field.cpp
         src/datastructures/Field.h
         src/datastructures/Record.cpp
         src/datastructures/Record.h
-        Crossover_bstd_lib/include/picutils.h
-        Crossover_bstd_lib/include/picture.h
-        Crossover_bstd_lib/src/picutils.c
         include/ir/bcbuilder.h
-        src/ir/bcbuilder.cpp
-        Crossover_bstd_lib/include/numutils.h
-        Crossover_bstd_lib/src/numutils.c)
+        src/ir/bcbuilder.cpp)
+
 llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
 target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)

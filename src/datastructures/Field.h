@@ -10,29 +10,14 @@
 
 class Field : public DataEntry {
 
-public:
-    enum class Type {INT, DOUBLE, STRING, UNDEFINED};
-
-private:
+protected:
     int cardinality;
-    int scale;
     std::string mask;
-    Type type;
-    std::string value;
-    bool isSigned;
-    bool isPositive;
 
 public:
-    Field(std::string& name, int level, std::string& value) :
+    Field(std::string& name, int level) :
             DataEntry(name, level),
-            value(value),
-            cardinality(0),
-            scale(0),
-            type(Type::UNDEFINED),
-            isSigned(false),
-            isPositive(false) {}
-
-    llvm::Value *codegen(BCBuilder *builder, BCModule *bcModule, bool global) override;
+            cardinality(0) {}
 
     void setMask(std::string& mask);
 
@@ -40,19 +25,11 @@ public:
 
     void setCardinality(int cardinality);
 
-    void setIsSigned(bool isSigned);
-
-    void setIsPositive(bool isPositive);
-
-    void setScale(int scale);
-
     std::string toString() override;
 
-    bool isNumber();
+    virtual bool isNumber() = 0;
 
-    Type getType() const;
-
-    void setType(Type type);
+    virtual llvm::Type* getType(llvm::LLVMContext& context) = 0;
 
     bool isRecord() override {
       return false;

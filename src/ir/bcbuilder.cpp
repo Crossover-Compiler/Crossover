@@ -146,13 +146,18 @@ llvm::Value* BCBuilder::CreateCStrToPictureCall(llvm::Value* picture, llvm::Valu
 
 llvm::Value* BCBuilder::CreateNumberToIntCall(llvm::Value *number) {
 
-    llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());
-    llvm::ConstantInt* const_i64 = llvm::ConstantInt::get(int_t, 64);
-
     auto num_to_int = module->getMarshallIntFunc();
 
     llvm::ArrayRef<llvm::Value *> args = number;
     return this->CreateCall(*num_to_int, args);
+}
+
+llvm::Value* BCBuilder::CreateNumberToDoubleCall(llvm::Value *number) {
+
+    auto num_to_double = module->getMarshallDoubleFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = number;
+    return this->CreateCall(*num_to_double, args);
 }
 
 llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
@@ -189,6 +194,14 @@ void BCBuilder::CreateAssignIntToNumber(llvm::Value* number, llvm::Value* value)
 
     llvm::ArrayRef<llvm::Value *> args = { number, value };
     this->CreateCall(*assign_int, args);
+}
+
+void BCBuilder::CreateAssignDoubleToNumber(llvm::Value* number, llvm::Value* value) {
+
+    auto assign_double = module->getAssignDoubleFunc();
+
+    llvm::ArrayRef<llvm::Value *> args = { number, value };
+    this->CreateCall(*assign_double, args);
 }
 
 void BCBuilder::CreateAssignCStrToPicture(llvm::Value* picture, llvm::Value* value) {

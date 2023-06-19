@@ -19,9 +19,11 @@ private:
 
     // marshalling
     llvm::FunctionCallee* marshall_int_func;
+    llvm::FunctionCallee* marshall_double_func;
 
     // assignment
     llvm::FunctionCallee* assign_int_func;
+    llvm::FunctionCallee* assign_double_func;
     llvm::FunctionCallee* assign_cstr_to_picture_func;
     llvm::FunctionCallee* assign_number_func;
     llvm::FunctionCallee* assign_picture_func;
@@ -48,7 +50,9 @@ public:
             llvm::Module(ModuleID, C),
             printf_func(nullptr),
             marshall_int_func(nullptr),
+            marshall_double_func(nullptr),
             assign_int_func(nullptr),
+            assign_double_func(nullptr),
             assign_cstr_to_picture_func(nullptr),
             assign_number_func(nullptr),
             assign_picture_func(nullptr),
@@ -84,6 +88,11 @@ public:
     llvm::FunctionCallee* getMarshallIntFunc();
 
     /**
+     * @return Returns the function callee for marshalling bstd_numbers to doubles.
+     */
+    llvm::FunctionCallee* getMarshallDoubleFunc();
+
+    /**
      * @return Returns the function callee for marshalling bstd_pictures to c-style strings.
      */
     llvm::FunctionCallee* getPictureToCStrFunc();
@@ -92,6 +101,11 @@ public:
      * @return Returns the function callee for assigning integers to bstd_numbers.
      */
     llvm::FunctionCallee* getAssignIntFunc();
+
+    /**
+     * @return Returns the function callee for assigning doubles to bstd_numbers.
+     */
+    llvm::FunctionCallee* getAssignDoubleFunc();
 
     /**
      * @return Returns the function callee for adding and integer to a bstd_numbers (bstd_add_int(bstd_number*, int)).
