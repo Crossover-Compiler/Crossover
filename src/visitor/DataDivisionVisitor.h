@@ -11,14 +11,12 @@
 class DataDivisionVisitor : public BabyCobolBaseVisitor {
 
 private:
-    bool generate_structs; // todo: this should be its own visitor
     BCModule* module;
     BCBuilder* builder;
     Record* current_record;
 
 public:
-    DataDivisionVisitor(bool generate_structs, BCModule* module, BCBuilder* builder) :
-            generate_structs(generate_structs),
+    DataDivisionVisitor(BCModule* module, BCBuilder* builder) :
             module(module),
             builder(builder),
             current_record(nullptr) {}

@@ -19,15 +19,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override {
+  virtual std::any visitIdentificationDiv(BabyCobolParser::IdentificationDivContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitName(BabyCobolParser::NameContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitValue(BabyCobolParser::ValueContext *ctx) override {
+  virtual std::any visitIdentificationEntry(BabyCobolParser::IdentificationEntryContext *ctx) override {
     return visitChildren(ctx);
   }
 

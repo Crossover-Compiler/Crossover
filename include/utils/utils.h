@@ -25,7 +25,7 @@ namespace utils {
      * DataTree vector
      * @param symbol_table
      */
-    void generateStructs(map<string, DataEntry*> symbol_table);
+    std::string generateStructs(const std::string& source, const map<string, DataEntry*>& symbol_table, const std::string& program_id);
 
     /**
      *

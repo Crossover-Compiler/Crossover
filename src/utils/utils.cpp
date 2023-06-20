@@ -4,6 +4,7 @@
 
 #include "../../include/utils/utils.h"
 #include "../Exceptions/CompileException.h"
+#include "../../config.h"
 
 using namespace std;
 
@@ -64,18 +65,21 @@ namespace utils{
         return result;
     }
 
-    void generateStructs(map<string, DataEntry*> symbol_table) {
+    std::string generateStructs(const std::string& source, const map<string, DataEntry*>& symbol_table, const std::string& program_id) {
 
-        // todo: use program name or file name here
-        std::ofstream outputFile("BBCBLAPI.h");
+        std::string filename = program_id + ".h";
 
-        string firstLines = "// Generated with Crossover\n"
-                            "\n// ***"
-                            "\n// Include lib files here"
-                            "\n// ***"
-                            "\n";
+        std::ofstream outputFile(filename);
 
-        string middleLines= "\n";
+        string firstLines = "/*\r\n"
+                            "* Auto-generated with crossover\r\n"
+                            "* compiler version\t:\t" CROSSOVER_VERSION "\r\n"
+                            "* source file\t\t:\t" + source + "\r\n"
+                            "*/\r\n"
+                            "#include \"../Crossover_bstd_lib/include/number.h\"\r\n"
+                            "#include \"../Crossover_bstd_lib/include/picture.h\"\r\n";
+
+        string middleLines = "\n";
         string lastLines = "\n";
 
         for(const auto& mapEntry : symbol_table) {
@@ -116,15 +120,17 @@ namespace utils{
 
                             lastLines.append("bstd_number* ");
                             lastLines.append(field->getName());
-                            lastLines.append("; // expected format: ");
+                            lastLines.append(";\t\t// mask:\t");
                             lastLines.append(field->getMask());
+                            lastLines.append("\r\n");
 
                         } else {
 
                             lastLines.append("bstd_picture* ");
                             lastLines.append(field->getName());
-                            lastLines.append("; // expected format: ");
+                            lastLines.append(";\t\t// mask:\t");
                             lastLines.append(field->getMask());
+                            lastLines.append("\r\n");
                         }
                     }
 
@@ -139,15 +145,17 @@ namespace utils{
 
                     lastLines.append("bstd_number* ");
                     lastLines.append(field->getName());
-                    lastLines.append("; // expected format: ");
+                    lastLines.append(";\t\t// mask:\t");
                     lastLines.append(field->getMask());
+                    lastLines.append("\r\n");
 
                 } else {
 
                     lastLines.append("bstd_picture* ");
                     lastLines.append(field->getName());
-                    lastLines.append("; // expected format: ");
+                    lastLines.append(";\t\t// mask:\t");
                     lastLines.append(field->getMask());
+                    lastLines.append("\r\n");
 
                 }
             }
@@ -161,6 +169,8 @@ namespace utils{
 
         // Close the file
         outputFile.close();
+
+        return filename;
     }
 
     bool presentInArgs(int argc, char** argv, string element){

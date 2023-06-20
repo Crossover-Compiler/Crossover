@@ -21,11 +21,9 @@ public:
    */
     virtual std::any visitProgram(BabyCobolParser::ProgramContext *context) = 0;
 
-    virtual std::any visitIdentification(BabyCobolParser::IdentificationContext *context) = 0;
+    virtual std::any visitIdentificationDiv(BabyCobolParser::IdentificationDivContext *context) = 0;
 
-    virtual std::any visitName(BabyCobolParser::NameContext *context) = 0;
-
-    virtual std::any visitValue(BabyCobolParser::ValueContext *context) = 0;
+    virtual std::any visitIdentificationEntry(BabyCobolParser::IdentificationEntryContext *context) = 0;
 
     virtual std::any visitDataDivision(BabyCobolParser::DataDivisionContext *context) = 0;
 

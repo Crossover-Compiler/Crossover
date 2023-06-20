@@ -64,7 +64,7 @@ std::any DataDivisionVisitor::visitField(BabyCobolParser::FieldContext *ctx) {
     field->setCardinality(mask.size());
 
     // walk back until the find the record (or root) we should place this field at
-    while (current_record && level >= current_record->getLevel()) {
+    while (current_record && level <= current_record->getLevel()) {
         current_record = current_record->getParent();
     }
 
@@ -92,7 +92,7 @@ std::any DataDivisionVisitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
     auto record = new Record(name, level);
 
     // walk back until the find the record (or root) we should place this field at
-    while (current_record && level >= current_record->getLevel()) {
+    while (current_record && level <= current_record->getLevel()) {
         current_record = current_record->getParent();
     }
 
@@ -106,8 +106,9 @@ std::any DataDivisionVisitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
         // this field is at the root level, add it to the symbol table
         module->data_entry_shadow_symbol_table.insert({ record->getName(), record });
 
-        current_record = record;
     }
+
+    current_record = record;
 
     record->codegen(builder, module, true);
 

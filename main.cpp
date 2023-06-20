@@ -1,6 +1,5 @@
 #include <iostream>
-#include <csignal>
-#include "src/visitor/Visitor.h"
+#include "src/visitor/ProcedureVisitor.h"
 #include "src/Exceptions/CompileException.h"
 #include "include/utils/utils.h"
 #include "include/antlr/BabyCobolParser.h"
@@ -10,9 +9,6 @@
 #include "include/ir/bcmodule.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Function.h"
-#include <llvm/IR/Constants.h>
-#include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/GlobalVariable.h>
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/Support/FileSystem.h"
@@ -27,12 +23,11 @@
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
 #include "src/visitor/DataDivisionVisitor.h"
+#include "src/visitor/IdentificationVisitor.h"
 #include <map>
-#include <memory>
 #include <system_error>
 #include <vector>
-
-#define LABEL_MAIN "main"
+#include "config.h"
 
 using namespace std;
 using namespace antlr4;
@@ -40,14 +35,9 @@ using namespace llvm;
 using namespace llvm::sys;
 using namespace utils;
 
-// TODO: pls move me to somewhere sensible
-
-
-
-
 int main(int argc, char **argv) {
 
-    cout << "Starting Compiler..." << endl;
+    cout << "crossover " << CROSSOVER_VERSION << endl;
 
     // build external symbol map
     vector<string> externalFiles = utils::getArgumentParams(argc, argv, "--external");
@@ -89,12 +79,24 @@ int main(int argc, char **argv) {
 
     BCBuilder builder(module, block);
 
-    const bool generate_structs = presentInArgs(argc, argv, "-generate-structs");
+    IdentificationVisitor identificationVisitor;
+    identificationVisitor.visitProgram(ast);
 
-    DataDivisionVisitor dataDivisionVisitor(generate_structs, module, &builder);
+    DataDivisionVisitor dataDivisionVisitor(module, &builder);
     dataDivisionVisitor.visitProgram(ast);
 
-    Visitor procedureVisitor(module, &builder, &extTable, generate_structs);
+    const bool generate_structs = presentInArgs(argc, argv, "-generate-structs");
+
+    if (generate_structs) {
+
+        const std::string program_id = identificationVisitor.getProgramId();
+
+        const std::string filename = generateStructs(bcInput, module->getDataSymbolTable(), program_id);
+
+        cout << "Wrote generated structs to " << filename << endl;
+    }
+
+    ProcedureVisitor procedureVisitor(module, &builder, &extTable);
     procedureVisitor.visitProgram(ast);
 
     // insert return on init function
@@ -149,9 +151,9 @@ int main(int argc, char **argv) {
     auto datalayout = TheTargetMachine->createDataLayout();
     module->setDataLayout(datalayout);
 
-    auto Filename = "output.o";
+    auto filename = "output.o";
     std::error_code EC;
-    raw_fd_ostream dest(Filename, EC, sys::fs::OF_None);
+    raw_fd_ostream dest(filename, EC, sys::fs::OF_None);
 
     if (EC) {
         errs() << "Could not open file: " << EC.message();
@@ -169,26 +171,21 @@ int main(int argc, char **argv) {
     pass.run(*module);
     dest.flush();
 
-    llvm::outs() << "Wrote " << Filename << "\n";
+    llvm::outs() << "Wrote " << filename << "\n";
 
-    if (presentInArgs(argc, argv,"-generate-structs")) {
-        generateStructs(module->getDataSymbolTable());
+    const string executableName = "exec";
+    string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
+
+    cout << "Linking objects and creating executable" << endl;
+    for (auto &element: externalFiles) {
+        linkCommand.append(" ");
+        linkCommand.append(element);
     }
 
-    if (!presentInArgs(argc, argv,"-generate-structs")) {
-        const string executableName = "exec";
-        string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
+    auto result = exec(linkCommand);
 
-        cout << "Linking objects and creating executable" << endl;
-        for (auto &element: externalFiles) {
-            linkCommand.append(" ");
-            linkCommand.append(element);
-        }
+    std::cout << "Done." << std::endl << "Wrote executable to file: " << executableName << std::endl;
 
-        auto result = exec(linkCommand);
-
-        std::cout << "Done." << std::endl << "Wrote executable to file: " << executableName << std::endl;
-    }
     return 0;
 }
 

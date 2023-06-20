@@ -59,10 +59,12 @@ add_executable(output main.cpp
         Crossover_bstd_lib/src/numutils.c
         Crossover_bstd_lib/src/arithmetic.c
 
+        src/visitor/IdentificationVisitor.cpp
+        src/visitor/IdentificationVisitor.h
         src/visitor/DataDivisionVisitor.cpp
         src/visitor/DataDivisionVisitor.h
-        src/visitor/Visitor.cpp
-        src/visitor/Visitor.h
+        src/visitor/ProcedureVisitor.cpp
+        src/visitor/ProcedureVisitor.h
         src/ir/bcmodule.cpp
         src/Exceptions/NotImplemented.h
         src/Exceptions/CompileException.h
