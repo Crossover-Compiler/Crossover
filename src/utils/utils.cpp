@@ -10,6 +10,22 @@ using namespace std;
 
 namespace utils{
 
+    void genField(string* targetText, Field* field) {
+        if (field->isNumber()) {
+            targetText->append("bstd_number* ");
+            targetText->append(field->getName());
+            targetText->append(";\t\t// expected format:\t");
+            targetText->append(field->getMask());
+            targetText->append("\r\n");
+        } else {
+            targetText->append("bstd_picture* ");
+            targetText->append(field->getName());
+            targetText->append(";\t\t// expected format:\t");
+            targetText->append(field->getMask());
+            targetText->append("\r\n");
+        }
+    }
+
     string generateSubStruct(string* ancestorsPtr, Record *record) {
 
         string result;
@@ -17,7 +33,7 @@ namespace utils{
         result.append("typedef struct");
         result.append(" ");
         result.append(*ancestorsPtr);
-        result.append("_t {");
+        result.append(" {");
 
         vector<DataEntry*> children = record->getChildren();
 
@@ -25,38 +41,22 @@ namespace utils{
 
             result.append("\n\t");
 
-            if(auto record = dynamic_cast<Record*>(child)){
+            if(auto rec = dynamic_cast<Record*>(child)){
 
                 string ancestors = *ancestorsPtr;
                 result.append(ancestors);
                 result.append("_");
-                result.append(record->getName());
-                result.append("_t* ");
-                result.append(record->getName());
+                result.append(rec->getName());
+                result.append("* ");
+                result.append(rec->getName());
                 result.append(";");
                 ancestors.append("_");
-                ancestors.append(record->getName());
-                result.insert(0, generateSubStruct(&ancestors ,record)); // generate substructs recursively and prepend to result
+                ancestors.append(rec->getName());
+                result.insert(0, generateSubStruct(&ancestors ,rec)); // generate substructs recursively and prepend to result
 
             } else if(auto field = dynamic_cast<Field*>(child)){
-
-                if(field->isNumber()) {
-
-                    result.append("bstd_number* ");
-                    result.append(field->getName());
-                    result.append("; // expected format: ");
-                    result.append(field->getMask());
-
-                } else {
-
-                    result.append("bstd_picture* ");
-                    result.append(field->getName());
-                    result.append("; // expected format: ");
-                    result.append(field->getMask());
-                }
-
+                genField(&result, field);
             }
-
         }
 
         result.append("\n} ");
@@ -65,7 +65,7 @@ namespace utils{
         return result;
     }
 
-    std::string generateStructs(const std::string& source, const map<string, DataEntry*>& symbol_table, const std::string& program_id) {
+    string generateStructs(const string& source, const map<string, DataEntry*>& symbol_table, const string& program_id) {
 
         std::string filename = program_id + ".h";
 
@@ -76,8 +76,12 @@ namespace utils{
                             "* compiler version\t:\t" CROSSOVER_VERSION "\r\n"
                             "* source file\t\t:\t" + source + "\r\n"
                             "*/\r\n"
-                            "#include \"../Crossover_bstd_lib/include/number.h\"\r\n"
-                            "#include \"../Crossover_bstd_lib/include/picture.h\"\r\n";
+
+                            "// ***\r\n"
+                            "// Include headers for the BSTD types here e.g.:\r\n"
+                            "//#include \"../Crossover_bstd_lib/include/number.h\"\r\n"
+                            "//#include \"../Crossover_bstd_lib/include/picture.h\"\r\n"
+                            "// ***\r\n";
 
         string middleLines = "\n";
         string lastLines = "\n";
@@ -92,7 +96,7 @@ namespace utils{
 
                 lastLines.append("typedef struct ");
                 lastLines.append(struct_name);
-                lastLines.append("_t {");
+                lastLines.append(" {");
 
                 vector<DataEntry*> children = record->getChildren();
 
@@ -105,7 +109,7 @@ namespace utils{
                         lastLines.append(struct_name);
                         lastLines.append("_");
                         lastLines.append(child_record->getName());
-                        lastLines.append("_t* ");
+                        lastLines.append("* ");
                         lastLines.append(child_record->getName());
                         lastLines.append(";");
 
@@ -115,23 +119,7 @@ namespace utils{
                         middleLines.append(generateSubStruct(&currentPath, child_record));
 
                     } else if(auto field = dynamic_cast<Field*>(child)) {
-
-                        if(field->isNumber()) {
-
-                            lastLines.append("bstd_number* ");
-                            lastLines.append(field->getName());
-                            lastLines.append(";\t\t// mask:\t");
-                            lastLines.append(field->getMask());
-                            lastLines.append("\r\n");
-
-                        } else {
-
-                            lastLines.append("bstd_picture* ");
-                            lastLines.append(field->getName());
-                            lastLines.append(";\t\t// mask:\t");
-                            lastLines.append(field->getMask());
-                            lastLines.append("\r\n");
-                        }
+                        genField(&lastLines, field);
                     }
 
                 }
@@ -140,24 +128,7 @@ namespace utils{
                 lastLines.append("_t;\n\n");
 
             } else if(auto field = dynamic_cast<Field*>(dataEntry)) {
-
-                if(field->isNumber()) {
-
-                    lastLines.append("bstd_number* ");
-                    lastLines.append(field->getName());
-                    lastLines.append(";\t\t// mask:\t");
-                    lastLines.append(field->getMask());
-                    lastLines.append("\r\n");
-
-                } else {
-
-                    lastLines.append("bstd_picture* ");
-                    lastLines.append(field->getName());
-                    lastLines.append(";\t\t// mask:\t");
-                    lastLines.append(field->getMask());
-                    lastLines.append("\r\n");
-
-                }
+                genField(&lastLines, field);
             }
 
         }
@@ -172,6 +143,9 @@ namespace utils{
 
         return filename;
     }
+
+
+
 
     bool presentInArgs(int argc, char** argv, string element){
         for(int i = 0; i < argc; ++i){
