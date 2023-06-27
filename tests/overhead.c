@@ -3,6 +3,7 @@
 //
 #include <stdio.h>
 #include <malloc.h>
+#include "../Crossover_bstd_lib/include/number.h"
 
 char** foo() {
 
@@ -16,3 +17,11 @@ char** foo() {
 
     return res;
 }
+
+void DO_NOTHING(bstd_number* n) {}
+
+void DO_NOTHING_VALUE(bstd_number n) {}
+
+void DO_NOTHING_PRIM_VALUE(int n) {}
+
+void DO_NOTHING_PRIM_REF(int* n) {}

@@ -17,6 +17,10 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/Target/TargetOptions.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
+#include "llvm/Transforms/Utils.h"
 
 #include "llvm/ADT/Optional.h"
 #include "llvm/IR/DerivedTypes.h"
@@ -168,10 +172,17 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Promote allocas to registers.
+    pass.add(createPromoteMemoryToRegisterPass());
+    // Do simple "peephole" optimizations and bit-twiddling optimizations.
+    pass.add(createInstructionCombiningPass());
+    // Reassociate expressions.
+    pass.add(createReassociatePass());
+
     pass.run(*module);
     dest.flush();
 
-    llvm::outs() << "Wrote " << filename << "\n";
+    std::cout << "Wrote " << filename << "\n";
 
     const string executableName = "exec";
     string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;

@@ -15,7 +15,7 @@ level               :   int; // todo: should be exactly two numbers
 mask            :   IDENTIFIER | INT;
 
 procedure       :   PROCEDURE DIVISION DOT paragraph*;
-paragraph       :   label (USING atomic+)? DOT sentence+;
+paragraph       :   label (USING atomic+)? DOT sentence*;
 
 sentence        :   statement+ DOT;
 

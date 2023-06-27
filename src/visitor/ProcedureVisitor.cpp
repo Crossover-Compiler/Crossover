@@ -393,7 +393,6 @@ std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBo
 
     // todo: replace the hard coded statements with the one above
     auto c = builder->CreateNumberToIntPtrCall(lhs);
-    auto marshalled_lhs = builder->CreateLoad(int64t, c);
 
     // visit rhs
     auto a = visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->right);
@@ -408,7 +407,7 @@ std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBo
 //    }
 
     // todo: remove this hard coded comparison
-    return this->builder->CreateICmpSLT(marshalled_lhs, rhs);
+    return this->builder->CreateICmpSLT(c, rhs);
 }
 
 std::any ProcedureVisitor::visitWhileLoopExp(BabyCobolParser::WhileLoopExpContext *ctx) {
