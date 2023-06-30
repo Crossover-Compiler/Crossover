@@ -11,6 +11,34 @@
 #include "../../include/model/PictureField.h"
 #include "../../include/model/NumberField.h"
 
+static void codegen(BCBuilder* builder, BCModule* module, DataEntry* dataEntry) {
+
+    if (dataEntry->isRecord()) {
+        for (auto child : dynamic_cast<Record*>(dataEntry)->getChildren()) {
+            codegen(builder, module, child);
+        }
+    }
+
+    dataEntry->codegen(builder, module, true);
+}
+
+std::any DataDivisionVisitor::visitProgram(BabyCobolParser::ProgramContext *ctx) {
+
+    // collect our data entries
+    visit(ctx->dataDivision());
+
+    // codegen the resulting symbol table
+    for (const pair<basic_string<char>, DataEntry*> tableEntry : this->module->data_entry_shadow_symbol_table) {
+
+        DataEntry* dataEntry = tableEntry.second;
+
+        // depth-first traverse the data entries
+        codegen(this->builder, this->module, dataEntry);
+    }
+
+    return nullptr;
+}
+
 std::any DataDivisionVisitor::visitLine(BabyCobolParser::LineContext *ctx) {
 
     if (auto f = ctx->field()) {
@@ -77,8 +105,6 @@ std::any DataDivisionVisitor::visitField(BabyCobolParser::FieldContext *ctx) {
         module->data_entry_shadow_symbol_table.insert({ field->getName(), field });
     }
 
-    field->codegen(builder, module, true);
-
     return nullptr;
 }
 
@@ -107,8 +133,6 @@ std::any DataDivisionVisitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
     }
 
     current_record = record;
-
-    record->codegen(builder, module, true);
 
     return nullptr;
 }

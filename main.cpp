@@ -102,9 +102,7 @@ int main(int argc, char **argv) {
 
         const std::string filename = generateStructs(bcInputs[0], module->getDataSymbolTable(), program_id);
 
-        if (configuration.verbose) {
-            cout << "Wrote generated structs to " << filename << endl;
-        }
+        cout << "Wrote generated structs to " << filename << endl;
     }
 
     ProcedureVisitor procedureVisitor(module, &builder, &extTable);
@@ -146,6 +144,8 @@ int main(int argc, char **argv) {
         module->print(file, nullptr, false, configuration.debug);
 
         file.close();
+
+        std::cout << "Wrote LLVM IR to " << configuration.emit_llvm << std::endl;
     }
 
     // The following code allows us to compile the IR into C object files

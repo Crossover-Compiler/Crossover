@@ -53,7 +53,9 @@ llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, bool global
     // assign children this record struct
     std::vector<llvm::Value *> indices(values.size());
     llvm::Value *offset = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, 0, false));
+
     for (int i = 0; i < values.size(); ++i) {
+
         indices[i] = llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(32, i, false));
 
         // store value to field of struct

@@ -21,6 +21,8 @@ public:
             builder(builder),
             current_record(nullptr) {}
 
+    std::any visitProgram(BabyCobolParser::ProgramContext *ctx) override;
+
     std::any visitLine(BabyCobolParser::LineContext *ctx) override;
 
     std::any visitField(BabyCobolParser::FieldContext *ctx) override;
