@@ -15,7 +15,7 @@
 #define FLAG_VERBOSE            "--verbose"         // print more messages to STD out
 #define FLAG_VERBOSE_SHORT      "-v"
 #define FLAG_NOT_MAIN           "--no-entry"        // specifies that the entry point for the executable artefact is in one of the linked objects (see --link).
-#define FLAG_GEN_STRUCTS        "--generate-structs"// generates the C headers from BabayCobol data divisions in the source files
+#define FLAG_GEN_STRUCTS        "--generate-structs"// generates the C headers from BabyCobol data divisions in the source files
 #define FLAG_GEN_STRUCTS_SHORT  "-g"
 #define FLAG_LINK_OBJECTS       "--link"            // the object files we want to include when linking
 #define FLAG_LINK_OBJECTS_SHORT "-l"
