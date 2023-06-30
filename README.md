@@ -36,15 +36,25 @@ The BabyCobol standard library (bstd) is used both during compilation and runtim
 # Using the compiler
 
 ```
-USAGE: crossover babycobolsourcefile [options]
+USAGE: crossover <src...> <options>
 
-Options:
+Where <src...> are the space-separated (relative) paths to the BabyCobol source files. Does not support directories.
 
---external objectfiles... : Allows user to supply compiler with .o files.
+OPTIONS:
 
--generate-structs : Generates c structs from babycobol record types.
+--help, -?, -🤔: Display a help message and exit.
 
--not-main : If this option is present the babycobol file needs an entry point "main" procedure.
+--verbose, -v: Print more messages to STD out.
+
+-emit-llvm <filename>: Writes the generated LLVM IR to the specified file.
+
+--debug, -d: Include debug symbols in the executable artefact.
+
+--link <filename...>, -l <filename...>: Specifies the object files to include in linking.
+
+--generate-structs, -g: If set, crossover will generate C headers for the data divisions in the BabyCobol source files.
+
+--no-entry : specifies that the entry point of the executable artefact is in the specified object files (see --link).
 ```
 
 # Programming guide

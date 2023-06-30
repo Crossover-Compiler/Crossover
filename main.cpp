@@ -41,12 +41,18 @@ using namespace utils;
 
 int main(int argc, char **argv) {
 
+    const auto configuration = utils::getConfiguration(argc, argv);
+
+    if (configuration.help) {
+        cout << MSG_HELP << endl;
+        return 0;
+    }
+
     cout << "crossover " << CROSSOVER_VERSION << endl;
 
     // build external symbol map
-    vector<string> externalFiles = utils::getArgumentParams(argc, argv, "--external");
     map<string,vector<string>> extTable;
-    for (auto & element : externalFiles) {
+    for (auto & element : configuration.link_objects) {
         string execCommand = "nm --demangle ";
         string nmOutput = exec(execCommand.append(element));
         vector<string> textSymbols = utils::extractTextSymbols(nmOutput); // gather all T and t
@@ -55,14 +61,18 @@ int main(int argc, char **argv) {
     }
     // end build external symbol map
 
-    string bcInput = argv[1];
+    vector<string> bcInputs = configuration.src_files;
 
     ifstream stream;
 
-    stream.open(bcInput);
+    // todo: support multiple source files
+    stream.open(bcInputs[0]);
+
     if (!stream.is_open()) {
-        throw CompileException("File \"" + bcInput + "\" not found");
+        throw CompileException("File \"" + bcInputs[0] + "\" not found");
     }
+
+    std::cout << "Compiling..." << std::endl;
 
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
@@ -89,15 +99,15 @@ int main(int argc, char **argv) {
     DataDivisionVisitor dataDivisionVisitor(module, &builder);
     dataDivisionVisitor.visitProgram(ast);
 
-    const bool generate_structs = presentInArgs(argc, argv, "-generate-structs");
-
-    if (generate_structs) {
+    if (configuration.generate_structs) {
 
         const std::string program_id = identificationVisitor.getProgramId();
 
-        const std::string filename = generateStructs(bcInput, module->getDataSymbolTable(), program_id);
+        const std::string filename = generateStructs(bcInputs[0], module->getDataSymbolTable(), program_id);
 
-        cout << "Wrote generated structs to " << filename << endl;
+        if (configuration.verbose) {
+            cout << "Wrote generated structs to " << filename << endl;
+        }
     }
 
     ProcedureVisitor procedureVisitor(module, &builder, &extTable);
@@ -108,19 +118,38 @@ int main(int argc, char **argv) {
     builder.CreateRetVoid();
 
     // insert call to initialize function if BabyCobol is the entry point
-    if (!presentInArgs(argc, argv, "-not-main")) {
+    if (!configuration.not_main) {
         if (auto main_procedure = module->findProcedure(LABEL_MAIN)) {
             builder.SetInsertPoint(&main_procedure->getBasicBlockList().front().front());
             builder.CreateCall(init_function);
         } else {
-            cout << "Could not find entry point \"" << LABEL_MAIN << "\"! If this is intentional, please specify the -not-main compiler flag." << endl;
-            return 0xD5;
+            if (configuration.verbose) {
+                cout << "Could not find entry point \"" << LABEL_MAIN
+                     << "\"! If this is intentional, please specify the -not-main compiler flag." << endl;
+            }
         }
     }
 
-    cout << "Finished Compiling!" << endl;
+    if (configuration.verbose) {
+        cout << "Finished compiling." << endl;
+    }
 
-    module->print(llvm::outs(), nullptr);
+    if (!configuration.emit_llvm.empty()) {
+
+        std::error_code error;
+        raw_fd_ostream file(configuration.emit_llvm, error, sys::fs::OF_None);
+
+        if (error) {
+
+            errs() << "Failed to write LLVM IR: " << error.message();
+
+            return error.value();
+        }
+
+        module->print(file, nullptr, false, configuration.debug);
+
+        file.close();
+    }
 
     // The following code allows us to compile the IR into C object files
 
@@ -139,7 +168,6 @@ int main(int argc, char **argv) {
     // Print an error and exit if we couldn't find the requested target.
     // This generally occurs if we've forgotten to initialise the
     // TargetRegistry or we have a bogus target triple.
-
     if (!Target) {
         errs() << Error;
         return 1;
@@ -180,22 +208,30 @@ int main(int argc, char **argv) {
     pass.add(createReassociatePass());
 
     pass.run(*module);
-    dest.flush();
 
-    std::cout << "Wrote " << filename << "\n";
+    dest.close();
+
+    if (configuration.verbose) {
+        std::cout << "Wrote " << filename << "\n";
+    }
+
+    std::cout << "Linking objects and creating executable..." << endl;
 
     const string executableName = "exec";
     string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
 
-    cout << "Linking objects and creating executable" << endl;
-    for (auto &element: externalFiles) {
+    for (auto &element : configuration.link_objects) {
         linkCommand.append(" ");
         linkCommand.append(element);
     }
 
     auto result = exec(linkCommand);
 
-    std::cout << "Done." << std::endl << "Wrote executable to file: " << executableName << std::endl;
+    if (configuration.verbose) {
+        std::cout << "Done." << std::endl;
+    }
+
+    std::cout << "Wrote executable to file: " << executableName << std::endl;
 
     return 0;
 }

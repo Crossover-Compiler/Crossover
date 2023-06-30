@@ -2,9 +2,11 @@
 // Created by bruh on 14-11-22.
 //
 
+#include <list>
 #include "../../include/utils/utils.h"
 #include "../Exceptions/CompileException.h"
 #include "../../config.h"
+#include <spdlog/spdlog.h>
 
 using namespace std;
 
@@ -144,16 +146,177 @@ namespace utils{
         return filename;
     }
 
+    /**
+     * Check program arguments for presence of the specified flags.
+     *
+     * @param argc The program argument count.
+     * @param argv The program arguments.
+     * @param flags The flags to check for presence.
+     * @return Returns true if any of the specified flags is present in the specified program arguments.
+     */
+    static bool hasFlag(int argc, char** argv, const std::initializer_list<std::string>& flags) {
 
+        for (int i = 0; i < argc; ++i) {
+            for (const string& flag: flags) {
 
-
-    bool presentInArgs(int argc, char** argv, string element){
-        for(int i = 0; i < argc; ++i){
-            if (argv[i] == element){
-                return true;
+                if (argv[i] == flag) {
+                    return true;
+                }
             }
         }
+
         return false;
+    }
+
+    /**
+     * Check program arguments for presence of the specified flag.
+     *
+     * @param argc The program argument count.
+     * @param argv The program arguments.
+     * @param flag The flag to check for presence.
+     * @return Returns true if the specified flag is present in the specified program arguments.
+     */
+    static bool hasFlag(int argc, char** argv, const std::string& flag) {
+        return hasFlag(argc, argv, {flag});
+    }
+
+    /**
+      * Get a single program argument for a given flag.
+      *
+      * @example If the program arguments are [arg0 arg1 --flag0 arg2 arg3 --flag1 arg4], then getFlagArgument(..., ..., "--flag1") returns [arg4].
+      * @param argc The number of program arguments.
+      * @param argv The program arguments.
+      * @param flag The flag for which to collect its argument
+      * @return Returns the argument for this flag, or an empty string if there is no argument or the flag is not present in the program arguments.
+      */
+    static string getFlagArgument(int argc, char** argv, const string& flag) {
+
+        // arguments start at index 1
+        for (int i = 1; i < argc; ++i) {
+
+            if (argv[i] == flag) {
+
+                if (i + 1 >= argc) {
+                    spdlog::warn("No argument provided for flag %s", flag);
+                    return "";
+                }
+
+                const std::string& arg = argv[i + 1];
+
+                // if the "argument" starts with a dash, we interpret it as the next flag; we warn that we expected to find an argument here.
+                if (arg[0] == '-') {
+                    spdlog::warn("No argument is provided, but expected one for flag %s", flag);
+                    return "";
+                }
+
+                return arg;
+            }
+        }
+
+        return "";
+    }
+
+    /**
+      * Get the programs arguments for the given flag synonyms.
+      *
+      * @example If the program arguments are [arg0 arg1 --flag0 arg2 arg3 --flag1 arg4], then getFlagArguments(..., ..., { "--flag0", "-f0"}) returns [arg2, arg3].
+      * Similarly, if the program arguments are [arg0 arg1 --f0 arg2 arg3 --flag1 arg4], then getFlagArguments(..., ..., { "--flag0", "-f0"}) also returns [arg2, arg3].
+      * In other words, "--flag0" and "-f0" are synonyms.
+      * @param argc The number of program arguments.
+      * @param argv The program arguments.
+      * @param flag The flag for which to collect its arguments
+      * @return Returns the arguments for this flag in-order, or an empty vector if there are no arguments or the flag is not present in the program arguments.
+      */
+    static vector<std::string> getFlagArguments(int argc, char** argv, const std::initializer_list<std::string>& flags) {
+
+        // arguments start at index 1
+        for (int i = 1; i < argc; ++i) {
+
+            for (const std::string& flag : flags) {
+
+                if (argv[i] == flag) {
+
+                    vector<string> arguments;
+
+                    // collect program arguments for the matched flag
+                    for (int j = i + 1; j < argc; ++j) {
+
+                        const std::string &arg = argv[j];
+
+                        // if the "argument" starts with a dash, we interpret it as the next flag; we've gathered all params for our target.
+                        if (arg[0] == '-') {
+                            break;
+                        }
+
+                        arguments.push_back(arg);
+                    }
+
+                    if (arguments.empty()) {
+                        spdlog::warn("No arguments provided for flag %s", flag);
+                    }
+
+                    return arguments;
+                }
+            }
+        }
+
+        return {};
+    }
+
+    /**
+      * Get the programs arguments for a given flag.
+      *
+      * @example If the program arguments are [arg0 arg1 --flag0 arg2 arg3 --flag1 arg4], then getFlagArguments(..., ..., "--flag0") returns [arg2, arg3].
+      * @param argc The number of program arguments.
+      * @param argv The program arguments.
+      * @param flag The flag for which to collect its arguments
+      * @return Returns the arguments for this flag in-order, or an empty vector if there are no arguments or the flag is not present in the program arguments.
+      */
+    static vector<string> getFlagArguments(int argc, char** argv, const std::string& flag) {
+        return getFlagArguments(argc, argv, { flag });
+    }
+
+
+    /**
+      * Get the first programs arguments with no flag.
+      *
+      * @example If the program arguments are [arg0 arg1 --flag0 arg2 arg3 --flag1 arg4], then getDefaultArguments(..., ...) returns [arg0, arg1].
+      * @param argc The number of program arguments.
+      * @param argv The program arguments.
+      * @return Returns the default program arguments in-order, or an empty vector if there are no default program arguments.
+      */
+    static vector<string> getDefaultArguments(int argc, char** argv) {
+
+        vector<string> arguments;
+
+        // arguments start at index 1
+        for (int i = 1; i < argc; ++i) {
+
+            // collect default program arguments until the first flag
+            const std::string& arg = argv[i];
+
+            // if the "argument" starts with a dash, we interpret it as the next flag; we've gathered all params for our target.
+            if (arg[0] == '-') {
+                break;
+            }
+
+            arguments.push_back(arg);
+        }
+
+        return arguments;
+    }
+
+    configuration_t getConfiguration(int argc, char** argv) {
+        return configuration_t {
+            .src_files = getDefaultArguments(argc, argv),
+            .help = hasFlag(argc, argv, { FLAG_HELP, FLAG_HELP_SHORT, FLAG_HELP_UNHELPFUL }),
+            .verbose = hasFlag(argc, argv, { FLAG_VERBOSE, FLAG_VERBOSE_SHORT }),
+            .not_main = hasFlag(argc, argv, FLAG_NOT_MAIN),
+            .generate_structs = hasFlag(argc, argv, { FLAG_GEN_STRUCTS, FLAG_GEN_STRUCTS_SHORT }),
+            .link_objects = getFlagArguments(argc, argv, { FLAG_LINK_OBJECTS, FLAG_LINK_OBJECTS_SHORT }),
+            .emit_llvm = getFlagArgument(argc, argv, FLAG_EMIT_LLVM),
+            .debug = hasFlag(argc, argv, { FLAG_EMIT_DEBUG, FLAG_EMIT_DEBUG_SHORT }),
+        };
     }
 
     std::string exec(string cmdstr) {
@@ -169,21 +332,6 @@ namespace utils{
         }
         return result;
     }
-
-    vector<string> getArgumentParams(int argc, char** argv, string arg){
-        vector<string> result;
-        bool argSeen = false;
-        for(int i = 0; i < argc; ++i){
-            std::string current = argv[i];
-            if (argv[i] == arg){
-                argSeen = true;
-            }
-            else if (argSeen && current.rfind("--", 0) != 0 && current.rfind("-", 0) != 0){
-                result.push_back(current);
-            }
-        }
-        return result;
-    };
 
     vector<string> split(string& s, string delimiter) {
         size_t pos_start = 0, pos_end, delim_len = delimiter.length();
