@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
         throw CompileException("File \"" + bcInputs[0] + "\" not found");
     }
 
-    std::cout << "Compiling..." << std::endl;
+    std::cout << "Compiling first stage..." << std::endl;
 
     ANTLRInputStream input(stream);
     BabyCobolLexer lexer(&input);
@@ -123,10 +123,6 @@ int main(int argc, char **argv) {
                      << "\"! If this is intentional, please specify the -not-main compiler flag." << endl;
             }
         }
-    }
-
-    if (configuration.verbose) {
-        cout << "Finished compiling." << endl;
     }
 
     if (!configuration.emit_llvm.empty()) {
@@ -203,6 +199,8 @@ int main(int argc, char **argv) {
     pass.add(createInstructionCombiningPass());
     // Reassociate expressions.
     pass.add(createReassociatePass());
+
+    std::cout << "Compiling second stage..." << std::endl;
 
     pass.run(*module);
 
