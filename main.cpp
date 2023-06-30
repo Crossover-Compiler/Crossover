@@ -213,7 +213,7 @@ int main(int argc, char **argv) {
     std::cout << "Linking objects and creating executable..." << endl;
 
     const string executableName = "exec";
-    string linkCommand = "clang output.o libbstd.a -lm -o  " + executableName;
+    string linkCommand = "clang output.o -lbstd -lm -o  " + executableName;
 
     for (auto &element : configuration.link_objects) {
         linkCommand.append(" ");

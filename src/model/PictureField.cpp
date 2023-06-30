@@ -6,7 +6,7 @@
 #include "../../include/ir/BCBuilder.h"
 
 extern "C" {
-    #include "../../Crossover_bstd_lib/include/picutils.h"
+    #include <bstd/picutils.h>
 }
 
 llvm::Value* PictureField::codegen(BCBuilder *builder, BCModule *bcModule, bool global) {

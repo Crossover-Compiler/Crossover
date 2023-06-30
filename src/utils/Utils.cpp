@@ -79,9 +79,9 @@ namespace utils{
                             "*/\r\n"
 
                             "// ***\r\n"
-                            "// Include headers for the BSTD types here e.g.:\r\n"
-                            "//#include \"../Crossover_bstd_lib/include/number.h\"\r\n"
-                            "//#include \"../Crossover_bstd_lib/include/picture.h\"\r\n"
+                            "// BSTD headers\r\n"
+                            "#include <bstd/number.h>\r\n"
+                            "#include <bstd/picture.h>\r\n"
                             "// ***\r\n";
 
         string middleLines = "\n";

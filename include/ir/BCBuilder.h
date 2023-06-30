@@ -6,11 +6,10 @@
 #define CROSSOVER_BCBUILDER_H
 
 #include <llvm/IR/IRBuilder.h>
-#include "../../Crossover_bstd_lib//include/number.h"
 #include "BCModule.h"
-#include "../../Crossover_bstd_lib/include/picture.h"
 #include "../antlr/BabyCobolParser.h"
 #include <string>
+#include <bstd/bstd.h>
 
 class BCBuilder : public llvm::IRBuilder<> {
 
