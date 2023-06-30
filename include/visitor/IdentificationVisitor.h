@@ -5,7 +5,7 @@
 #ifndef CROSSOVER_IDENTIFICATIONVISITOR_H
 #define CROSSOVER_IDENTIFICATIONVISITOR_H
 
-#include "../../include/antlr/BabyCobolBaseVisitor.h"
+#include "../antlr/BabyCobolBaseVisitor.h"
 #include <map>
 #include <string>
 

@@ -2,8 +2,8 @@
 // Created by manzi on 6/19/23.
 //
 
-#include "NumberField.h"
-#include "../../include/ir/bcbuilder.h"
+#include "../../include/model/NumberField.h"
+#include "../../include/ir/BCBuilder.h"
 
 llvm::Value* NumberField::codegen(BCBuilder *builder, BCModule *bcModule, bool global) {
 

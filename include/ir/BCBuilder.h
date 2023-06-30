@@ -7,7 +7,7 @@
 
 #include <llvm/IR/IRBuilder.h>
 #include "../../Crossover_bstd_lib//include/number.h"
-#include "bcmodule.h"
+#include "BCModule.h"
 #include "../../Crossover_bstd_lib/include/picture.h"
 #include "../antlr/BabyCobolParser.h"
 #include <string>

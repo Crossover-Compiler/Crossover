@@ -4,8 +4,8 @@
 
 #ifndef CROSSOVER_UTILS_H
 #define CROSSOVER_UTILS_H
-#include "../../src/datastructures/Record.h"
-#include "../../src/datastructures/Field.h"
+#include "../model/Record.h"
+#include "../model/Field.h"
 #include <fstream>
 #include <map>
 #include "../../config.h"

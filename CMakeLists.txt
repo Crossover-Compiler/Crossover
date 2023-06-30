@@ -60,39 +60,39 @@ add_executable(output main.cpp
         Crossover_bstd_lib/src/arithmetic.c
 
         src/visitor/IdentificationVisitor.cpp
-        src/visitor/IdentificationVisitor.h
+        include/visitor/IdentificationVisitor.h
         src/visitor/DataDivisionVisitor.cpp
-        src/visitor/DataDivisionVisitor.h
+        include/visitor/DataDivisionVisitor.h
         src/visitor/ProcedureVisitor.cpp
-        src/visitor/ProcedureVisitor.h
-        src/ir/bcmodule.cpp
-        src/Exceptions/NotImplemented.h
-        src/Exceptions/CompileException.h
-        src/datastructures/DataEntry.cpp
-        src/datastructures/DataEntry.h
+        include/visitor/ProcedureVisitor.h
+        src/ir/BCModule.cpp
+        include/exception/NotImplemented.h
+        include/exception/CompileException.h
+        src/model/DataEntry.cpp
+        include/model/DataEntry.h
         include/antlr/BabyCobolLexer.h
         include/antlr/BabyCobolLexer.cpp
         include/antlr/BabyCobolParser.h
-        include/ir/bcmodule.h
+        include/ir/BCModule.h
         include/antlr/BabyCobolParser.cpp
-        src/Exceptions/CompileException.h
-        src/datastructures/Field.cpp
-        src/datastructures/Field.h
-        src/datastructures/NumberField.cpp
-        src/datastructures/NumberField.h
-        src/datastructures/PictureField.cpp
-        src/datastructures/PictureField.h
-        src/datastructures/Record.cpp
-        src/datastructures/Record.h
-        include/utils/utils.h
-        src/utils/utils.cpp
-        src/Exceptions/CompileException.h
-        src/datastructures/Field.cpp
-        src/datastructures/Field.h
-        src/datastructures/Record.cpp
-        src/datastructures/Record.h
-        include/ir/bcbuilder.h
-        src/ir/bcbuilder.cpp)
+        include/exception/CompileException.h
+        src/model/Field.cpp
+        include/model/Field.h
+        src/model/NumberField.cpp
+        include/model/NumberField.h
+        src/model/PictureField.cpp
+        include/model/PictureField.h
+        src/model/Record.cpp
+        include/model/Record.h
+        include/utils/Utils.h
+        src/utils/Utils.cpp
+        include/exception/CompileException.h
+        src/model/Field.cpp
+        include/model/Field.h
+        src/model/Record.cpp
+        include/model/Record.h
+        include/ir/BCBuilder.h
+        src/ir/BCBuilder.cpp)
 
 llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
-target_link_libraries(output antlr4_static ${llvm_libs} spdlog::spdlog)
+target_link_libraries(crossover antlr4_static ${llvm_libs} spdlog::spdlog)

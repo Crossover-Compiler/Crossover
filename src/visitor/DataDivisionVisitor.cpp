@@ -2,16 +2,14 @@
 // Created by manzi on 6/19/23.
 //
 
-#include "DataDivisionVisitor.h"
-#include <llvm/IR/Value.h>
+#include "../../include/visitor/DataDivisionVisitor.h"
 #include <regex>
-#include "../datastructures/DataEntry.h"
-#include "../Exceptions/CompileException.h"
-#include "../datastructures/Field.h"
-#include "../../include/utils/utils.h"
-#include "../../include/ir/bcmodule.h"
-#include "../datastructures/PictureField.h"
-#include "../datastructures/NumberField.h"
+#include "../../include/exception/CompileException.h"
+#include "../../include/model/Field.h"
+#include "../../include/utils/Utils.h"
+#include "../../include/ir/BCModule.h"
+#include "../../include/model/PictureField.h"
+#include "../../include/model/NumberField.h"
 
 std::any DataDivisionVisitor::visitLine(BabyCobolParser::LineContext *ctx) {
 

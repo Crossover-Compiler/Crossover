@@ -3,9 +3,8 @@
 //
 
 #include <list>
-#include "../../include/utils/utils.h"
-#include "../Exceptions/CompileException.h"
-#include "../../config.h"
+#include "../../include/utils/Utils.h"
+#include "../../include/exception/CompileException.h"
 #include <spdlog/spdlog.h>
 
 using namespace std;
@@ -197,7 +196,7 @@ namespace utils{
             if (argv[i] == flag) {
 
                 if (i + 1 >= argc) {
-                    spdlog::warn("No argument provided for flag %s", flag);
+                    spdlog::warn("No argument provided for flag {}", flag);
                     return "";
                 }
 
@@ -205,7 +204,7 @@ namespace utils{
 
                 // if the "argument" starts with a dash, we interpret it as the next flag; we warn that we expected to find an argument here.
                 if (arg[0] == '-') {
-                    spdlog::warn("No argument is provided, but expected one for flag %s", flag);
+                    spdlog::warn("No argument is provided, but expected one for flag {}", flag);
                     return "";
                 }
 
@@ -252,7 +251,7 @@ namespace utils{
                     }
 
                     if (arguments.empty()) {
-                        spdlog::warn("No arguments provided for flag %s", flag);
+                        spdlog::warn("No arguments provided for flag {}", flag);
                     }
 
                     return arguments;

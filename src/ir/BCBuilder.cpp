@@ -1,6 +1,6 @@
 #include <iostream>
-#include "../../include/ir/bcbuilder.h"
-#include "../../include/utils/utils.h"
+#include "../../include/ir/BCBuilder.h"
+#include "../../include/utils/Utils.h"
 
 llvm::Constant *BCBuilder::asConstant(int n) {
     return llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, n, true));

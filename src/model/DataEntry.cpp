@@ -2,7 +2,7 @@
 // Created by manzi on 6/19/23.
 //
 
-#include "DataEntry.h"
+#include "../../include/model/DataEntry.h"
 
 llvm::Value *DataEntry::getValue() {
     return this->value;

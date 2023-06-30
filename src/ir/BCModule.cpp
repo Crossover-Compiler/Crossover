@@ -1,4 +1,4 @@
-#include "../../../Crossover/include/ir/bcmodule.h"
+#include "../../../Crossover/include/ir/BCModule.h"
 #include "spdlog/spdlog.h"
 #include "llvm/IR/IRBuilder.h"
 

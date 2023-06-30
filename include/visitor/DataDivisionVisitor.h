@@ -5,8 +5,8 @@
 #ifndef CROSSOVER_DATADIVISIONVISITOR_H
 #define CROSSOVER_DATADIVISIONVISITOR_H
 
-#include "../../include/antlr/BabyCobolBaseVisitor.h"
-#include "../datastructures/Record.h"
+#include "../antlr/BabyCobolBaseVisitor.h"
+#include "../model/Record.h"
 
 class DataDivisionVisitor : public BabyCobolBaseVisitor {
 

@@ -1,5 +1,5 @@
-#include "ProcedureVisitor.h"
-#include "../Exceptions/NotImplemented.h"
+#include "../../include/visitor/ProcedureVisitor.h"
+#include "../../include/exception/NotImplemented.h"
 #include <llvm/IR/Constants.h>
 #include <regex>
 #include "llvm/MC/TargetRegistry.h"
@@ -8,10 +8,10 @@
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/IR/ValueSymbolTable.h"
-#include "../Exceptions/CompileException.h"
-#include "../datastructures/Field.h"
-#include "../../include/utils/utils.h"
-#include "../datastructures/NumberField.h"
+#include "../../include/exception/CompileException.h"
+#include "../../include/model/Field.h"
+#include "../../include/utils/Utils.h"
+#include "../../include/model/NumberField.h"
 #include <algorithm>
 #include <cctype>
 

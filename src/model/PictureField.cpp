@@ -2,8 +2,8 @@
 // Created by manzi on 6/19/23.
 //
 
-#include "PictureField.h"
-#include "../../include/ir/bcbuilder.h"
+#include "../../include/model/PictureField.h"
+#include "../../include/ir/BCBuilder.h"
 
 extern "C" {
     #include "../../Crossover_bstd_lib/include/picutils.h"

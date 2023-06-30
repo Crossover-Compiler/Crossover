@@ -5,10 +5,10 @@
 #ifndef CROSSOVER_PROCEDUREVISITOR_H
 #define CROSSOVER_PROCEDUREVISITOR_H
 
-#include "../../include/antlr/BabyCobolBaseVisitor.h"
-#include "../../include/ir/bcmodule.h"
-#include "../../include/ir/bcbuilder.h"
-#include "../datastructures/DataEntry.h"
+#include "../antlr/BabyCobolBaseVisitor.h"
+#include "../ir/BCModule.h"
+#include "../ir/BCBuilder.h"
+#include "../model/DataEntry.h"
 #include <llvm/IR/IRBuilder.h>
 
 using namespace llvm;

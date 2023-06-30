@@ -3,9 +3,9 @@
 //
 
 #include <llvm/IR/DerivedTypes.h>
-#include "Record.h"
-#include "../Exceptions/CompileException.h"
-#include "../../include/ir/bcbuilder.h"
+#include "../../include/model/Record.h"
+#include "../../include/exception/CompileException.h"
+#include "../../include/ir/BCBuilder.h"
 
 std::string Record::toString() {
 

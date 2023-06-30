@@ -2,7 +2,7 @@
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/IR/IRBuilder.h"
-#include "../../src/datastructures/DataEntry.h"
+#include "../model/DataEntry.h"
 #include <map>
 #include <string>
 

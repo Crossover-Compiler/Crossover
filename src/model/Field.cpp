@@ -1,6 +1,6 @@
-#include "Field.h"
-#include "../Exceptions/CompileException.h"
-#include "../../include/ir/bcbuilder.h"
+#include "../../include/model/Field.h"
+#include "../../include/exception/CompileException.h"
+#include "../../include/ir/BCBuilder.h"
 
 void Field::setMask(std::string &m) {
     this->mask = m;

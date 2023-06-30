@@ -1,12 +1,12 @@
 #include <iostream>
-#include "src/visitor/ProcedureVisitor.h"
-#include "src/Exceptions/CompileException.h"
-#include "include/utils/utils.h"
+#include "include/visitor/ProcedureVisitor.h"
+#include "include/exception/CompileException.h"
+#include "include/utils/Utils.h"
 #include "include/antlr/BabyCobolParser.h"
 #include "include/antlr/BabyCobolLexer.h"
 #include "antlr4-runtime.h"
 #include <llvm/IR/BasicBlock.h>
-#include "include/ir/bcmodule.h"
+#include "include/ir/BCModule.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/LegacyPassManager.h"
@@ -19,15 +19,12 @@
 #include "llvm/Target/TargetOptions.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
 #include "llvm/Transforms/Scalar.h"
-#include "llvm/Transforms/Scalar/GVN.h"
 #include "llvm/Transforms/Utils.h"
-
 #include "llvm/ADT/Optional.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Type.h"
-#include "llvm/IR/Verifier.h"
-#include "src/visitor/DataDivisionVisitor.h"
-#include "src/visitor/IdentificationVisitor.h"
+#include "include/visitor/DataDivisionVisitor.h"
+#include "include/visitor/IdentificationVisitor.h"
 #include <map>
 #include <system_error>
 #include <vector>
@@ -228,10 +225,10 @@ int main(int argc, char **argv) {
     auto result = exec(linkCommand);
 
     if (configuration.verbose) {
-        std::cout << "Done." << std::endl;
+        std::cout << "Linking done." << std::endl;
     }
 
-    std::cout << "Wrote executable to file: " << executableName << std::endl;
+    std::cout << "Compilation successful. Wrote executable to file " << executableName << std::endl;
 
     return 0;
 }
