@@ -49,7 +49,7 @@ antlr_target(SampleGrammarLexer ${CMAKE_CURRENT_SOURCE_DIR}/grammar/BabyCobol.g4
 # include generated files in project environment
 include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
 
-add_executable(output main.cpp
+add_executable(crossover main.cpp
         Crossover_bstd_lib/include/picture.h
         Crossover_bstd_lib/include/number.h
         Crossover_bstd_lib/include/picutils.h
