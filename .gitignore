@@ -36,6 +36,8 @@
 build/
 /build/antlr4_runtime/src/antlr4_runtime/
 antlr4_runtime/
+gen
+grammar/gen
 
 cmake-build-debug/
 CMakeCache.txt
@@ -50,3 +52,5 @@ Makefile
 build.ninja
 
 out*/
+
+exec
