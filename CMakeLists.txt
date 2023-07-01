@@ -1,15 +1,14 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.7 FATAL_ERROR)
 project(crossover)
 
-# minimum required CMAKE version
-CMAKE_MINIMUM_REQUIRED(VERSION 3.7 FATAL_ERROR)
-
+set(CMAKE_CXX_STANDARD 17)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# add spdlog
+# find libraries
 find_package(spdlog REQUIRED)
-
-# add LLVM
 find_package(LLVM 15 REQUIRED CONFIG)
+
+# configure LLVM
 
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
@@ -17,16 +16,15 @@ message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 include_directories(${LLVM_INCLUDE_DIRS})
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
-# end add llvm
 
+llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
 
-set(CMAKE_CXX_STANDARD 17)
+# end configure llvm
 
-# required if linking to static library
-add_definitions(-DANTLR4CPP_STATIC)
+# configure ANTLR
 
-# using /MD flag for antlr4_runtime (for Visual C++ compilers only)
-set(ANTLR4_WITH_STATIC_CRT OFF)
+add_definitions(-DANTLR4CPP_SHARED)
+
 # add external build for antlrcpp
 include(ExternalAntlr4Cpp)
 # add antrl4cpp artifacts to project environment
@@ -39,26 +37,15 @@ set(ANTLR_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/antlr/antlr-4.11.1-c
 find_package(ANTLR REQUIRED)
 
 # Call macro to add lexer and grammar to your build dependencies.
-antlr_target(SampleGrammarLexer ${CMAKE_CURRENT_SOURCE_DIR}/grammar/BabyCobol.g4 LEXER
+antlr_target(BabyCobolLexer ${CMAKE_CURRENT_SOURCE_DIR}/grammar/BabyCobol.g4 LEXER
         PACKAGE build)
-#antlr_target(SampleGrammarParser TParser.g4 PARSER
-#        PACKAGE antlrcpptest
-#        DEPENDS_ANTLR SampleGrammarLexer
-#        COMPILE_FLAGS -lib ${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
 
 # include generated files in project environment
-include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
+include_directories(${ANTLR_BabyCobolLexer_OUTPUT_DIR})
+
+# end configure ANTLR
 
 add_executable(crossover main.cpp
-        Crossover_bstd_lib/include/picture.h
-        Crossover_bstd_lib/include/number.h
-        Crossover_bstd_lib/include/picutils.h
-        Crossover_bstd_lib/include/numutils.h
-        Crossover_bstd_lib/include/arithmetic.h
-        Crossover_bstd_lib/src/picutils.c
-        Crossover_bstd_lib/src/numutils.c
-        Crossover_bstd_lib/src/arithmetic.c
-
         src/visitor/IdentificationVisitor.cpp
         include/visitor/IdentificationVisitor.h
         src/visitor/DataDivisionVisitor.cpp
@@ -94,5 +81,4 @@ add_executable(crossover main.cpp
         include/ir/BCBuilder.h
         src/ir/BCBuilder.cpp)
 
-llvm_map_components_to_libnames(llvm_libs ${LLVM_TARGETS_TO_BUILD} support core irreader codegen mc mcparser option)
-target_link_libraries(crossover antlr4_static ${llvm_libs} spdlog::spdlog)
+target_link_libraries(crossover antlr4_shared ${llvm_libs} spdlog::spdlog bstd)

@@ -34,7 +34,6 @@ using namespace std;
 using namespace antlr4;
 using namespace llvm;
 using namespace llvm::sys;
-using namespace utils;
 
 int main(int argc, char **argv) {
 
@@ -51,9 +50,9 @@ int main(int argc, char **argv) {
     map<string,vector<string>> extTable;
     for (auto & element : configuration.link_objects) {
         string execCommand = "nm --demangle ";
-        string nmOutput = exec(execCommand.append(element));
+        string nmOutput = utils::exec(execCommand.append(element));
         vector<string> textSymbols = utils::extractTextSymbols(nmOutput); // gather all T and t
-        string programName = extractProgramNameFromPath(element); // get program name from the input
+        string programName = utils::extractProgramNameFromPath(element); // get program name from the input
         extTable.insert({programName, textSymbols});
     }
     // end build external symbol map
@@ -96,11 +95,11 @@ int main(int argc, char **argv) {
     DataDivisionVisitor dataDivisionVisitor(module, &builder);
     dataDivisionVisitor.visitProgram(ast);
 
+    const std::string program_id = identificationVisitor.getProgramId();
+
     if (configuration.generate_structs) {
 
-        const std::string program_id = identificationVisitor.getProgramId();
-
-        const std::string filename = generateStructs(bcInputs[0], module->getDataSymbolTable(), program_id);
+        const std::string filename = utils::generateStructs(bcInputs[0], module->getDataSymbolTable(), program_id);
 
         cout << "Wrote generated structs to " << filename << endl;
     }
@@ -176,9 +175,9 @@ int main(int argc, char **argv) {
     auto datalayout = TheTargetMachine->createDataLayout();
     module->setDataLayout(datalayout);
 
-    auto filename = "output.o";
+    auto object_filename = program_id + ".o";
     std::error_code EC;
-    raw_fd_ostream dest(filename, EC, sys::fs::OF_None);
+    raw_fd_ostream dest(object_filename, EC, sys::fs::OF_None);
 
     if (EC) {
         errs() << "Could not open file: " << EC.message();
@@ -207,26 +206,37 @@ int main(int argc, char **argv) {
     dest.close();
 
     if (configuration.verbose) {
-        std::cout << "Wrote " << filename << "\n";
+        std::cout << "Wrote " << object_filename << "\n";
     }
 
     std::cout << "Linking objects and creating executable..." << endl;
 
-    const string executableName = "exec";
-    string linkCommand = "clang output.o -lbstd -lm -o  " + executableName;
+    std::string executable_filename;
+
+    if (!configuration.out.empty()) {
+        executable_filename = configuration.out;
+    } else {
+        executable_filename = "exec";
+    }
+
+    std::string linkCommand = "clang -o " + executable_filename + " output.o -lbstd -lm";
 
     for (auto &element : configuration.link_objects) {
         linkCommand.append(" ");
         linkCommand.append(element);
     }
 
-    auto result = exec(linkCommand);
+    if (configuration.verbose) {
+        std::cout << linkCommand << std::endl;
+    }
+
+    auto result = utils::exec(linkCommand);
 
     if (configuration.verbose) {
         std::cout << "Linking done." << std::endl;
     }
 
-    std::cout << "Compilation successful. Wrote executable to file " << executableName << std::endl;
+    std::cout << "Compilation successful. Wrote executable to file " << executable_filename << std::endl;
 
     return 0;
 }

@@ -180,6 +180,47 @@ namespace utils{
     }
 
     /**
+      * Get a single program argument for the given flag synonyms.
+      *
+      * @example If the program arguments are [arg0 arg1 --flag0 arg2 arg3 --flag1 arg4], then getFlagArguments(..., ..., { "--flag1", "-f1"}) returns [arg4].
+      * Similarly, if the program arguments are [arg0 arg1 --flag0 arg2 arg3 --f1 arg4], then getFlagArgument(..., ..., { "--flag1", "-f1"}) also returns [arg4].
+      * In other words, "--flag1" and "-f1" are synonyms.
+      * @param argc The number of program arguments.
+      * @param argv The program arguments.
+      * @param flag The flag for which to collect its argument
+      * @return Returns the argument for this flag, or an empty string if there is no argument or the flag is not present in the program arguments.
+      */
+    static string getFlagArgument(int argc, char** argv, const std::initializer_list<std::string>& flags) {
+
+        // arguments start at index 1
+        for (int i = 1; i < argc; ++i) {
+
+            for (const std::string& flag : flags) {
+
+                if (argv[i] == flag) {
+
+                    if (i + 1 >= argc) {
+                        spdlog::warn("No argument provided for flag {}", flag);
+                        return "";
+                    }
+
+                    const std::string &arg = argv[i + 1];
+
+                    // if the "argument" starts with a dash, we interpret it as the next flag; we warn that we expected to find an argument here.
+                    if (arg[0] == '-') {
+                        spdlog::warn("No argument is provided, but expected one for flag {}", flag);
+                        return "";
+                    }
+
+                    return arg;
+                }
+            }
+        }
+
+        return "";
+    }
+
+    /**
       * Get a single program argument for a given flag.
       *
       * @example If the program arguments are [arg0 arg1 --flag0 arg2 arg3 --flag1 arg4], then getFlagArgument(..., ..., "--flag1") returns [arg4].
@@ -189,30 +230,7 @@ namespace utils{
       * @return Returns the argument for this flag, or an empty string if there is no argument or the flag is not present in the program arguments.
       */
     static string getFlagArgument(int argc, char** argv, const string& flag) {
-
-        // arguments start at index 1
-        for (int i = 1; i < argc; ++i) {
-
-            if (argv[i] == flag) {
-
-                if (i + 1 >= argc) {
-                    spdlog::warn("No argument provided for flag {}", flag);
-                    return "";
-                }
-
-                const std::string& arg = argv[i + 1];
-
-                // if the "argument" starts with a dash, we interpret it as the next flag; we warn that we expected to find an argument here.
-                if (arg[0] == '-') {
-                    spdlog::warn("No argument is provided, but expected one for flag {}", flag);
-                    return "";
-                }
-
-                return arg;
-            }
-        }
-
-        return "";
+        return getFlagArgument(argc, argv, { flag });
     }
 
     /**
@@ -306,10 +324,14 @@ namespace utils{
     }
 
     configuration_t getConfiguration(int argc, char** argv) {
+
+
+
         return configuration_t {
             .src_files = getDefaultArguments(argc, argv),
             .help = hasFlag(argc, argv, { FLAG_HELP, FLAG_HELP_SHORT, FLAG_HELP_UNHELPFUL }),
             .verbose = hasFlag(argc, argv, { FLAG_VERBOSE, FLAG_VERBOSE_SHORT }),
+            .out = getFlagArgument(argc, argv, { FLAG_OUTPUT, FLAG_OUTPUT_SHORT }),
             .not_main = hasFlag(argc, argv, FLAG_NOT_MAIN),
             .generate_structs = hasFlag(argc, argv, { FLAG_GEN_STRUCTS, FLAG_GEN_STRUCTS_SHORT }),
             .link_objects = getFlagArguments(argc, argv, { FLAG_LINK_OBJECTS, FLAG_LINK_OBJECTS_SHORT }),
@@ -318,17 +340,22 @@ namespace utils{
         };
     }
 
-    std::string exec(string cmdstr) {
-        std::array<char, 128> buffer;
+    std::string exec(const string& cmd) {
+
+        char buffer[128];
+
         std::string result;
-        const char* cmd = cmdstr.c_str();
-        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+
+        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
+
         if (!pipe) {
             throw std::runtime_error("popen() failed!");
         }
-        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-            result += buffer.data();
+
+        while (fgets(buffer, 128, pipe.get()) != nullptr) {
+            result += buffer;
         }
+
         return result;
     }
 

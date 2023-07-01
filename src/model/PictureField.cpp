@@ -4,10 +4,7 @@
 
 #include "../../include/model/PictureField.h"
 #include "../../include/ir/BCBuilder.h"
-
-extern "C" {
-    #include <bstd/picutils.h>
-}
+#include <bstd/picutils.h>
 
 llvm::Value* PictureField::codegen(BCBuilder *builder, BCModule *bcModule, bool global) {
 

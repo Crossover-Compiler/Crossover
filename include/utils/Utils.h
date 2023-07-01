@@ -18,6 +18,7 @@ namespace utils {
         std::vector<std::string> src_files;
         bool help;
         bool verbose;
+        std::string out;
         bool not_main;
         bool generate_structs;
         std::vector<std::string> link_objects;
@@ -55,7 +56,7 @@ namespace utils {
      * @param cmd
      * @return
      */
-    string exec(string cmdstr);
+    string exec(const string& cmd);
 
     /**
      * JAVA-like split function for strings

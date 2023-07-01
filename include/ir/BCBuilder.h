@@ -9,7 +9,8 @@
 #include "BCModule.h"
 #include "../antlr/BabyCobolParser.h"
 #include <string>
-#include <bstd/bstd.h>
+#include <bstd/number.h>
+#include <bstd/picture.h>
 
 class BCBuilder : public llvm::IRBuilder<> {
 
