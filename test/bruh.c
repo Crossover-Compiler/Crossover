@@ -1,7 +1,14 @@
 #include <stdio.h>
-#include "./Crossover_bstd_lib/include/numutils.h"
-#include "./Crossover_bstd_lib/include/picture.h"
-#include "./Crossover_bstd_lib/include/picutils.h"
+#include <bstd/picutils.h>
+#include <bstd/numutils.h>
+#include "SCRATCH.h"
+
+void bruh(REC_t* my_record) {
+    printf("We're in bruh\r\n");
+    printf("The picture: %ld\r\n", bstd_number_to_int(my_record->B));
+    bstd_assign_int(my_record->B, 7);
+    printf("The picture result: %ld\r\n", bstd_number_to_int(my_record->B));
+}
 
 /**
 IDENTIFICATION DIVISION.

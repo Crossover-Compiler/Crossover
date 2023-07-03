@@ -27,8 +27,7 @@ llvm::Value *Record::codegen(BCBuilder *builder, BCModule *bcModule, bool global
 
     // code gen children
     for (auto child: this->children) {
-        auto v = child->codegen(builder, bcModule, false);
-        values.push_back(v);
+        values.push_back(child->getValue());
     }
 
     std::vector<llvm::Type *> types;

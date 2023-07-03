@@ -102,6 +102,8 @@ int main(int argc, char **argv) {
         const std::string filename = utils::generateStructs(bcInputs[0], module->getDataSymbolTable(), program_id);
 
         cout << "Wrote generated structs to " << filename << endl;
+
+        return 0;
     }
 
     ProcedureVisitor procedureVisitor(module, &builder, &extTable);
@@ -219,7 +221,8 @@ int main(int argc, char **argv) {
         executable_filename = "exec";
     }
 
-    std::string linkCommand = "clang -o " + executable_filename + " output.o -lbstd -lm";
+    // todo: handle multiple object files (from multiple sources)
+    std::string linkCommand = "clang -o " + executable_filename + " " + object_filename + " -lbstd -lm";
 
     for (auto &element : configuration.link_objects) {
         linkCommand.append(" ");
@@ -240,4 +243,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-

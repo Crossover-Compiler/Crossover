@@ -81,7 +81,7 @@ llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_v
         // we should allocate global memory
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(number_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, number_struct_type, false,
-                                         llvm::GlobalVariable::CommonLinkage, zeroInit, name,
+                                         llvm::GlobalVariable::InternalLinkage, zeroInit, name,
                                          nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
     } else {
         // we should allocate local memory
@@ -265,7 +265,7 @@ llvm::Value *BCBuilder::CreatePicture(const std::string& name, unsigned char* m_
         // we should allocate global memory
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(picture_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, picture_struct_type, false,
-                                         llvm::GlobalVariable::CommonLinkage, zeroInit, name,
+                                         llvm::GlobalVariable::InternalLinkage, zeroInit, name,
                                          nullptr, llvm::GlobalValue::NotThreadLocal);
     } else {
         // we should allocate local memory

@@ -78,11 +78,10 @@ namespace utils{
                             "* source file\t\t:\t" + source + "\r\n"
                             "*/\r\n"
 
-                            "// ***\r\n"
-                            "// BSTD headers\r\n"
+                            "// ***** BSTD *****\r\n"
                             "#include <bstd/number.h>\r\n"
                             "#include <bstd/picture.h>\r\n"
-                            "// ***\r\n";
+                            "// *** END BSTD ***\r\n";
 
         string middleLines = "\n";
         string lastLines = "\n";

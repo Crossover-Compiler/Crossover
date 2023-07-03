@@ -53,7 +53,7 @@ OPTIONS:
 
 --link <filename...>, -l <filename...>: Specifies the object files to include in linking.
 
---generate-structs, -g: If set, crossover will generate C headers for the data divisions in the BabyCobol source files.
+--generate-structs, -g: If set, crossover will generate C headers for the data divisions in the BabyCobol source files and exit without compilation.
 
 --no-entry : specifies that the entry point of the executable artefact is in the specified object files (see --link).
 ```
