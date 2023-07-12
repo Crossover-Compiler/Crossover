@@ -74,6 +74,7 @@ public:
 
     // re-entry handler generators
     static void int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* intPtr);
+    static void double_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* doublePtr);
     static void cstr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* cstr);
 };
 

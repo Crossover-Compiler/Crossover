@@ -10,6 +10,22 @@ void bruh(REC_t* my_record) {
     printf("The picture result: %ld\r\n", bstd_number_to_int(my_record->B));
 }
 
+void ref_prim(int* v) {
+    printf("ref_prim int* = %d\r\n", *v);
+}
+
+void val_prim(int v) {
+    printf("val_prim int = %d\r\n", v);
+}
+
+void val_struct(bstd_number v) {
+    printf("val_struct bstd_number = %ld\r\n", bstd_number_to_int(&v));
+}
+
+void ref_struct(bstd_number* v) {
+    printf("ref_struct bstd_number* = %ld\r\n", bstd_number_to_int(v));
+}
+
 /**
 IDENTIFICATION DIVISION.
        PROGRAM-ID. "call_literal_ints".

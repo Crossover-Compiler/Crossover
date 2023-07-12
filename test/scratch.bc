@@ -8,11 +8,15 @@ DATA DIVISION
         02 B PICTURE IS 9.
 
 PROCEDURE DIVISION.
-
-DO_NOTHING USING A.
-
 MAIN.
 
-    CALL bruh OF bruh USING BY REFERENCE REC.
+    LOOP WHILE I < 9
+        ADD 1 TO A
+        CALL ref_prim OF bruh USING BY REFERENCE A AS PRIMITIVE
+        CALL val_prim OF bruh USING BY VALUE A AS PRIMITIVE
+        CALL val_struct OF bruh USING BY VALUE A AS STRUCT
+        CALL ref_struct OF bruh USING BY REFERENCE A AS STRUCT
+        ADD 1 TO I
+    END.
 
     DISPLAY "DONE.".

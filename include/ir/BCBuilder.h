@@ -104,8 +104,6 @@ public:
      */
     llvm::Value* CreateCStrToPictureCall(llvm::Value* picture, llvm::Value* str);
 
-    llvm::Value* CreateNumberToIntPtrCall(llvm::Value* number);
-
     /**
      * Creates a call to the bstd runtime library marshaller function bstd_number_to_int(Number*)
      * @param number The number to marshall

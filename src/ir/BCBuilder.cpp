@@ -161,18 +161,6 @@ llvm::Value* BCBuilder::CreateNumberToDoubleCall(llvm::Value *number) {
     return this->CreateCall(*num_to_double, args);
 }
 
-llvm::Value* BCBuilder::CreateNumberToIntPtrCall(llvm::Value *number) {
-
-    llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());
-
-    auto num_to_int = module->getMarshallIntFunc();
-
-    llvm::ArrayRef<llvm::Value *> args = number;
-    llvm::Value *return_value = this->CreateCall(*num_to_int, args);
-
-    return return_value;
-}
-
 void BCBuilder::CreateAssignIntToNumber(llvm::Value* number, int value) {
 
     llvm::IntegerType *int_t = llvm::Type::getInt64Ty(this->getContext());

@@ -13,7 +13,7 @@
 #include "../../include/utils/Utils.h"
 #include "../../include/model/NumberField.h"
 #include <algorithm>
-#include <cctype>
+#include <spdlog/spdlog.h>
 
 using namespace std;
 using namespace utils;
@@ -392,7 +392,7 @@ std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBo
 //    }
 
     // todo: replace the hard coded statements with the one above
-    auto c = builder->CreateNumberToIntPtrCall(lhs);
+    auto c = builder->CreateNumberToIntCall(lhs);
 
     // visit rhs
     auto a = visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->right);
@@ -439,7 +439,7 @@ std::any ProcedureVisitor::visitIdentifiers(BabyCobolParser::IdentifiersContext 
     auto result = bcModule->findDataEntry(name);
 
     if (!result) {
-        throw CompileException("Encountered unknown identifier \"" + name + "\".");
+        throw CompileException("Undefined reference to \"" + name + "\".");
     }
 
     return result->getValue();
@@ -471,6 +471,23 @@ void ProcedureVisitor::int_ptr_re_entry_handler_generator(BCBuilder *builder, BC
     builder->CreateLifetimeEnd(intPtr, const_i64);
 }
 
+void ProcedureVisitor::double_ptr_re_entry_handler_generator(BCBuilder *builder, BCModule *module, llvm::Value *original,
+                                                          llvm::Value *doublePtr) {
+
+    auto field = dynamic_cast<Field*>(module->findDataEntry(original->getName().str()));
+    auto original_t = field->getType(module->getContext());
+    auto const_i64 = llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, 64));
+
+    // dereference intPtr
+    auto int_val = builder->CreateLoad(original_t, doublePtr);
+
+    auto assign_double_func = module->getAssignDoubleFunc();
+    builder->CreateCall(*assign_double_func, {original, int_val});
+
+    // free allocated memory
+    builder->CreateLifetimeEnd(doublePtr, const_i64);
+}
+
 void ProcedureVisitor::cstr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* cstr) {
 
     builder->CreateCStrToPictureCall(original, cstr);
@@ -484,6 +501,8 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
     // todo: replace these tuples with enums.
     // True, True if -> BY VALUE, AS PRIMITIVE
     // False, False if -> BY REFERENCE, AS STRUCT
+    // false, true -> by reference, as primitive
+    // true, false -> by value, as struct
     vector<tuple<bool, bool>> passType(ctx->atomic().size());
 
     std::vector<llvm::Value *> parameters;
@@ -502,131 +521,95 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
         populatePassTypeVector(&passType, ctx);
 
         for (int i = 0; i < ctx->atomic().size(); i++) {
+
             tuple<bool, bool> currentType = passType[i];
+            auto paramContext = ctx->atomic()[i];
 
             /** DATA DIV STUFF */
-            if (dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i]) != nullptr) {
+            if (auto idCtx = dynamic_cast<BabyCobolParser::IdentifierContext *>(paramContext)) {
 
-                auto field = any_cast<llvm::Value*>(visit(ctx->atomic()[i]));
-                parameters.push_back(field);
+                auto param = any_cast<llvm::Value*>(visit(idCtx));
+                auto dataEntry = bcModule->findDataEntry(param->getName().str());
 
-                if (false) {
+                llvm::Value *marshalledParam = param;
+                llvm::Value* (BCBuilder::*marshallFunction)(llvm::Value*);
+                re_entry_handler_generator_t re_entry_handler;
 
-                    if (field->getType()->isIntegerTy()) {
-                        if (get<0>(currentType) && get<1>(currentType)) {
-                            // int
-                            llvm::Type *int_t = llvm::Type::getInt64Ty(bcModule->getContext());
-                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(int_t, PointerType::get(
-                                    bcModule->getNumberStructType(), 0), false);
-                            auto *new_function = new llvm::FunctionCallee();
-                            *(new_function) = bcModule->getOrInsertFunction("bstd_number_to_int", new_function_types);
+                if (!dataEntry->isRecord()) { // field
 
-                            llvm::ArrayRef<llvm::Value *> args = field;
+                    auto field = dynamic_cast<Field*>(dataEntry);
 
-                            llvm::Value *alloc = builder->CreateCall(*new_function, args);
-                            parameters.push_back(alloc);
+                    if (field->isNumber()) { // number
 
-                        } else if (get<0>(currentType) && !get<1>(currentType)) {
-                            // wrap(int)
-                            parameters.push_back(field);
-                            byvalTracker.emplace_back(i, bcModule->getNumberStructType());
+                        auto number = dynamic_cast<NumberField*>(field);
 
-                        } else if (!get<0>(currentType) && get<1>(currentType)) {
-                            // int*
+                        if (number->isInteger()) {
 
-                            // convert number to integer pointer
-                            auto original = field;
-                            auto intPtr = builder->CreateNumberToIntPtrCall(original);
+                            marshallFunction = &BCBuilder::CreateNumberToIntCall;
+                            re_entry_handler = &ProcedureVisitor::int_ptr_re_entry_handler_generator;
 
-                            // use integer pointer as call parameter
-                            parameters.push_back(intPtr);
+                        } else { // fixed-point
 
-                            // keep track of this value for upon re-entry
-                            auto handler = &ProcedureVisitor::int_ptr_re_entry_handler_generator;
-                            auto copy_handler_tuple = tuple(original, intPtr, handler);
-                            re_entry_cache.push_back(copy_handler_tuple);
-
-                        } else if (!get<0>(currentType) && !get<1>(currentType)) {
-                            // wrap(int)*
-                            // TODO: At re-entry we should marshall this value!
-                            parameters.push_back(field);
+                            marshallFunction = &BCBuilder::CreateNumberToDoubleCall;
+                            re_entry_handler = &ProcedureVisitor::double_ptr_re_entry_handler_generator;
                         }
 
-                    } else if (field->getType()->isFloatTy() || field->getType()->isDoubleTy()) {
-                        if (get<0>(currentType) && get<1>(currentType)) {
-                            // double
-                            llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
-                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(
-                                    bcModule->getNumberStructType(), 0), false);
-                            auto *new_function = new llvm::FunctionCallee();
-                            *(new_function) = bcModule->getOrInsertFunction("bstd_number_to_double", new_function_types);
+                    } else { // picture field (not number)
 
-                            llvm::ArrayRef<llvm::Value *> args = field;
+                        marshallFunction = &BCBuilder::CreatePictureToCStrCall;
+                        re_entry_handler = &ProcedureVisitor::cstr_re_entry_handler_generator;
 
-                            llvm::Value *alloc = builder->CreateCall(*new_function, args);
-                            parameters.push_back(alloc);
-                        } else if (get<0>(currentType) && !get<1>(currentType)) {
-                            // wrap(double)
-                            parameters.push_back(field);
-                            byvalTracker.emplace_back(i, bcModule->getNumberStructType());
-                        } else if (!get<0>(currentType) && get<1>(currentType)) {
-                            // double*
-                            // TODO: Marshall the newly created pointer back into the picture
-
-                            llvm::Type *double_t = llvm::Type::getDoubleTy(bcModule->getContext());
-                            llvm::Type *double_ptr_t = llvm::Type::getDoublePtrTy(bcModule->getContext());
-                            llvm::FunctionType *new_function_types = llvm::FunctionType::get(double_t, PointerType::get(
-                                    bcModule->getNumberStructType(), 0), false);
-                            auto *bstd_get_double = new llvm::FunctionCallee();
-                            *(bstd_get_double) = bcModule->getOrInsertFunction("bstd_number_to_double", new_function_types);
-
-                            llvm::ArrayRef<llvm::Value *> args = field;
-
-                            llvm::Value *value = builder->CreateCall(*bstd_get_double, args);
-                            llvm::Value *alloc = builder->CreateAlloca(double_ptr_t);
-
-                            builder->CreateStore(value, alloc, false);
-                            parameters.push_back(alloc);
-
-                        } else if (!get<0>(currentType) && !get<1>(currentType)) {
-                            // wrap(double)*
-                            // TODO: At re-entry we should marshall this value!
-                            parameters.push_back(field);
-                        }
-                    } else if (field->getType()->isArrayTy()) { // STRING
-
-                        if (get<0>(currentType) && get<1>(currentType)) {
-//                            pushStringOnParameterList(&parameters, field->getName()); // todo: @mart, what case is this?
-                        } else if (get<0>(currentType) && !get<1>(currentType)) {
-                            // wrap(string)
-
-                            parameters.push_back(field);
-                            byvalTracker.emplace_back(i, bcModule->getPictureStructType());
-
-                        } else if (!get<0>(currentType) && get<1>(currentType)) {
-                            // string*
-
-                            auto original = field;
-                            auto cstr = builder->CreatePictureToCStrCall(original);
-                            parameters.push_back(cstr);
-
-                            // keep track of this value for upon re-entry
-                            auto handler = &ProcedureVisitor::cstr_re_entry_handler_generator;
-                            auto copy_handler_tuple = tuple(original, cstr, handler);
-                            re_entry_cache.push_back(copy_handler_tuple);
-
-                        } else if (!get<0>(currentType) && !get<1>(currentType)) {
-                            // wrap(string)*
-                            parameters.push_back(field);
-                        }
                     }
 
-                } else if (false && dynamic_cast<Record *>(any_cast<DataEntry*>(visit(ctx->atomic()[i]))) != nullptr) {
-                    // Identifier was a Record
-                    auto record = *dynamic_cast<Record*>(any_cast<DataEntry*>(visit(ctx->atomic()[i])));
-                    parameters.push_back(record.getValue());
-                    // Pass the record as class
+
+
+                } else { // record
+
+                    // todo: we could do passing by value (deep copy -> recursive memcopy?) currently we only pass by reference as struct.
+
+                    if (get<0>(currentType) || get<1>(currentType)) {
+                        // we only support BY REFERENCE, AS STRUCT for records
+                        throw CompileException("Invalid modifiers on record call parameter " + dataEntry->getName());
+                    }
+
+                    marshalledParam = param;
                 }
+
+                if (get<0>(currentType) && get<1>(currentType)) { // by value as primitive
+
+                    marshalledParam = (builder->*marshallFunction)(param);
+
+                } else if (get<0>(currentType) && !get<1>(currentType)) { // by value, as struct
+
+                    byvalTracker.emplace_back(i, bcModule->getNumberStructType());
+
+                } else if (!get<0>(currentType) && get<1>(currentType)) { // by reference, as primitive
+
+                    auto field = dynamic_cast<Field*>(dataEntry);
+
+                    if (!field) {
+                        throw CompileException("Invalid modifiers on record call parameter " + dataEntry->getName());
+                    }
+
+                    auto reference_t = llvm::PointerType::get(field->getType(bcModule->getContext()), 4);
+
+                    // create a reference to pass
+                    marshalledParam = builder->CreateAlloca(reference_t);
+                    // marshall number to integer, store it at the new reference
+                    auto _param = (builder->*marshallFunction)(param);
+                    builder->CreateStore(_param, marshalledParam, false);
+
+                    // keep track of this value for upon re-entry
+                    auto copy_handler_tuple = tuple(param, marshalledParam, re_entry_handler);
+                    re_entry_cache.push_back(copy_handler_tuple);
+
+                } else if (!get<0>(currentType) && !get<1>(currentType)) { // by reference, as struct
+
+                    // TODO: At re-entry we could marshall (align) this value
+
+                }
+
+                parameters.push_back(marshalledParam);
 
                 /** LITERAL STUFF */
             } else {
@@ -723,10 +706,6 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
 
     llvm::Value* return_target = nullptr;
     llvm::Type* return_type = llvm::Type::getVoidTy(bcModule->getContext());
-
-    const auto int64_type = llvm::IntegerType::getInt64Ty(bcModule->getContext());
-    auto int8_type = llvm::IntegerType::getInt8Ty(bcModule->getContext());
-    auto int8_ptr_type = llvm::PointerType::get(int8_type, 4);
 
     DataEntry* data_entry = nullptr;
 
