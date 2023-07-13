@@ -82,7 +82,7 @@ llvm::Value * BCBuilder::CreateNumberValue(const std::string& name, uint64_t m_v
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(number_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, number_struct_type, false,
                                          llvm::GlobalVariable::InternalLinkage, zeroInit, name,
-                                         nullptr, llvm::GlobalValue::NotThreadLocal, 4, false);
+                                         nullptr, llvm::GlobalValue::NotThreadLocal, 0, false);
     } else {
         // we should allocate local memory
         alloc = this->CreateAlloca(number_struct_type, nullptr, name);
@@ -254,7 +254,7 @@ llvm::Value *BCBuilder::CreatePicture(const std::string& name, unsigned char* m_
         llvm::Constant* zeroInit = llvm::ConstantAggregateZero::get(picture_struct_type);
         alloc = new llvm::GlobalVariable(*(llvm::Module*)module, picture_struct_type, false,
                                          llvm::GlobalVariable::InternalLinkage, zeroInit, name,
-                                         nullptr, llvm::GlobalValue::NotThreadLocal);
+                                         nullptr, llvm::GlobalValue::NotThreadLocal, 0, false);
     } else {
         // we should allocate local memory
         alloc = this->CreateAlloca(picture_struct_type, nullptr, "tmp" + name);
@@ -275,7 +275,7 @@ llvm::Value *BCBuilder::CreatePicture(const std::string& name, unsigned char* m_
 
     // store "bytes" field of struct
     llvm::Value* bytes_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[0]}, "bytesPtr");
-    auto bytes_alloc = this->CreateAlloca(int8_t, 4, picture_length, "bytesAlloc"); // todo: fix address space
+    auto bytes_alloc = this->CreateAlloca(int8_t, 0, picture_length, "bytesAlloc"); // todo: fix address space
     llvm::Value* bytes_val = llvm::ConstantArray::get(byte_array_type, bytes);
     this->CreateStore(bytes_val, bytes_alloc);
     this->CreateStore(bytes_alloc, bytes_ptr);
@@ -290,7 +290,7 @@ llvm::Value *BCBuilder::CreatePicture(const std::string& name, unsigned char* m_
 
     // store "mask" field of struct
     llvm::Value* mask_ptr = this->CreateGEP(picture_struct_type, alloc, {indices[0], indices[1]}, "maskPtr");
-    auto mask_alloc = this->CreateAlloca(int8_t, 4, picture_length, "maskAlloc"); // todo: fix address space
+    auto mask_alloc = this->CreateAlloca(int8_t, 0, picture_length, "maskAlloc"); // todo: fix address space
     llvm::Value* mask_val = llvm::ConstantArray::get(byte_array_type, mask);
     this->CreateStore(mask_val, mask_alloc);
     this->CreateStore(mask_alloc, mask_ptr);
