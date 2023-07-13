@@ -126,25 +126,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (!configuration.emit_llvm.empty()) {
-
-        std::error_code error;
-        raw_fd_ostream file(configuration.emit_llvm, error, sys::fs::OF_None);
-
-        if (error) {
-
-            errs() << "Failed to write LLVM IR: " << error.message();
-
-            return error.value();
-        }
-
-        module->print(file, nullptr, false, configuration.debug);
-
-        file.close();
-
-        std::cout << "Wrote LLVM IR to " << configuration.emit_llvm << std::endl;
-    }
-
     // The following code allows us to compile the IR into C object files
 
     InitializeAllTargetInfos();
@@ -194,6 +175,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // loop invariant code motion (hoisting code to preheader)
+    pass.add(createLICMPass());
     // Promote allocas to registers.
     pass.add(createPromoteMemoryToRegisterPass());
     // Do simple "peephole" optimizations and bit-twiddling optimizations.
@@ -204,6 +187,25 @@ int main(int argc, char **argv) {
     std::cout << "Compiling second stage..." << std::endl;
 
     pass.run(*module);
+
+    if (!configuration.emit_llvm.empty()) {
+
+        std::error_code error;
+        raw_fd_ostream file(configuration.emit_llvm, error, sys::fs::OF_None);
+
+        if (error) {
+
+            errs() << "Failed to write LLVM IR: " << error.message();
+
+            return error.value();
+        }
+
+        module->print(file, nullptr, false, configuration.debug);
+
+        file.close();
+
+        std::cout << "Wrote LLVM IR to " << configuration.emit_llvm << std::endl;
+    }
 
     dest.close();
 
