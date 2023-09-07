@@ -59,18 +59,36 @@ std::any ProcedureVisitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
     llvm::Type *void_t = llvm::Type::getVoidTy(bcModule->getContext());
 
     for (int i = 0; i < ctx->atomic().size(); ++i) {
+
         if (i == 1) {
             spacer = true;
         }
-        if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            printDisplayItem(to_string(any_cast<int>(visit(ctx->atomic()[i]))), spacer);
-        } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            printDisplayItem(any_cast<string>(visit(ctx->atomic()[i])), spacer);
-        } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-            printDisplayItem(to_string(any_cast<double>(visit(ctx->atomic()[i]))), spacer);
-        } else if (auto identifierContext = dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i])) {
 
-            auto value = any_cast<llvm::Value *>(visit(ctx->atomic()[i]));
+        llvm::FunctionCallee *printf_func = bcModule->getPrintf();
+        std::string format;
+
+        auto value = any_cast<llvm::Value *>(visit(ctx->atomic()[i]));
+
+        if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+            format = "%d";
+        } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+            format = "%s";
+        } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
+            format = "%f"; // todo: determine the number of decimals
+        }
+
+        if (!dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i])) {
+            // print a literal
+
+            if (spacer) {
+                format = " " + format;
+            }
+
+            auto formatValue = builder->CreateString(format);
+
+            builder->CreateCall(*printf_func, { formatValue, value });
+
+        } else if (auto identifierContext = dynamic_cast<BabyCobolParser::IdentifierContext *>(ctx->atomic()[i])) {
 
             // find more meta-data about this value in the symbol table
             DataEntry* dataEntry = bcModule->findDataEntry(identifierContext->identifiers()->IDENTIFIER()[0]->getText()); // todo: array access without check
@@ -119,26 +137,20 @@ std::any ProcedureVisitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
             throw NotImplemented("Visitor:visitDisplay() We should never reach this statement!!!");
         }
     }
+
     if (nextLine) {
-        printDisplayItem("\n\r", false);
+
+        std::string format = "%s";
+        std::string linefeed = "\n\r";
+        auto formatValue = builder->CreateString(format);
+        auto value = builder->CreateString(linefeed);
+
+        llvm::FunctionCallee *printf_func = bcModule->getPrintf();
+        builder->CreateCall(*printf_func, { formatValue, value });
+
     }
+
     return 0;
-}
-
-void ProcedureVisitor::printDisplayItem(const string &value, bool spacer) {
-    llvm::FunctionCallee *printf_func = bcModule->getPrintf();
-
-    llvm::Value *raw = builder->CreateGlobalStringPtr(value);
-    llvm::Value *strPtr;
-    if (spacer) {
-        // create a printf call for every operand
-        strPtr = builder->CreateGlobalStringPtr(" %s");
-    } else {
-        strPtr = builder->CreateGlobalStringPtr("%s");
-    }
-
-    llvm::ArrayRef<llvm::Value *> aref = {strPtr, raw};
-    builder->CreateCall(*printf_func, aref);
 }
 
 std::any ProcedureVisitor::visitMove(BabyCobolParser::MoveContext *ctx) {
@@ -419,6 +431,7 @@ std::any ProcedureVisitor::visitWhileLoopExp(BabyCobolParser::WhileLoopExpContex
 }
 
 std::any ProcedureVisitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *ctx) {
+
     auto int64t = llvm::Type::getInt64Ty(this->bcModule->getContext());
 
     int val = stoi(ctx->getText());
@@ -427,11 +440,11 @@ std::any ProcedureVisitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *c
 }
 
 std::any ProcedureVisitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) {
-    // Get the text and remove the quotes to get the string
-    string value = ctx->LITERAL()->getText().substr(1, ctx->LITERAL()->getText().size() - 2);
 
-    values[current_id] = llvm::ConstantInt::get(llvm::IntegerType::getInt64Ty(builder->getContext()), value, 10);
-    return value;
+    // Get the text and remove the quotes to get the string content
+    std::string value = ctx->LITERAL()->getText().substr(1, ctx->LITERAL()->getText().size() - 2);
+
+    return builder->CreateString(value);
 }
 
 std::any ProcedureVisitor::visitIdentifiers(BabyCobolParser::IdentifiersContext *ctx) {
@@ -491,8 +504,6 @@ void ProcedureVisitor::cstr_re_entry_handler_generator(BCBuilder* builder, BCMod
 
     builder->CreateCStrToPictureCall(original, cstr);
 
-    // todo: free allocated memory
-
 }
 
 any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *ctx) {
@@ -524,10 +535,11 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
             tuple<bool, bool> modifiers = passType[i];
             auto paramContext = ctx->atomic()[i];
 
+            auto param = any_cast<llvm::Value*>(visit(paramContext));
+
             /** DATA DIV STUFF */
             if (auto idCtx = dynamic_cast<BabyCobolParser::IdentifierContext *>(paramContext)) {
 
-                auto param = any_cast<llvm::Value*>(visit(idCtx));
                 auto dataEntry = bcModule->findDataEntry(param->getName().str());
 
                 llvm::Value *marshalledParam = param;
@@ -621,6 +633,45 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
 
                 /** LITERAL STUFF */
             } else {
+
+                // literal parameters never require marshalling upon re-entry
+
+                // todo: implement all field types
+
+                llvm::Type *paramType;
+
+                // determine literal type
+                if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(paramContext)) {
+
+                    paramType = llvm::Type::getInt8Ty(bcModule->getContext());
+
+                } else if (dynamic_cast<BabyCobolParser::IntLiteralContext*>(paramContext)) {
+
+                    paramType = llvm::Type::getInt64Ty(bcModule->getContext());
+
+                } else if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(paramContext)) {
+
+                    paramType = llvm::Type::getDoubleTy(bcModule->getContext());
+
+                }
+
+                // by value as primitive
+                if (get<0>(modifiers) && get<1>(modifiers)) {
+                    // if we have a string, we still have to pass a char ptr
+                    if (dynamic_cast<BabyCobolParser::StringLiteralContext*>(paramContext)) {
+                        paramType = llvm::PointerType::get(paramType, 0);
+                    }
+                    // ... for ints and doubles we just pass as basic type.
+                }
+
+                // by reference as primitive
+                if (!get<0>(modifiers) && get<1>(modifiers)) {
+                    paramType = llvm::PointerType::get(paramType, 0);
+                }
+
+                // todo: implement passing literals as BSTD structs
+
+                parameters.emplace_back(param, paramType);
 
 //                // 0 == int, 1 == double, 2 == string.
 //                int dataType = -1;
@@ -797,46 +848,43 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
         } else {
             // we can not find a match. Warn user.
             auto format = "No function named %s found in this baby cobol file. Specify an OF clause to search another file.";
-            auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), functionName.c_str());
+            auto size = std::snprintf(nullptr, 0, format, functionName.c_str());
             std::string errormessage(size + 1, '\0');
-            std::sprintf(&errormessage[0], format, functionName.c_str(), functionName.c_str());
+            std::sprintf(&errormessage[0], format, functionName.c_str());
             cerr << errormessage << endl;
 
             // construct it anyway, and hope it is available when we link
 
-            if (!ctx->byvalueatomicsprim.empty()) {
+//            std::vector<Field*> data_entries;
+//            data_entries.reserve(param_values.size());
+//            transform(param_values.begin(), param_values.end(), back_inserter(data_entries),
+//                      [this](auto param) {
+//                return (Field*)this->bcModule->findDataEntry(std::string(param->getName()));
+//            });
+//
+//            // marshall parameters...
+//            std::vector<llvm::Value *> marshalled_params;
+//            marshalled_params.reserve(data_entries.size());
+//            for (auto entry : data_entries) {
+//
+//                // todo: support pics... (check the data tree, etc)
+//
+//                if (auto number_field = dynamic_cast<NumberField*>(entry)) {
+//
+//                    if (number_field->isInteger()) {
+//                        marshalled_params.push_back(builder->CreateNumberToIntCall(number_field->getValue()));
+//                    } else {
+//                        // convert to a floating point
+//                        marshalled_params.push_back(builder->CreateNumberToDoubleCall(number_field->getValue()));
+//                    }
+//                }
+//
+//            }
 
-                std::vector<Field*> data_entries;
-                data_entries.reserve(param_values.size());
-                transform(param_values.begin(), param_values.end(), back_inserter(data_entries),
-                          [this](auto param) {
-                    return (Field*)this->bcModule->findDataEntry(std::string(param->getName()));
-                });
-
-                // marshall parameters...
-                std::vector<llvm::Value *> marshalled_params;
-                marshalled_params.reserve(data_entries.size());
-                for (auto entry : data_entries) {
-
-                    // todo: support pics... (check the data tree, etc)
-
-                    if (auto number_field = dynamic_cast<NumberField*>(entry)) {
-
-                        if (number_field->isInteger()) {
-                            marshalled_params.push_back(builder->CreateNumberToIntCall(number_field->getValue()));
-                        } else {
-                            // convert to a floating point
-                            marshalled_params.push_back(builder->CreateNumberToDoubleCall(number_field->getValue()));
-                        }
-                    }
-
-                }
-
-                llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, param_types, false);
-                auto new_function = bcModule->getOrInsertFunction(functionName, new_function_types);
-                call = builder->CreateCall(new_function, marshalled_params);
-
-            }
+            llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, param_types, false);
+            auto new_function = bcModule->getOrInsertFunction(functionName, new_function_types);
+//            call = builder->CreateCall(new_function, marshalled_params);
+            call = builder->CreateCall(new_function, param_values);
 
         }
 

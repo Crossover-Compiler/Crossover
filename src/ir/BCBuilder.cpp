@@ -6,6 +6,25 @@ llvm::Constant *BCBuilder::asConstant(int n) {
     return llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, n, true));
 }
 
+llvm::Value* BCBuilder::CreateString(std::string& string) {
+
+    auto charType = llvm::Type::getInt8Ty(this->getContext());
+    auto int64Type = llvm::Type::getInt64Ty(this->getContext());
+    auto length = llvm::ConstantInt::get(int64Type, string.length() + 1, false); // space for a null terminator
+
+    auto alloc = this->CreateAlloca(charType, length, "s_lit");
+
+    // create string literal character array
+    auto charVector = std::vector<char>(string.begin(), string.end());
+    charVector.push_back('\0'); // null-terminator
+
+    // populate allocated char*
+    auto bytes = llvm::ConstantDataArray::get(this->getContext(), charVector);
+    this->CreateStore(bytes, alloc);
+
+    return alloc;
+}
+
 llvm::Value *BCBuilder::CreateNumber(bstd_number *number, std::string &name, bool global) {
     return CreateNumberValue(name, number->value, number->scale, number->length, number->isSigned, number->positive, global);
 }

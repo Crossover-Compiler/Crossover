@@ -70,7 +70,6 @@ public:
     void populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx);
     void callAssignNumber(Value *assignee, Value *value);
     void callAssignPicture(Value *assignee, Value *value);
-    void printDisplayItem(const string &value, bool nextLine);
 
     // re-entry handler generators
     static void int_ptr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* intPtr);

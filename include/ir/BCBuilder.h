@@ -84,6 +84,13 @@ public:
     llvm::Constant* asConstant(int n);
 
     /**
+     * Creates a null-terminated stack allocated string literal for the specified string.
+     * @param string The string to make a string literal for.
+     * @return Returns a pointer to the stack address of the string literal.
+     */
+    llvm::Value* CreateString(std::string& string);
+
+    /**
      * todo: doc
      * @return
      */

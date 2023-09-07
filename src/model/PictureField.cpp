@@ -11,7 +11,7 @@ llvm::Value* PictureField::codegen(BCBuilder *builder, BCModule *bcModule, bool 
     char *m = new char [this->cardinality];
     std::strcpy (m, this->mask.c_str());
 
-    auto *bytes = new unsigned char [this->cardinality];
+    auto *bytes = new unsigned char[this->cardinality];
 
     uint8_t length = this->cardinality;
 
