@@ -162,7 +162,8 @@ std::any ProcedureVisitor::visitMove(BabyCobolParser::MoveContext *ctx) {
     std::vector<DataEntry*> identifiers = {};
 
     for (auto identifier: ctx->identifiers()) {
-        auto *tree = any_cast<DataEntry*>(visit(identifier));
+        auto *val = any_cast<llvm::Value*>(visit(identifier));
+        auto *tree = bcModule->findDataEntry(val->getName().str());
         identifiers.push_back(tree);
     }
 
@@ -170,7 +171,6 @@ std::any ProcedureVisitor::visitMove(BabyCobolParser::MoveContext *ctx) {
     DataEntry* tree = identifiers.at(0);
 
     if (tree->isRecord()) {
-
         throw CompileException("MOVE TO record is not supported!");
     }
 
