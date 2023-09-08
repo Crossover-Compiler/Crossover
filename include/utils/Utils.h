@@ -4,39 +4,51 @@
 
 #ifndef CROSSOVER_UTILS_H
 #define CROSSOVER_UTILS_H
-#include "../../src/datastructures/DataTree.h"
-#include "../../src/datastructures/Record.h"
-#include "../../src/datastructures/Field.h"
+#include "../model/Record.h"
+#include "../model/Field.h"
 #include <fstream>
-
+#include <map>
+#include "../../config.h"
 
 using namespace std;
 
 namespace utils {
+
+    typedef struct configuration {
+        std::vector<std::string> src_files;
+        bool help;
+        bool verbose;
+        std::string out;
+        bool not_main;
+        bool generate_structs;
+        std::vector<std::string> link_objects;
+        std::string emit_llvm;
+        bool debug;
+    } configuration_t;
+
     /**
      * auxilliary function used to generate nested substructs recursively
      * @param ancestorsPtr
      * @param structure
      * @return the string of structs
      */
-    string generateSubStruct(string* ancestorsPtr,DataTree* structure);
+    string generateSubStruct(string* ancestorsPtr, DataEntry* structure);
 
     /**
      * main function for generating structs, creates a cpp header file with generated structs based on the provided
      * DataTree vector
-     * @param dataStructures
+     * @param symbol_table
      */
-    void generateStructs(vector<DataTree*> dataStructures);
+    std::string generateStructs(const std::string& source, const map<string, DataEntry*>& symbol_table, const std::string& program_id);
 
     /**
+     * Parse the program arguments into a configuration_t struct.
      *
-     * check cli args for given element
-     * @param argc
-     * @param argv
-     * @param element
-     * @return
+     * @param argc The argument count.
+     * @param argv The argument array.
+     * @return Returns a configuration_t struct based on the specified program arguments.
      */
-    bool presentInArgs(int argc, char** argv, string element);
+    configuration_t getConfiguration(int argc, char** argv);
 
     /**
      * run system command and get result in an std::string
@@ -44,19 +56,7 @@ namespace utils {
      * @param cmd
      * @return
      */
-    string exec(string cmdstr);
-
-     /**
-      * check parameters for given argument
-      *
-      * @param argc
-      * @param argv
-      * @param arg
-      * @return
-      */
-    vector<string> getArgumentParams(int argc, char** argv, string arg);
-
-
+    string exec(const string& cmd);
 
     /**
      * JAVA-like split function for strings

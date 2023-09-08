@@ -1,23 +1,21 @@
 grammar BabyCobol;
 
-program     : identification (data)? procedure EOF;
+program             : identificationDiv (dataDivision)? procedure EOF;
 
-identification  :   IDENTIFICATION DIVISION DOT (name DOT value DOT)*;
-name            :   IDENTIFIER;
-value           :   LITERAL;
+identificationDiv   :   IDENTIFICATION DIVISION DOT identificationEntry*;
+identificationEntry :   (IDENTIFIER DOT LITERAL DOT);
 
-data            :   DATA DIVISION lines+=line*;
-line            :   record | field;
-record          :   level IDENTIFIER DOT;
-field           :   level IDENTIFIER (PICTURE IS representation | LIKE identifiers) (OCCURS INT TIMES)? DOT;
-level           :   int; // todo: should be exactly two numbers
+dataDivision        :   DATA DIVISION lines+=line*;
+line                :   record | field;
+record              :   level IDENTIFIER DOT;
+field               :   level IDENTIFIER (PICTURE IS mask | LIKE identifiers) (OCCURS INT TIMES)? DOT;
+level               :   int; // todo: should be exactly two numbers
 
 // TODO: AVX is recognised as VAR. A V X is recognised as valid picture. TODO: Find a way to not need the spaces. Hint: this has to do with the greedy-ness of the VAR rule.
-representation  :   IDENTIFIER | INT;
-//picrep          :   ;
+mask            :   IDENTIFIER | INT;
 
-procedure       :   PROCEDURE DIVISION DOT sentence* paragraph+;
-paragraph       :   label DOT sentence+;
+procedure       :   PROCEDURE DIVISION DOT paragraph*;
+paragraph       :   label (USING atomic+)? DOT sentence*;
 
 sentence        :   statement+ DOT;
 
@@ -55,11 +53,11 @@ add             :   ADD atomic+ TO to=atomic (GIVING id=identifiers)?;
 divide          :   DIVIDE at=atomic INTO as+=atomic+ (GIVING id=identifiers)? (REMAINDER rem=identifiers)?;
 evaluate        :   EVALUATE anyExpression whenBlock* END;
 nextSentence    :   NEXT SENTENCE;
-loop            :   LOOP loopExpression* END;
-gotoStatement   :   GO TO name;
+loop            :   LOOP loopExpression statement* END;
+gotoStatement   :   GO TO IDENTIFIER;
 signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
-callStatement   :   CALL (function_name=IDENTIFIER OF)? program_name=IDENTIFIER
+callStatement   :   CALL function_name=IDENTIFIER (OF program_name=IDENTIFIER)?
                         (USING
                             (
                                 (
@@ -77,7 +75,7 @@ callStatement   :   CALL (function_name=IDENTIFIER OF)? program_name=IDENTIFIER
                                 )
                             )+
                         )?
-                        ((RETURNING | RETURNINGBYREFERENCE) returning=IDENTIFIER)?; // TODO: Test if the identifiers and literals are added to the lists correctly
+                        (RETURNING (BYVALUE | reference_return=BYREFERENCE)? returning=identifiers (AS (primitive_return=PRIMITIVE | STRUCT))?)?; // TODO: Test if the identifiers and literals are added to the lists correctly
 
 anyExpression   :   arithmeticExpression
                 |   stringExpression
@@ -103,7 +101,6 @@ booleanExpression       :   TRUE                                                
 loopExpression          :   VARYING id=identifiers? (FROM from=atomic)? (TO to=atomic)? (BY by=atomic)?             #varyingLoopExp
                         |   WHILE booleanExpression                                                                 #whileLoopExp
                         |   UNTIL booleanExpression                                                                 #untilLoopExp
-                        |   statement                                                                               #loopStatement
                         ;
 
 contractedBooleanPart   :   booleanOp comparisonOp? arithmeticExpression;
@@ -142,7 +139,6 @@ atomic          :   int                         #intLiteral
 identifiers     :   IDENTIFIER (OF IDENTIFIER)* ('(' int ')')?;
 
 int             :   ('-'|'+')? INT;
-
 
 // Keywords & symbol names
 STRUCT: 'STRUCT';

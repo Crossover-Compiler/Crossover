@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/manzi/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.12.0
 
 #pragma once
 
@@ -19,19 +19,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitIdentification(BabyCobolParser::IdentificationContext *ctx) override {
+  virtual std::any visitIdentificationDiv(BabyCobolParser::IdentificationDivContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitName(BabyCobolParser::NameContext *ctx) override {
+  virtual std::any visitIdentificationEntry(BabyCobolParser::IdentificationEntryContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitValue(BabyCobolParser::ValueContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitData(BabyCobolParser::DataContext *ctx) override {
+  virtual std::any visitDataDivision(BabyCobolParser::DataDivisionContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -51,7 +47,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitRepresentation(BabyCobolParser::RepresentationContext *ctx) override {
+  virtual std::any visitMask(BabyCobolParser::MaskContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -196,10 +192,6 @@ public:
   }
 
   virtual std::any visitUntilLoopExp(BabyCobolParser::UntilLoopExpContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitLoopStatement(BabyCobolParser::LoopStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 

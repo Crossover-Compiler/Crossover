@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/manzi/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.12.0
 
 #pragma once
 
@@ -30,18 +30,18 @@ public:
   };
 
   enum {
-    RuleProgram = 0, RuleIdentification = 1, RuleName = 2, RuleValue = 3, 
-    RuleData = 4, RuleLine = 5, RuleRecord = 6, RuleField = 7, RuleLevel = 8, 
-    RuleRepresentation = 9, RuleProcedure = 10, RuleParagraph = 11, RuleSentence = 12, 
-    RuleStatement = 13, RuleLabel = 14, RuleDisplay = 15, RuleStop = 16, 
-    RuleMove = 17, RuleSubtract = 18, RuleMultiply = 19, RulePerform = 20, 
-    RuleIfStatement = 21, RuleAccept = 22, RuleAdd = 23, RuleDivide = 24, 
-    RuleEvaluate = 25, RuleNextSentence = 26, RuleLoop = 27, RuleGotoStatement = 28, 
-    RuleSignal = 29, RuleAlter = 30, RuleCallStatement = 31, RuleAnyExpression = 32, 
-    RuleArithmeticExpression = 33, RuleStringExpression = 34, RuleBooleanExpression = 35, 
-    RuleLoopExpression = 36, RuleContractedBooleanPart = 37, RuleComparisonOp = 38, 
-    RuleBooleanOp = 39, RuleArithmeticOp = 40, RuleWhenBlock = 41, RuleAtomic = 42, 
-    RuleIdentifiers = 43, RuleInt = 44
+    RuleProgram = 0, RuleIdentificationDiv = 1, RuleIdentificationEntry = 2, 
+    RuleDataDivision = 3, RuleLine = 4, RuleRecord = 5, RuleField = 6, RuleLevel = 7, 
+    RuleMask = 8, RuleProcedure = 9, RuleParagraph = 10, RuleSentence = 11, 
+    RuleStatement = 12, RuleLabel = 13, RuleDisplay = 14, RuleStop = 15, 
+    RuleMove = 16, RuleSubtract = 17, RuleMultiply = 18, RulePerform = 19, 
+    RuleIfStatement = 20, RuleAccept = 21, RuleAdd = 22, RuleDivide = 23, 
+    RuleEvaluate = 24, RuleNextSentence = 25, RuleLoop = 26, RuleGotoStatement = 27, 
+    RuleSignal = 28, RuleAlter = 29, RuleCallStatement = 30, RuleAnyExpression = 31, 
+    RuleArithmeticExpression = 32, RuleStringExpression = 33, RuleBooleanExpression = 34, 
+    RuleLoopExpression = 35, RuleContractedBooleanPart = 36, RuleComparisonOp = 37, 
+    RuleBooleanOp = 38, RuleArithmeticOp = 39, RuleWhenBlock = 40, RuleAtomic = 41, 
+    RuleIdentifiers = 42, RuleInt = 43
   };
 
   explicit BabyCobolParser(antlr4::TokenStream *input);
@@ -62,15 +62,14 @@ public:
 
 
   class ProgramContext;
-  class IdentificationContext;
-  class NameContext;
-  class ValueContext;
-  class DataContext;
+  class IdentificationDivContext;
+  class IdentificationEntryContext;
+  class DataDivisionContext;
   class LineContext;
   class RecordContext;
   class FieldContext;
   class LevelContext;
-  class RepresentationContext;
+  class MaskContext;
   class ProcedureContext;
   class ParagraphContext;
   class SentenceContext;
@@ -111,10 +110,10 @@ public:
   public:
     ProgramContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    IdentificationContext *identification();
+    IdentificationDivContext *identificationDiv();
     ProcedureContext *procedure();
     antlr4::tree::TerminalNode *EOF();
-    DataContext *data();
+    DataDivisionContext *dataDivision();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -123,43 +122,30 @@ public:
 
   ProgramContext* program();
 
-  class  IdentificationContext : public antlr4::ParserRuleContext {
+  class  IdentificationDivContext : public antlr4::ParserRuleContext {
   public:
-    IdentificationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    IdentificationDivContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IDENTIFICATION();
     antlr4::tree::TerminalNode *DIVISION();
-    std::vector<antlr4::tree::TerminalNode *> DOT();
-    antlr4::tree::TerminalNode* DOT(size_t i);
-    std::vector<NameContext *> name();
-    NameContext* name(size_t i);
-    std::vector<ValueContext *> value();
-    ValueContext* value(size_t i);
+    antlr4::tree::TerminalNode *DOT();
+    std::vector<IdentificationEntryContext *> identificationEntry();
+    IdentificationEntryContext* identificationEntry(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
-  IdentificationContext* identification();
+  IdentificationDivContext* identificationDiv();
 
-  class  NameContext : public antlr4::ParserRuleContext {
+  class  IdentificationEntryContext : public antlr4::ParserRuleContext {
   public:
-    NameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    IdentificationEntryContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IDENTIFIER();
-
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  NameContext* name();
-
-  class  ValueContext : public antlr4::ParserRuleContext {
-  public:
-    ValueContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
+    std::vector<antlr4::tree::TerminalNode *> DOT();
+    antlr4::tree::TerminalNode* DOT(size_t i);
     antlr4::tree::TerminalNode *LITERAL();
 
 
@@ -167,13 +153,13 @@ public:
    
   };
 
-  ValueContext* value();
+  IdentificationEntryContext* identificationEntry();
 
-  class  DataContext : public antlr4::ParserRuleContext {
+  class  DataDivisionContext : public antlr4::ParserRuleContext {
   public:
     BabyCobolParser::LineContext *lineContext = nullptr;
     std::vector<LineContext *> lines;
-    DataContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    DataDivisionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *DATA();
     antlr4::tree::TerminalNode *DIVISION();
@@ -185,7 +171,7 @@ public:
    
   };
 
-  DataContext* data();
+  DataDivisionContext* dataDivision();
 
   class  LineContext : public antlr4::ParserRuleContext {
   public:
@@ -225,7 +211,7 @@ public:
     antlr4::tree::TerminalNode *DOT();
     antlr4::tree::TerminalNode *PICTURE();
     antlr4::tree::TerminalNode *IS();
-    RepresentationContext *representation();
+    MaskContext *mask();
     antlr4::tree::TerminalNode *LIKE();
     IdentifiersContext *identifiers();
     antlr4::tree::TerminalNode *OCCURS();
@@ -252,9 +238,9 @@ public:
 
   LevelContext* level();
 
-  class  RepresentationContext : public antlr4::ParserRuleContext {
+  class  MaskContext : public antlr4::ParserRuleContext {
   public:
-    RepresentationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    MaskContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *INT();
@@ -264,7 +250,7 @@ public:
    
   };
 
-  RepresentationContext* representation();
+  MaskContext* mask();
 
   class  ProcedureContext : public antlr4::ParserRuleContext {
   public:
@@ -273,8 +259,6 @@ public:
     antlr4::tree::TerminalNode *PROCEDURE();
     antlr4::tree::TerminalNode *DIVISION();
     antlr4::tree::TerminalNode *DOT();
-    std::vector<SentenceContext *> sentence();
-    SentenceContext* sentence(size_t i);
     std::vector<ParagraphContext *> paragraph();
     ParagraphContext* paragraph(size_t i);
 
@@ -291,8 +275,11 @@ public:
     virtual size_t getRuleIndex() const override;
     LabelContext *label();
     antlr4::tree::TerminalNode *DOT();
+    antlr4::tree::TerminalNode *USING();
     std::vector<SentenceContext *> sentence();
     SentenceContext* sentence(size_t i);
+    std::vector<AtomicContext *> atomic();
+    AtomicContext* atomic(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -595,9 +582,10 @@ public:
     LoopContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *LOOP();
+    LoopExpressionContext *loopExpression();
     antlr4::tree::TerminalNode *END();
-    std::vector<LoopExpressionContext *> loopExpression();
-    LoopExpressionContext* loopExpression(size_t i);
+    std::vector<StatementContext *> statement();
+    StatementContext* statement(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -612,7 +600,7 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *GO();
     antlr4::tree::TerminalNode *TO();
-    NameContext *name();
+    antlr4::tree::TerminalNode *IDENTIFIER();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -666,7 +654,9 @@ public:
     std::vector<AtomicContext *> byreferenceatomicsprim;
     std::vector<AtomicContext *> byvalueatomicsstruct;
     std::vector<AtomicContext *> byreferenceatomicsstruct;
-    antlr4::Token *returning = nullptr;
+    antlr4::Token *reference_return = nullptr;
+    BabyCobolParser::IdentifiersContext *returning = nullptr;
+    antlr4::Token *primitive_return = nullptr;
     CallStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *CALL();
@@ -675,17 +665,17 @@ public:
     antlr4::tree::TerminalNode *OF();
     antlr4::tree::TerminalNode *USING();
     antlr4::tree::TerminalNode *RETURNING();
-    antlr4::tree::TerminalNode *RETURNINGBYREFERENCE();
+    IdentifiersContext *identifiers();
     std::vector<antlr4::tree::TerminalNode *> BYVALUE();
     antlr4::tree::TerminalNode* BYVALUE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> AS();
     antlr4::tree::TerminalNode* AS(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> PRIMITIVE();
-    antlr4::tree::TerminalNode* PRIMITIVE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> BYREFERENCE();
     antlr4::tree::TerminalNode* BYREFERENCE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> STRUCT();
     antlr4::tree::TerminalNode* STRUCT(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> PRIMITIVE();
+    antlr4::tree::TerminalNode* PRIMITIVE(size_t i);
     std::vector<AtomicContext *> atomic();
     AtomicContext* atomic(size_t i);
 
@@ -898,15 +888,6 @@ public:
     IdentifiersContext *identifiers();
     std::vector<AtomicContext *> atomic();
     AtomicContext* atomic(size_t i);
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  LoopStatementContext : public LoopExpressionContext {
-  public:
-    LoopStatementContext(LoopExpressionContext *ctx);
-
-    StatementContext *statement();
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };

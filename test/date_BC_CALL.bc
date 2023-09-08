@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+           PROGRAM-ID. "DATE".
+       DATA DIVISION
+           01 DATE.
+              02 DAY PICTURE IS 99.
+              02 SEASON PICTURE IS XXXXXX.
+              02 YEAR PICTURE IS 9999.
+       PROCEDURE DIVISION.
+       MAIN.
+           MOVE 15 TO DAY.
+           MOVE "SUMMER" TO SEASON.
+           MOVE 2023 TO YEAR.
+           CALL increaseDate OF C USING BY REFERENCE DATE BY VALUE 30 AS STRUCT.
+           DISPLAY "It is match day" DAY "of the" SEASON "season of" YEAR.
+           STOP.

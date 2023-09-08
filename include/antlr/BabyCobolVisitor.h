@@ -1,5 +1,5 @@
 
-// Generated from /home/bruh/CLionProjects/Crossover/grammar/BabyCobol.g4 by ANTLR 4.10.1
+// Generated from /home/manzi/repos/Crossover/grammar/BabyCobol.g4 by ANTLR 4.12.0
 
 #pragma once
 
@@ -21,13 +21,11 @@ public:
    */
     virtual std::any visitProgram(BabyCobolParser::ProgramContext *context) = 0;
 
-    virtual std::any visitIdentification(BabyCobolParser::IdentificationContext *context) = 0;
+    virtual std::any visitIdentificationDiv(BabyCobolParser::IdentificationDivContext *context) = 0;
 
-    virtual std::any visitName(BabyCobolParser::NameContext *context) = 0;
+    virtual std::any visitIdentificationEntry(BabyCobolParser::IdentificationEntryContext *context) = 0;
 
-    virtual std::any visitValue(BabyCobolParser::ValueContext *context) = 0;
-
-    virtual std::any visitData(BabyCobolParser::DataContext *context) = 0;
+    virtual std::any visitDataDivision(BabyCobolParser::DataDivisionContext *context) = 0;
 
     virtual std::any visitLine(BabyCobolParser::LineContext *context) = 0;
 
@@ -37,7 +35,7 @@ public:
 
     virtual std::any visitLevel(BabyCobolParser::LevelContext *context) = 0;
 
-    virtual std::any visitRepresentation(BabyCobolParser::RepresentationContext *context) = 0;
+    virtual std::any visitMask(BabyCobolParser::MaskContext *context) = 0;
 
     virtual std::any visitProcedure(BabyCobolParser::ProcedureContext *context) = 0;
 
@@ -110,8 +108,6 @@ public:
     virtual std::any visitWhileLoopExp(BabyCobolParser::WhileLoopExpContext *context) = 0;
 
     virtual std::any visitUntilLoopExp(BabyCobolParser::UntilLoopExpContext *context) = 0;
-
-    virtual std::any visitLoopStatement(BabyCobolParser::LoopStatementContext *context) = 0;
 
     virtual std::any visitContractedBooleanPart(BabyCobolParser::ContractedBooleanPartContext *context) = 0;
 

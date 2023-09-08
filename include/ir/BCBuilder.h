@@ -6,10 +6,11 @@
 #define CROSSOVER_BCBUILDER_H
 
 #include <llvm/IR/IRBuilder.h>
-#include "../../Crossover_bstd_lib//include/number.h"
-#include "bcmodule.h"
-#include "../../Crossover_bstd_lib/include/picture.h"
+#include "BCModule.h"
 #include "../antlr/BabyCobolParser.h"
+#include <string>
+#include <bstd/number.h>
+#include <bstd/picture.h>
 
 class BCBuilder : public llvm::IRBuilder<> {
 
@@ -83,6 +84,13 @@ public:
     llvm::Constant* asConstant(int n);
 
     /**
+     * Creates a null-terminated stack allocated string literal for the specified string.
+     * @param string The string to make a string literal for.
+     * @return Returns a pointer to the stack address of the string literal.
+     */
+    llvm::Value* CreateString(std::string& string);
+
+    /**
      * todo: doc
      * @return
      */
@@ -106,10 +114,56 @@ public:
     /**
      * Creates a call to the bstd runtime library marshaller function bstd_number_to_int(Number*)
      * @param number The number to marshall
-     * @return Returns an pointer value referencing the integer representation of the specified number.
+     * @return Returns a pointer value referencing the integer representation of the specified number.
      */
-    llvm::Value* CreateNumberToIntPtrCall(llvm::Value* number);
+    llvm::Value* CreateNumberToIntCall(llvm::Value* number);
 
+    /**
+     * Creates a call to the bstd runtime library marshaller function bstd_number_to_double(Number*)
+     * @param number The number to marshall
+     * @return Returns a pointer value referencing the double representation of the specified number.
+     */
+    llvm::Value* CreateNumberToDoubleCall(llvm::Value* number);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_int(bstd_number*, int)
+     * @param number The number to assign to
+     * @param value The integer to assign to the specified number
+     * @return Returns void.
+     */
+    void CreateAssignIntToNumber(llvm::Value* number, int value);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_int(bstd_number*, int)
+     * @param number The number to assign to
+     * @param value The integer value to assign to the specified number
+     * @return Returns void.
+     */
+    void CreateAssignIntToNumber(llvm::Value* number, llvm::Value* value);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_assign_double(bstd_number*, double)
+     * @param number The number to assign to
+     * @param value The double value to assign to the specified number
+     * @return Returns void.
+     */
+    void CreateAssignDoubleToNumber(llvm::Value* number, llvm::Value* value);
+
+    void CreateAssignCStrToPicture(llvm::Value* picture, llvm::Value* value);
+
+    /**
+     * Creates a call to the bstd runtime library assignment function bstd_add_int(bstd_number*, int)
+     * @param number The number to add to
+     * @param value The integer value to add to the specified number
+     * @return Returns void.
+     */
+    void CreateAddIntToNumber(llvm::Value* number, llvm::Value* value);
+
+    void CreateAssignNumberToNumber(llvm::Value* number_ptr, llvm::Value* value_ptr);
+
+    void CreateAssignPictureToPicture(llvm::Value* picture_ptr, llvm::Value* value_ptr);
+
+    llvm::Function* CreateProcedure(llvm::FunctionType*, llvm::GlobalValue::LinkageTypes, std::string&);
 
     int LiteralCount = 0;
 };
