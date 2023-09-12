@@ -23,7 +23,7 @@ apt install clang
 ```
 You will need root permission for these commands.
 
-The BabyCobol Standard Library `BSTD` can be built from source and installed following the README in the official repo: https://github.com/omersayilir75/Crossover_bstd_lib.
+The BabyCobol Standard Library `BSTD` can be built from source and installed following the README in the official repo: https://github.com/Crossover-Compiler/Crossover_bstd_lib.
 
 
 # Building
