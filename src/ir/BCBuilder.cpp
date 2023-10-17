@@ -322,6 +322,14 @@ llvm::Value *BCBuilder::CreatePicture(const std::string& name, unsigned char* m_
     return alloc;
 }
 
+llvm::Value *BCBuilder::CreatePow(llvm::Value *base, llvm::Value *exponent) {
+
+    auto pow = module->pow_func;
+
+    llvm::ArrayRef<llvm::Value *> args = { base, exponent };
+    return this->CreateCall(*pow, args);
+}
+
 llvm::Function* BCBuilder::CreateProcedure(llvm::FunctionType* function_type, llvm::GlobalValue::LinkageTypes linkage_type, std::string& procedure_name) {
 
     // procedure names are lower case

@@ -5,7 +5,7 @@ program             : identificationDiv (dataDivision)? procedure EOF;
 identificationDiv   :   IDENTIFICATION DIVISION DOT identificationEntry*;
 identificationEntry :   (IDENTIFIER DOT LITERAL DOT);
 
-dataDivision        :   DATA DIVISION lines+=line*;
+dataDivision        :   DATA DIVISION DOT lines+=line*;
 line                :   record | field;
 record              :   level IDENTIFIER DOT;
 field               :   level IDENTIFIER (PICTURE IS mask | LIKE identifiers) (OCCURS INT TIMES)? DOT;
@@ -15,7 +15,7 @@ level               :   int; // todo: should be exactly two numbers
 mask            :   IDENTIFIER | INT;
 
 procedure       :   PROCEDURE DIVISION DOT paragraph*;
-paragraph       :   label (USING atomic+)? DOT sentence*;
+paragraph       :   label (USING atomic+)? DOT sentence* (END DOT);
 
 sentence        :   statement+ DOT;
 
@@ -105,12 +105,12 @@ loopExpression          :   VARYING id=identifiers? (FROM from=atomic)? (TO to=a
 
 contractedBooleanPart   :   booleanOp comparisonOp? arithmeticExpression;
 
-comparisonOp    :   '='
-                |   '>'
-                |   '<'
-                |   '>='
-                |   '<='
-                |   '!='
+comparisonOp    :   NEQ
+                |   LT
+                |   LTE
+                |   EQ
+                |   GT
+                |   GTE
                 ;
 
 booleanOp       :   OR
@@ -118,11 +118,11 @@ booleanOp       :   OR
                 |   XOR
                 ;
 
-arithmeticOp    :   '+'
-                |   '-'
-                |   '*'
-                |   '/'
-                |   '**'
+arithmeticOp    :   SYMBOL_PLUS
+                |   SYMBOL_MINUS
+                |   SYMBOL_MULT
+                |   SYMBOL_DIV
+                |   SYMBOL_EXP
                 ;
 
 whenBlock       :   WHEN anyExpression+ statement+      #whenAnyExpression
@@ -208,6 +208,18 @@ RETURNINGBYREFERENCE: RETURNING BYREFERENCE;
 USING:      'USING';
 AS:         'AS';
 
+NEQ : '!=';
+LTE : '<=';
+LT  : '<';
+EQ  : '=';
+GT  : '>';
+GTE : '>=';
+
+SYMBOL_PLUS     : '+';
+SYMBOL_MINUS    : '-';
+SYMBOL_MULT     : '*';
+SYMBOL_DIV      : '/';
+SYMBOL_EXP      : '**';
 
 WS              :   [ \r\n\t\f]+ -> skip;
 FUNCTIONNAME    :   '\''IDENTIFIER'\'';

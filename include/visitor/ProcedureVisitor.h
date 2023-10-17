@@ -46,11 +46,9 @@ public:
 
     std::any visitAdd(BabyCobolParser::AddContext *ctx) override;
 
+    std::any visitIfStatement(BabyCobolParser::IfStatementContext *ctx) override;
+
     std::any visitLoop(BabyCobolParser::LoopContext *ctx) override;
-
-    std::any visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) override;
-
-    std::any visitWhileLoopExp(BabyCobolParser::WhileLoopExpContext *ctx) override;
 
     std::any visitIntLiteral(BabyCobolParser::IntLiteralContext *ctx) override;
 
@@ -64,9 +62,19 @@ public:
 
     std::any visitCallStatement(BabyCobolParser::CallStatementContext *ctx) override;
 
-    void pushIntOnParameterList(std::vector<llvm::Value*> *parameters, int value);
-    void pushDoubleOnParameterList(std::vector<llvm::Value*> *parameters, double value);
-    void pushStringOnParameterList(std::vector<llvm::Value*> *parameters, string value);
+    // arithmetic expressions
+
+    std::any visitAtomicArithmeticExp(BabyCobolParser::AtomicArithmeticExpContext *ctx) override;
+    std::any visitArithOpArithmeticExp(BabyCobolParser::ArithOpArithmeticExpContext *ctx) override;
+
+    // boolean expressions
+
+    std::any visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) override;
+    std::any visitTrueBooleanExp(BabyCobolParser::TrueBooleanExpContext *ctx) override;
+    std::any visitFalseBooleanExp(BabyCobolParser::FalseBooleanExpContext *ctx) override;
+    std::any visitNotBooleanExp(BabyCobolParser::NotBooleanExpContext *ctx) override;
+    std::any visitBoolOpBooleanExp(BabyCobolParser::BoolOpBooleanExpContext *ctx) override;
+
     void populatePassTypeVector(std::vector<tuple<bool, bool>> *passType, BabyCobolParser::CallStatementContext *ctx);
     void callAssignNumber(Value *assignee, Value *value);
     void callAssignPicture(Value *assignee, Value *value);

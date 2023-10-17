@@ -333,7 +333,7 @@ std::any ProcedureVisitor::visitAdd(BabyCobolParser::AddContext *ctx) {
 
     auto base = any_cast<llvm::Value*>(visit(ctx->to));
 
-    auto operand = any_cast<llvm::ConstantInt*>(visit(ctx->atomic()[0]));
+    auto operand = any_cast<llvm::Value*>(visit(ctx->atomic()[0]));
 
     // todo: we're assuming _base_ is an identifier. Extend this
     builder->CreateAddIntToNumber(base, operand);
@@ -343,29 +343,17 @@ std::any ProcedureVisitor::visitAdd(BabyCobolParser::AddContext *ctx) {
 
 std::any ProcedureVisitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
 
-    auto current_scope = this->builder->GetInsertBlock();
-
     Function* TheFunction = builder->GetInsertBlock()->getParent();
-//    PHINode *phi = this->builder->CreatePHI(Type::getDoubleTy(bcModule->getContext()), 2, "loop_phi");
 
     // create new basic block, set our current insertion point to it
-    llvm::BasicBlock* loop_body = llvm::BasicBlock::Create(this->builder->getContext(), "loop_start", TheFunction, nullptr);
+    llvm::BasicBlock* loop_body = llvm::BasicBlock::Create(this->builder->getContext(), "loop_body", TheFunction, nullptr);
     // create a new block (label) for the code to continue after the loop
     llvm::BasicBlock* loop_end = llvm::BasicBlock::Create(this->builder->getContext(), "loop_end", TheFunction, nullptr);
 
     // visit loop conditional expression
-    auto conditional = std::any_cast<llvm::Value*>(visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression()));
+    auto conditional = std::any_cast<llvm::Value*>(visit(ctx->loopExpression()));
 
-    // setup fall-through for phi node
-//    phi->addIncoming(conditional, current_scope);
-
-    auto int64t = llvm::Type::getInt64Ty(this->builder->getContext());
-
-//    auto lhs = llvm::ConstantInt::get(int64t, 4, true);
-//    auto rhs = llvm::ConstantInt::get(int64t, 5, true);
-//    auto conditional = this->builder->CreateICmpSLT(lhs, rhs);
-
-    // no forward conditional (fall through)
+    // conditional branch
     this->builder->CreateCondBr(conditional, loop_body, loop_end);
 
     // set builder insertion point
@@ -375,15 +363,15 @@ std::any ProcedureVisitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
     auto stack_save = builder->CreateIntrinsic(Intrinsic::stacksave, {}, {});
 
     // visit loop body
-    for (auto c : ctx->statement()) {
-        BabyCobolBaseVisitor::visitStatement(c);
+    for (auto s : ctx->statement()) {
+        BabyCobolBaseVisitor::visitStatement(s);
     }
 
     // restore stack state
     builder->CreateIntrinsic(Intrinsic::stackrestore, {}, stack_save);
 
     // Backward conditional, or exit loop body basic block
-    auto conditional_b = std::any_cast<llvm::Value*>(visitWhileLoopExp((BabyCobolParser::WhileLoopExpContext*)ctx->loopExpression()));
+    auto conditional_b = std::any_cast<llvm::Value*>(visit(ctx->loopExpression()));
     this->builder->CreateCondBr(conditional_b, loop_body, loop_end);
 
     this->builder->SetInsertPoint(loop_end);
@@ -391,43 +379,54 @@ std::any ProcedureVisitor::visitLoop(BabyCobolParser::LoopContext *ctx) {
     return nullptr;
 }
 
-std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) {
+std::any ProcedureVisitor::visitIfStatement(BabyCobolParser::IfStatementContext *ctx) {
 
-    auto int64t = llvm::Type::getInt64Ty(this->builder->getContext());
+    Function* TheFunction = builder->GetInsertBlock()->getParent();
 
-    //TODO: dyncast to field* = continue; dyncast to record* = fail;
+    llvm::BasicBlock* if_body = llvm::BasicBlock::Create(this->builder->getContext(), "if_body", TheFunction, nullptr);
+    llvm::BasicBlock* alternative_label = llvm::BasicBlock::Create(this->builder->getContext(), "if_end", TheFunction, nullptr);
 
-    // visit lhs
-    auto lhs = any_cast<llvm::Value*>(visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->left));
-    // marshall number to int
+    // determine if an "else" clause was specified
+    if (ctx->ELSE()) {
+        alternative_label->setName("else_body");
+    }
 
-    // todo: check if this is a bstd value or an atomic.
-//    if (bstd) {
-//        marshall;
-//    }
+    // visit conditional
+    auto conditional = std::any_cast<llvm::Value*>(visit(ctx->booleanExpression()));
 
-    // todo: replace the hard coded statements with the one above
-    auto c = builder->CreateNumberToIntCall(lhs);
+    // conditional branch
+    this->builder->CreateCondBr(conditional, if_body, alternative_label);
 
-    // visit rhs
-    auto a = visitAtomicArithmeticExp((BabyCobolParser::AtomicArithmeticExpContext*)ctx->right);
-    auto rhs = any_cast<llvm::ConstantInt*>(a);
+    // set builder insertion point
+    this->builder->SetInsertPoint(if_body);
 
-    // do comparison and return as llvm value
+    // save stack state
+//    auto stack_save_if = builder->CreateIntrinsic(Intrinsic::stacksave, {}, {});
 
-    // todo: make some parsing and enums happen
-    // visit comparison operator
-//    if (visit(ctx->comparisonOp()) == Comparison::LT) {
-//
-//    }
+    // visit if body
+    for (auto s : ctx->t) {
+        BabyCobolBaseVisitor::visitStatement(s);
+    }
 
-    // todo: remove this hard coded comparison
-    return this->builder->CreateICmpSLT(c, rhs);
-}
+    // restore stack state
+//    builder->CreateIntrinsic(Intrinsic::stackrestore, {}, stack_save_if);
 
-std::any ProcedureVisitor::visitWhileLoopExp(BabyCobolParser::WhileLoopExpContext *ctx) {
-    // todo: other forms of boolean expressions. Just restructure the grammar...
-    return visitCompareOpBooleanExp((BabyCobolParser::CompareOpBooleanExpContext*)ctx->booleanExpression());
+    this->builder->SetInsertPoint(alternative_label);
+
+    if (ctx->ELSE()) {
+        // save stack state
+//        auto stack_save_else = builder->CreateIntrinsic(Intrinsic::stacksave, {}, {});
+
+        // visit else body
+        for (auto s : ctx->f) {
+            BabyCobolBaseVisitor::visitStatement(s);
+        }
+
+        // restore stack state
+//        builder->CreateIntrinsic(Intrinsic::stackrestore, {}, stack_save_else);
+    }
+
+    return nullptr;
 }
 
 std::any ProcedureVisitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *ctx) {
@@ -436,7 +435,7 @@ std::any ProcedureVisitor::visitIntLiteral(BabyCobolParser::IntLiteralContext *c
 
     int val = stoi(ctx->getText());
 
-    return llvm::ConstantInt::get(int64t, val, true);
+    return (llvm::Value*)llvm::ConstantInt::get(int64t, val, true);
 }
 
 std::any ProcedureVisitor::visitStringLiteral(BabyCobolParser::StringLiteralContext *ctx) {
@@ -672,91 +671,6 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
                 // todo: implement passing literals as BSTD structs
 
                 parameters.emplace_back(param, paramType);
-
-//                // 0 == int, 1 == double, 2 == string.
-//                int dataType = -1;
-//
-//                // atomic is a literal. So either an int, double or string
-//                if (dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-//                    BabyCobolParser::IntLiteralContext *intLiteralContext = dynamic_cast<BabyCobolParser::IntLiteralContext *>(ctx->atomic()[i]);
-//                    dataType = 0;
-//                    int value = any_cast<int>(visitIntLiteral(intLiteralContext));
-//                    if (get<0>(modifiers) && get<1>(modifiers)) {
-//                        pushIntOnParameterList(&parameters, value);
-//                    } else if (get<0>(modifiers) && !get<1>(modifiers)) {
-//                        // wrap(int)
-//                        // TODO: Release LLVM value on return
-//                        parameters.push_back(builder->CreateNumber(intLiteralContext));
-//                        byvalTracker.emplace_back(i, bcModule->getNumberStructType());
-//                    } else if (!get<0>(modifiers) && get<1>(modifiers)) {
-//                        // int*
-//                        auto int64_t = llvm::IntegerType::getInt64Ty(bcModule->getContext());
-//                        auto v_t = llvm::Type::getInt64PtrTy(bcModule->getContext());
-//                        auto alloc = builder->CreateAlloca(v_t);
-//                        llvm::Value *v = llvm::ConstantInt::get(int64_t, value, true);
-//                        builder->CreateStore(v, alloc, false);
-//                        parameters.push_back(alloc);
-//                    } else if (!get<0>(modifiers) && !get<1>(modifiers)) {
-//                        // wrap(int)*
-//                        // TODO: Release LLVM value on return
-//                        parameters.push_back(builder->CreateNumber(intLiteralContext));
-//                    }
-//                } else if (dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-//                    BabyCobolParser::DoubleLiteralContext *doubleLiteralContext = dynamic_cast<BabyCobolParser::DoubleLiteralContext *>(ctx->atomic()[i]);
-//                    dataType = 1;
-//                    auto value = any_cast<double>(visitDoubleLiteral(doubleLiteralContext));
-//                    if (get<0>(modifiers) && get<1>(modifiers)) {
-//                        pushDoubleOnParameterList(&parameters, value);
-//                    } else if (get<0>(modifiers) && !get<1>(modifiers)) {
-//                        // wrap(double)
-//                        // TODO: Release LLVM value on return
-//                        parameters.push_back(builder->CreateNumber(doubleLiteralContext));
-//                        byvalTracker.emplace_back(i, bcModule->getNumberStructType());
-//                    } else if (!get<0>(modifiers) && get<1>(modifiers)) {
-//                        // double*
-//                        auto double_t = llvm::Type::getDoubleTy(bcModule->getContext());
-//                        auto v_t = llvm::Type::getDoublePtrTy(bcModule->getContext());
-//                        auto alloc = builder->CreateAlloca(v_t);
-//                        llvm::Value *v = llvm::ConstantFP::get(double_t, value);
-//                        builder->CreateStore(v, alloc, false);
-//                        parameters.push_back(alloc);
-//                    } else if (!get<0>(modifiers) && !get<1>(modifiers)) {
-//                        // wrap(double)*
-//                        // TODO: Release LLVM value on return
-//                        parameters.push_back(builder->CreateNumber(doubleLiteralContext));
-//                    }
-//                } else if (dynamic_cast<BabyCobolParser::StringLiteralContext *>(ctx->atomic()[i]) != nullptr) {
-//                    dataType = 2;
-//                    auto value = any_cast<string>(visit(ctx->atomic()[i]));
-//                    if (get<0>(modifiers) && get<1>(modifiers)) {
-//                        // string
-//                        pushStringOnParameterList(&parameters, value);
-//                    } else if (get<0>(modifiers) && !get<1>(modifiers)) {
-//                        // wrap(string)
-//                    } else if (!get<0>(modifiers) && get<1>(modifiers)) {
-//                        // string*
-//                        pushStringOnParameterList(&parameters, value);
-//                    } else if (!get<0>(modifiers) && !get<1>(modifiers)) {
-//                        // wrap(string)*
-//                    }
-//
-//                    /** Example:
-//                    if (get<1>(currentType)) {
-//                        // AS Primitive, so use dataType (C++ primitives)
-//                    } else {
-//                        // AS Struct, so wrap in struct
-//                    }
-//
-//                    if (get<0>(currentType)) {
-//                        // BY Value
-//                    } else {
-//                        // BY Reference, so add *
-//                    }
-//                     */
-//                } else {
-//                    // TODO: Throw Compile Exception! We should never be in this code block!
-//                    throw std::logic_error("We should never be in this code block!");
-//                }
             }
         }
     }
@@ -834,7 +748,6 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
 
     bool hasProgramName = ctx->program_name;
 
-    // todo: the code for constructing the call instructions below is technical debt.
     llvm::Value* call = nullptr;
 
     if (!hasProgramName) {
@@ -847,45 +760,18 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
 
         } else {
             // we can not find a match. Warn user.
-            auto format = "No function named %s found in this baby cobol file. Specify an OF clause to search another file.";
+            auto format = "No function named %s found in this baby cobol file. Continuing without resolving symbol...";
             auto size = std::snprintf(nullptr, 0, format, functionName.c_str());
-            std::string errormessage(size + 1, '\0');
-            std::sprintf(&errormessage[0], format, functionName.c_str());
-            cerr << errormessage << endl;
+            char warning[size + 1];
+            warning[size] = '\0';
+            std::sprintf(warning, format, functionName.c_str());
+            std::cerr << warning << endl;
 
             // construct it anyway, and hope it is available when we link
 
-//            std::vector<Field*> data_entries;
-//            data_entries.reserve(param_values.size());
-//            transform(param_values.begin(), param_values.end(), back_inserter(data_entries),
-//                      [this](auto param) {
-//                return (Field*)this->bcModule->findDataEntry(std::string(param->getName()));
-//            });
-//
-//            // marshall parameters...
-//            std::vector<llvm::Value *> marshalled_params;
-//            marshalled_params.reserve(data_entries.size());
-//            for (auto entry : data_entries) {
-//
-//                // todo: support pics... (check the data tree, etc)
-//
-//                if (auto number_field = dynamic_cast<NumberField*>(entry)) {
-//
-//                    if (number_field->isInteger()) {
-//                        marshalled_params.push_back(builder->CreateNumberToIntCall(number_field->getValue()));
-//                    } else {
-//                        // convert to a floating point
-//                        marshalled_params.push_back(builder->CreateNumberToDoubleCall(number_field->getValue()));
-//                    }
-//                }
-//
-//            }
-
             llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, param_types, false);
             auto new_function = bcModule->getOrInsertFunction(functionName, new_function_types);
-//            call = builder->CreateCall(new_function, marshalled_params);
             call = builder->CreateCall(new_function, param_values);
-
         }
 
     } else {
@@ -897,11 +783,13 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
 
             if (std::find(programFunctions.begin(), programFunctions.end(), functionName) ==
                 programFunctions.end()) {
-                auto format = "No function named %s found in program %s.";
-                auto size = std::snprintf(nullptr, 0, format, functionName.c_str(), programName.c_str());
-                std::string errormessage(size + 1, '\0');
-                std::sprintf(&errormessage[0], format, functionName.c_str(), programName.c_str());
-                throw CompileException(errormessage);
+                auto format = "No function named %s found in program %s. Continuing without resolving symbol...";
+                auto size = std::snprintf(nullptr, 0, format, functionName.c_str());
+                char warning[size + 1];
+                warning[size] = '\0';
+                std::sprintf(warning, format, functionName.c_str());
+                std::cerr << warning << endl;
+                throw CompileException(warning);
             }
 
             llvm::FunctionType *new_function_types = llvm::FunctionType::get(return_type, param_types, true);
@@ -936,12 +824,11 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
                 throw CompileException("Can not use \"AS PRIMITIVE\" return clause modifier on a Record target.");
             }
 
-            // determine which it is - number or picture
+            // determine which type our target is - a number or a picture
             auto field = dynamic_cast<Field*>(data_entry);
 
             llvm::Value* value;
 
-            // todo: we need to make a distinction between assigning doubles/floats and assigning integers
             if (ctx->reference_return != nullptr) {
 
                 // returning by reference, so load the primitive
@@ -967,7 +854,6 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
 
 
         } else {    // We know the return value is either bstd_number or bstd_bstd_picture, so no marshalling is needed
-//        else if (return_target->getType() == bcModule->getPictureStructType() || return_target->getType() == bcModule->getNumberStructType()) {
 
             llvm::Value* value;
 
@@ -1014,43 +900,6 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
     }
 
     return nullptr;
-}
-
-/**
- * ================
- * HELPER FUNCTIONS
- * ================
- */
-
-void ProcedureVisitor::pushIntOnParameterList(std::vector<llvm::Value *> *parameters, int value) {
-    auto v_t = llvm::Type::getInt64Ty(bcModule->getContext());
-    auto v = llvm::ConstantInt::get(v_t, value, true);
-    parameters->push_back(v);
-}
-
-void ProcedureVisitor::pushDoubleOnParameterList(std::vector<llvm::Value *> *parameters, double value) {
-    auto v_t = llvm::Type::getDoubleTy(bcModule->getContext());
-    auto v = llvm::ConstantFP::get(v_t, value);
-    parameters->push_back(v);
-}
-
-void ProcedureVisitor::pushStringOnParameterList(std::vector<llvm::Value *> *parameters, string value) {
-
-    auto int8_t = llvm::Type::getInt8Ty(bcModule->getContext());
-    llvm::ArrayType *arrayType = llvm::ArrayType::get(int8_t, value.size() + 1);
-    auto alloc = builder->CreateAlloca(arrayType);
-
-    std::vector<llvm::Constant *> chars(value.length());
-
-    for (unsigned int i = 0; i < value.size(); i++) {
-        chars[i] = llvm::ConstantInt::get(int8_t, value[i]);
-    }
-
-    chars.push_back(llvm::ConstantInt::get(int8_t, 0)); // null-terminator
-
-    llvm::Value *v = llvm::ConstantArray::get(arrayType, chars);
-    builder->CreateStore(v, alloc, false);
-    parameters->push_back(alloc);
 }
 
 void ProcedureVisitor::populatePassTypeVector(std::vector<tuple<bool, bool>> *passType,
@@ -1117,4 +966,158 @@ void ProcedureVisitor::callAssignPicture(llvm::Value *assignee, llvm::Value *val
     llvm::FunctionType *bstd_assign_picture_types = llvm::FunctionType::get(void_t, param_types, true);
     FunctionCallee bstd_assign_picture = bcModule->getOrInsertFunction("bstd_assign_picture", bstd_assign_picture_types);
     builder->CreateCall(bstd_assign_picture, parameters);
+}
+
+llvm::Value *marshallDataEntry(BCBuilder *builder, DataEntry *dataEntry) {
+
+    if (dataEntry->isRecord()) {
+        throw CompileException("Cannot perform arithmetic operation on record type " + dataEntry->getName());
+    }
+
+    auto field = dynamic_cast<Field*>(dataEntry);
+
+    if (!field->isNumber()) {
+        throw CompileException("Cannot perform arithmetic operation on picture type " + dataEntry->getName());
+    }
+
+    auto numberField = dynamic_cast<NumberField*>(field);
+
+    if (numberField->isInteger()) {
+        return builder->CreateNumberToIntCall(dataEntry->getValue());
+    }
+
+    return builder->CreateNumberToDoubleCall(dataEntry->getValue());
+}
+
+std::any ProcedureVisitor::visitAtomicArithmeticExp(BabyCobolParser::AtomicArithmeticExpContext *ctx) {
+    return visit(ctx->atomic());
+}
+
+std::any ProcedureVisitor::visitArithOpArithmeticExp(BabyCobolParser::ArithOpArithmeticExpContext *ctx) {
+
+    auto lhs = std::any_cast<llvm::Value*>(visit(ctx->left));
+    auto rhs = std::any_cast<llvm::Value*>(visit(ctx->right));
+
+    auto marshalledLhs = lhs;
+    auto marshalledRhs = rhs;
+
+    if (auto dataEntry = bcModule->findDataEntry(lhs->getName().str())) {
+        marshalledLhs = marshallDataEntry(builder, dataEntry);
+    }
+
+    if (auto dataEntry = bcModule->findDataEntry(rhs->getName().str())) {
+        marshalledRhs = marshallDataEntry(builder, dataEntry);
+    }
+
+    if (ctx->arithmeticOp()->SYMBOL_PLUS()) {
+
+        return builder->CreateFAdd(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->arithmeticOp()->SYMBOL_MINUS()) {
+
+        return builder->CreateFSub(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->arithmeticOp()->SYMBOL_MULT()) {
+
+        return builder->CreateFMul(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->arithmeticOp()->SYMBOL_DIV()) {
+
+        return builder->CreateFDiv(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->arithmeticOp()->SYMBOL_EXP()) {
+
+        return builder->CreatePow(marshalledLhs, marshalledRhs);
+    }
+
+    return nullptr;
+}
+
+std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) {
+
+    auto lhs = any_cast<llvm::Value*>(visit(ctx->left));
+    auto rhs = any_cast<llvm::Value*>(visit(ctx->right));
+
+    auto marshalledLhs = lhs;
+    auto marshalledRhs = rhs;
+
+    if (auto dataEntry = bcModule->findDataEntry(lhs->getName().str())) {
+        marshalledLhs = marshallDataEntry(builder, dataEntry);
+    }
+
+    if (auto dataEntry = bcModule->findDataEntry(rhs->getName().str())) {
+        marshalledRhs = marshallDataEntry(builder, dataEntry);
+    }
+
+    if (ctx->comparisonOp()->NEQ()) {
+
+        return builder->CreateFCmpUNE(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->LT()) {
+
+        return builder->CreateFCmpULT(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->LTE()) {
+
+        return builder->CreateFCmpULE(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->EQ()) {
+
+        return builder->CreateFCmpUEQ(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->GTE()) {
+
+        return builder->CreateFCmpUGE(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->GT()) {
+
+        return builder->CreateFCmpUGT(marshalledLhs, marshalledRhs);
+    }
+
+    return nullptr;
+}
+
+std::any ProcedureVisitor::visitTrueBooleanExp(BabyCobolParser::TrueBooleanExpContext *ctx) {
+    return (llvm::Value*)llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(1, 1, false));
+}
+
+std::any ProcedureVisitor::visitFalseBooleanExp(BabyCobolParser::FalseBooleanExpContext *ctx) {
+    return (llvm::Value*)llvm::ConstantInt::get(bcModule->getContext(), llvm::APInt(1, 0, false));
+}
+
+llvm::Value* CreateNot(BCBuilder *builder, llvm::Value *operand) {
+    auto constFalse = llvm::ConstantInt::get(builder->getContext(), llvm::APInt(1, 0, false));
+    return builder->CreateICmpEQ(operand, constFalse);
+}
+
+std::any ProcedureVisitor::visitNotBooleanExp(BabyCobolParser::NotBooleanExpContext *ctx) {
+    auto operand = std::any_cast<llvm::Value*>(visit(ctx->booleanExpression()));
+    return CreateNot(builder, operand);
+}
+
+std::any ProcedureVisitor::visitBoolOpBooleanExp(BabyCobolParser::BoolOpBooleanExpContext *ctx) {
+
+    auto lhs = std::any_cast<llvm::Value*>(visit(ctx->left));
+    auto rhs = std::any_cast<llvm::Value*>(visit(ctx->right));
+
+    if (ctx->booleanOp()->AND()) {
+
+        return builder->CreateLogicalAnd(lhs, rhs);
+
+    } else if (ctx->booleanOp()->OR()) {
+
+        return builder->CreateLogicalOr(lhs, rhs);
+
+    } else if (ctx->booleanOp()->XOR()) {
+
+        auto notRhs = CreateNot(builder, rhs);
+        auto c1 = builder->CreateLogicalAnd(lhs, notRhs);
+
+        auto notLhs = CreateNot(builder, lhs);
+        auto c2 = builder->CreateLogicalAnd(notLhs, rhs);
+
+        return builder->CreateLogicalOr(c1, c2);
+    }
+
+    return nullptr;
 }

@@ -1,10 +1,21 @@
 IDENTIFICATION DIVISION.
   PROGRAM-ID. "scanf_demo".
-DATA DIVISION
+DATA DIVISION.
   01 READ PICTURE IS 9999.
+  01 A PICTURE IS 9.
 PROCEDURE DIVISION.
 MAIN.
-  DISPLAY "Please enter a number of up to four digits: ".
+  DISPLAY "Please enter a number of up to four digits".
   CALL scanf USING "%4d" AS PRIMITIVE BY REFERENCE READ AS PRIMITIVE.
   DISPLAY "You entered " READ.
+
+  LOOP WHILE READ > 0
+    DISPLAY "read is " READ
+    ADD -1 TO READ
+  END.
+
+  DISPLAY "Finally, read is " READ.
+
+  DISPLAY "DONE".
+
   END.

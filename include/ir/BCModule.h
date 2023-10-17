@@ -16,6 +16,7 @@ class BCModule : public llvm::Module {
 
 private:
     llvm::FunctionCallee* printf_func;
+    llvm::FunctionCallee* pow_func; // double pow (double base, double exponent); (C99)
 
     // marshalling
     llvm::FunctionCallee* marshall_int_func;
@@ -49,6 +50,7 @@ public:
     BCModule(llvm::StringRef ModuleID, llvm::LLVMContext& C):
             llvm::Module(ModuleID, C),
             printf_func(nullptr),
+            pow_func(nullptr),
             marshall_int_func(nullptr),
             marshall_double_func(nullptr),
             assign_int_func(nullptr),
