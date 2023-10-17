@@ -1,7 +1,7 @@
 IDENTIFICATION DIVISION.
   PROGRAM-ID. "scanf_demo".
 DATA DIVISION.
-  01 READ PICTURE IS 9999.
+  01 READ PICTURE IS S9999.
   01 A PICTURE IS 9.
 PROCEDURE DIVISION.
 MAIN.
@@ -9,12 +9,11 @@ MAIN.
   CALL scanf USING "%4d" AS PRIMITIVE BY REFERENCE READ AS PRIMITIVE.
   DISPLAY "You entered " READ.
 
-  LOOP WHILE READ > 0
-    DISPLAY "read is " READ
-    ADD -1 TO READ
+  IF READ > 7 THEN
+    DISPLAY READ " is larger than 7"
+  ELSE
+    DISPLAY READ " is equal to or lower than 7!"
   END.
-
-  DISPLAY "Finally, read is " READ.
 
   DISPLAY "DONE".
 

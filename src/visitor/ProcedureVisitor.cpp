@@ -384,47 +384,53 @@ std::any ProcedureVisitor::visitIfStatement(BabyCobolParser::IfStatementContext 
     Function* TheFunction = builder->GetInsertBlock()->getParent();
 
     llvm::BasicBlock* if_body = llvm::BasicBlock::Create(this->builder->getContext(), "if_body", TheFunction, nullptr);
-    llvm::BasicBlock* alternative_label = llvm::BasicBlock::Create(this->builder->getContext(), "if_end", TheFunction, nullptr);
+    llvm::BasicBlock* else_body = llvm::BasicBlock::Create(this->builder->getContext(), "else_body", TheFunction, nullptr);
+    llvm::BasicBlock* end_label = llvm::BasicBlock::Create(this->builder->getContext(), "if_end", TheFunction, nullptr);
 
-    // determine if an "else" clause was specified
-    if (ctx->ELSE()) {
-        alternative_label->setName("else_body");
-    }
-
-    // visit conditional
     auto conditional = std::any_cast<llvm::Value*>(visit(ctx->booleanExpression()));
+    this->builder->CreateCondBr(conditional, if_body, else_body);
 
-    // conditional branch
-    this->builder->CreateCondBr(conditional, if_body, alternative_label);
+    { // start IF branch
 
-    // set builder insertion point
-    this->builder->SetInsertPoint(if_body);
+        this->builder->SetInsertPoint(if_body);
 
-    // save stack state
-//    auto stack_save_if = builder->CreateIntrinsic(Intrinsic::stacksave, {}, {});
-
-    // visit if body
-    for (auto s : ctx->t) {
-        BabyCobolBaseVisitor::visitStatement(s);
-    }
-
-    // restore stack state
-//    builder->CreateIntrinsic(Intrinsic::stackrestore, {}, stack_save_if);
-
-    this->builder->SetInsertPoint(alternative_label);
-
-    if (ctx->ELSE()) {
         // save stack state
-//        auto stack_save_else = builder->CreateIntrinsic(Intrinsic::stacksave, {}, {});
+        auto stack_save_if = builder->CreateIntrinsic(Intrinsic::stacksave, {}, {});
 
-        // visit else body
-        for (auto s : ctx->f) {
+        // visit if body
+        for (auto s: ctx->t) {
             BabyCobolBaseVisitor::visitStatement(s);
         }
 
         // restore stack state
-//        builder->CreateIntrinsic(Intrinsic::stackrestore, {}, stack_save_else);
-    }
+        builder->CreateIntrinsic(Intrinsic::stackrestore, {}, stack_save_if);
+
+        builder->CreateBr(end_label);
+
+    } // end IF branch
+
+    {// start ELSE branch
+
+        builder->SetInsertPoint(else_body);
+
+        if (ctx->ELSE()) {
+            // save stack state
+            auto stack_save_else = builder->CreateIntrinsic(Intrinsic::stacksave, {}, {});
+
+            // visit else body
+            for (auto s: ctx->f) {
+                BabyCobolBaseVisitor::visitStatement(s);
+            }
+
+            // restore stack state
+            builder->CreateIntrinsic(Intrinsic::stackrestore, {}, stack_save_else);
+        }
+
+        builder->CreateBr(end_label);
+
+    }// end ELSE branch
+
+    builder->SetInsertPoint(end_label);
 
     return nullptr;
 }
