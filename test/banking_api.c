@@ -1,13 +1,15 @@
 #include <bstd/numutils.h>
-#include <bool.h>
+#include <bstd/arithmetic.h>
+#include <stdbool.h>
+#include <stdio.h>
 
-bool withdraw(bstd_number* balance, bstd_number* amount) {
+bool withdraw(bstd_number* balance, bstd_number amount) {
 
-    if (bstd_greater_than(withdraw, balance)) {
+    if (bstd_greater_than(&amount, balance)) {
         return false;
     }
 
-    bstd_subtract(balance, amount);
+    bstd_subtract(balance, &amount);
 
     return true;
 }

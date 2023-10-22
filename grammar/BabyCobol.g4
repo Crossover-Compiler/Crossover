@@ -7,12 +7,8 @@ identificationEntry :   (IDENTIFIER DOT LITERAL DOT);
 
 dataDivision        :   DATA DIVISION DOT lines+=line*;
 line                :   record | field;
-record              :   level IDENTIFIER DOT;
-field               :   level IDENTIFIER (PICTURE IS mask | LIKE identifiers) (OCCURS INT TIMES)? DOT;
-level               :   int; // todo: should be exactly two numbers
-
-// TODO: AVX is recognised as VAR. A V X is recognised as valid picture. TODO: Find a way to not need the spaces. Hint: this has to do with the greedy-ness of the VAR rule.
-mask            :   IDENTIFIER | INT;
+record              :   LEVEL IDENTIFIER DOT;
+field               :   LEVEL IDENTIFIER ((PICTURE IS MASK) | (LIKE identifiers)) (OCCURS INT TIMES)? DOT;
 
 procedure       :   PROCEDURE DIVISION DOT paragraph*;
 paragraph       :   label (USING atomic+)? DOT sentence* (END DOT);
@@ -55,7 +51,7 @@ evaluate        :   EVALUATE anyExpression whenBlock* END;
 nextSentence    :   NEXT SENTENCE;
 loop            :   LOOP loopExpression statement* END;
 gotoStatement   :   GO TO IDENTIFIER;
-signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
+signal          :   SIGNAL (label | OFF) ONERROR;
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
 callStatement   :   CALL function_name=IDENTIFIER (OF program_name=IDENTIFIER)?
                         (USING
@@ -223,6 +219,8 @@ SYMBOL_EXP      : '**';
 
 WS              :   [ \r\n\t\f]+ -> skip;
 FUNCTIONNAME    :   '\''IDENTIFIER'\'';
+MASK            :   [VSAX9]*;
+LEVEL           :   [0-9][0-9];
 INT             :   [0-9]+;
 DOUBLE          :   ('-'|'+')? INT ',' INT;
 LITERAL         :   '"' ~'"'+ '"'; // Any char except for "

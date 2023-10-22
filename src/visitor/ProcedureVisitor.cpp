@@ -1039,21 +1039,7 @@ std::any ProcedureVisitor::visitArithOpArithmeticExp(BabyCobolParser::ArithOpAri
     return nullptr;
 }
 
-std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) {
-
-    auto lhs = any_cast<llvm::Value*>(visit(ctx->left));
-    auto rhs = any_cast<llvm::Value*>(visit(ctx->right));
-
-    auto marshalledLhs = lhs;
-    auto marshalledRhs = rhs;
-
-    if (auto dataEntry = bcModule->findDataEntry(lhs->getName().str())) {
-        marshalledLhs = marshallDataEntry(builder, dataEntry);
-    }
-
-    if (auto dataEntry = bcModule->findDataEntry(rhs->getName().str())) {
-        marshalledRhs = marshallDataEntry(builder, dataEntry);
-    }
+static llvm::Value *floatingPointComparison(BabyCobolParser::CompareOpBooleanExpContext *ctx, BCBuilder *builder, llvm::Value *marshalledLhs, llvm::Value *marshalledRhs) {
 
     if (ctx->comparisonOp()->NEQ()) {
 
@@ -1078,6 +1064,63 @@ std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBo
     } else if (ctx->comparisonOp()->GT()) {
 
         return builder->CreateFCmpUGT(marshalledLhs, marshalledRhs);
+    }
+
+    return nullptr;
+}
+
+static llvm::Value *integerComparison(BabyCobolParser::CompareOpBooleanExpContext *ctx, BCBuilder *builder, llvm::Value *marshalledLhs, llvm::Value *marshalledRhs) {
+
+    if (ctx->comparisonOp()->NEQ()) {
+
+        return builder->CreateICmpNE(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->LT()) {
+
+        return builder->CreateICmpSLT(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->LTE()) {
+
+        return builder->CreateICmpSLE(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->EQ()) {
+
+        return builder->CreateICmpEQ(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->GTE()) {
+
+        return builder->CreateICmpSGE(marshalledLhs, marshalledRhs);
+
+    } else if (ctx->comparisonOp()->GT()) {
+
+        return builder->CreateICmpSGT(marshalledLhs, marshalledRhs);
+    }
+
+    return nullptr;
+}
+
+std::any ProcedureVisitor::visitCompareOpBooleanExp(BabyCobolParser::CompareOpBooleanExpContext *ctx) {
+
+    auto lhs = any_cast<llvm::Value*>(visit(ctx->left));
+    auto rhs = any_cast<llvm::Value*>(visit(ctx->right));
+
+    auto marshalledLhs = lhs;
+    auto marshalledRhs = rhs;
+
+    if (auto dataEntry = bcModule->findDataEntry(lhs->getName().str())) {
+        marshalledLhs = marshallDataEntry(builder, dataEntry);
+    }
+
+    if (auto dataEntry = bcModule->findDataEntry(rhs->getName().str())) {
+        marshalledRhs = marshallDataEntry(builder, dataEntry);
+    }
+
+    if (marshalledLhs->getType()->isFloatingPointTy() || marshalledRhs->getType()->isFloatingPointTy()) {
+        // we need to cast and do floating-point comparison
+        return floatingPointComparison(ctx, builder, marshalledLhs, marshalledRhs);
+    } else {
+        // neither operand is floating-point, we can do integer comparison
+        return integerComparison(ctx, builder, marshalledLhs, marshalledRhs);
     }
 
     return nullptr;
