@@ -491,16 +491,12 @@ void ProcedureVisitor::double_ptr_re_entry_handler_generator(BCBuilder *builder,
 
     auto field = dynamic_cast<Field*>(module->findDataEntry(original->getName().str()));
     auto original_t = field->getType(module->getContext());
-    auto const_i64 = llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, 64));
 
     // dereference intPtr
     auto int_val = builder->CreateLoad(original_t, doublePtr);
 
     auto assign_double_func = module->getAssignDoubleFunc();
     builder->CreateCall(*assign_double_func, {original, int_val});
-
-    // free allocated memory
-    builder->CreateLifetimeEnd(doublePtr, const_i64);
 }
 
 void ProcedureVisitor::cstr_re_entry_handler_generator(BCBuilder* builder, BCModule* module, llvm::Value* original, llvm::Value* cstr) {
@@ -817,6 +813,14 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
         }
     }
 
+    // generate re-entry handlers
+    for (auto &it: re_entry_cache) {
+        auto original = get<0>(it);
+        auto copy = get<1>(it);
+        auto handler = get<2>(it);
+        (*handler)(this->builder, this->bcModule, original, copy);
+    }
+
     // if we have a returning clause
     if (call && return_target) {
         // assign result of the call to the return value.
@@ -893,14 +897,6 @@ any ProcedureVisitor::visitCallStatement(BabyCobolParser::CallStatementContext *
             }
         }
 
-    }
-
-    // generate re-entry handlers
-    for (auto &it: re_entry_cache) {
-        auto original = get<0>(it);
-        auto copy = get<1>(it);
-        auto handler = get<2>(it);
-        (*handler)(this->builder, this->bcModule, original, copy);
     }
 
     return nullptr;
