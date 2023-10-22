@@ -97,19 +97,6 @@ std::any ProcedureVisitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
                 throw CompileException("Could not find value " + identifierContext->identifiers()->IDENTIFIER()[0]->getText());
             }
 
-            std::vector<llvm::Value *> parameters;
-            parameters.reserve(2);
-            parameters.push_back(value);
-            if (spacer) {
-                parameters.push_back(llvm::ConstantInt::getTrue(bcModule->getContext()));
-            } else {
-                parameters.push_back(llvm::ConstantInt::getFalse(bcModule->getContext()));
-            }
-
-            std::vector<llvm::Type *> param_types;
-            param_types.reserve(parameters.size());
-            transform(parameters.begin(), parameters.end(), back_inserter(param_types), [] (auto v) { return v->getType(); });
-
             // todo: support record types here too
             if (dataEntry->isRecord()) {
                 throw CompileException("Unimplemented feature: cannot DISPLAY Records.");
@@ -117,21 +104,32 @@ std::any ProcedureVisitor::visitDisplay(BabyCobolParser::DisplayContext *ctx) {
 
             auto field = dynamic_cast<Field*>(dataEntry);
 
-            FunctionCallee print_func;
+            std::vector<llvm::Value *> parameters;
+            parameters.reserve(1);
+            parameters.push_back(value);
+
+            std::vector<llvm::Type *> param_types;
+            param_types.reserve(parameters.size());
+            transform(parameters.begin(), parameters.end(), back_inserter(param_types), [] (auto v) { return v->getType(); });
+
+            FunctionCallee marshall_func;
 
             if (field->isNumber()) {
-                llvm::FunctionType *print_func_types = llvm::FunctionType::get(void_t, param_types, true);
-                print_func = bcModule->getOrInsertFunction("bstd_print_number", print_func_types);
+                llvm::Type *int8ptr_t = llvm::IntegerType::getInt8PtrTy(bcModule->getContext());
+                llvm::FunctionType *bstd_number_to_cstr_func = llvm::FunctionType::get(int8ptr_t, param_types, false);
+                marshall_func = bcModule->getOrInsertFunction("bstd_number_to_cstr", bstd_number_to_cstr_func);
             } else {
                 // todo: there is a "spacer" parameter. We will probably get some interesting stochastic behaviour here...
                 llvm::FunctionType *print_func_types = llvm::FunctionType::get(void_t, param_types, true);
-                print_func = bcModule->getOrInsertFunction("bstd_print_picture", print_func_types);
+                marshall_func = bcModule->getOrInsertFunction("bstd_print_picture", print_func_types); // todo: the print function should go...
             }
 
-            auto function = cast<Function>(print_func.getCallee());
-            function->addParamAttr(0, Attribute::getWithByValType(bcModule->getContext(), bcModule->getNumberStructType()));
+            auto field_cstr = builder->CreateCall(marshall_func, { value });
 
-            builder->CreateCall(print_func, parameters);
+            auto a = bcModule->getPrintf();
+            std::string f = "%s";
+            auto format_value = builder->CreateString(f);
+            builder->CreateCall(*a, { format_value, field_cstr });
 
         } else {
             throw NotImplemented("Visitor:visitDisplay() We should never reach this statement!!!");
