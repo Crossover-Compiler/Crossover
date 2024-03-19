@@ -5,17 +5,13 @@ program             : identificationDiv (dataDivision)? procedure EOF;
 identificationDiv   :   IDENTIFICATION DIVISION DOT identificationEntry*;
 identificationEntry :   (IDENTIFIER DOT LITERAL DOT);
 
-dataDivision        :   DATA DIVISION lines+=line*;
+dataDivision        :   DATA DIVISION DOT lines+=line*;
 line                :   record | field;
-record              :   level IDENTIFIER DOT;
-field               :   level IDENTIFIER (PICTURE IS mask | LIKE identifiers) (OCCURS INT TIMES)? DOT;
-level               :   int; // todo: should be exactly two numbers
-
-// TODO: AVX is recognised as VAR. A V X is recognised as valid picture. TODO: Find a way to not need the spaces. Hint: this has to do with the greedy-ness of the VAR rule.
-mask            :   IDENTIFIER | INT;
+record              :   LEVEL IDENTIFIER DOT;
+field               :   LEVEL IDENTIFIER ((PICTURE IS MASK) | (LIKE identifiers)) (OCCURS INT TIMES)? DOT;
 
 procedure       :   PROCEDURE DIVISION DOT paragraph*;
-paragraph       :   label (USING atomic+)? DOT sentence*;
+paragraph       :   label (USING atomic+)? DOT sentence* (END DOT);
 
 sentence        :   statement+ DOT;
 
@@ -55,7 +51,7 @@ evaluate        :   EVALUATE anyExpression whenBlock* END;
 nextSentence    :   NEXT SENTENCE;
 loop            :   LOOP loopExpression statement* END;
 gotoStatement   :   GO TO IDENTIFIER;
-signal          :   SIGNAL (label | OFF) ONERROR; // TODO: NOTE: identifiers can only be an identifier of a paragraph here
+signal          :   SIGNAL (label | OFF) ONERROR;
 alter           :   ALTER l1=label TO PROCEED TO l2=label;
 callStatement   :   CALL function_name=IDENTIFIER (OF program_name=IDENTIFIER)?
                         (USING
@@ -105,12 +101,12 @@ loopExpression          :   VARYING id=identifiers? (FROM from=atomic)? (TO to=a
 
 contractedBooleanPart   :   booleanOp comparisonOp? arithmeticExpression;
 
-comparisonOp    :   '='
-                |   '>'
-                |   '<'
-                |   '>='
-                |   '<='
-                |   '!='
+comparisonOp    :   NEQ
+                |   LT
+                |   LTE
+                |   EQ
+                |   GT
+                |   GTE
                 ;
 
 booleanOp       :   OR
@@ -118,11 +114,11 @@ booleanOp       :   OR
                 |   XOR
                 ;
 
-arithmeticOp    :   '+'
-                |   '-'
-                |   '*'
-                |   '/'
-                |   '**'
+arithmeticOp    :   SYMBOL_PLUS
+                |   SYMBOL_MINUS
+                |   SYMBOL_MULT
+                |   SYMBOL_DIV
+                |   SYMBOL_EXP
                 ;
 
 whenBlock       :   WHEN anyExpression+ statement+      #whenAnyExpression
@@ -208,9 +204,23 @@ RETURNINGBYREFERENCE: RETURNING BYREFERENCE;
 USING:      'USING';
 AS:         'AS';
 
+NEQ : '!=';
+LTE : '<=';
+LT  : '<';
+EQ  : '=';
+GT  : '>';
+GTE : '>=';
+
+SYMBOL_PLUS     : '+';
+SYMBOL_MINUS    : '-';
+SYMBOL_MULT     : '*';
+SYMBOL_DIV      : '/';
+SYMBOL_EXP      : '**';
 
 WS              :   [ \r\n\t\f]+ -> skip;
 FUNCTIONNAME    :   '\''IDENTIFIER'\'';
+MASK            :   [VSAX9]*;
+LEVEL           :   [0-9][0-9];
 INT             :   [0-9]+;
 DOUBLE          :   ('-'|'+')? INT ',' INT;
 LITERAL         :   '"' ~'"'+ '"'; // Any char except for "

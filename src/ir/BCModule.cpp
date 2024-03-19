@@ -11,10 +11,14 @@ void BCModule::initialize() {
     llvm::Type* double_type = llvm::Type::getDoubleTy(this->getContext());
     llvm::Type* void_t = llvm::Type::getVoidTy(this->getContext());
 
-    // instantiate printf function
+    // instantiate C functions
     llvm::FunctionType* printf_type = llvm::FunctionType::get(int32_t, { int8ptr_t }, true);
     this->printf_func = new llvm::FunctionCallee();
     *(this->printf_func) = this->getOrInsertFunction("printf", printf_type);
+
+    llvm::FunctionType* pow_type = llvm::FunctionType::get(double_type, { double_type, double_type }, false);
+    this->pow_func = new llvm::FunctionCallee();
+    *(this->pow_func) = this->getOrInsertFunction("pow", pow_type);
 
     // instantiate bstd struct types and functions
 

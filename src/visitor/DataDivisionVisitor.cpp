@@ -50,9 +50,9 @@ std::any DataDivisionVisitor::visitLine(BabyCobolParser::LineContext *ctx) {
 
 std::any DataDivisionVisitor::visitField(BabyCobolParser::FieldContext *ctx) {
 
-    const int level = stoi(ctx->level()->getText());
+    const int level = stoi(ctx->LEVEL()->getText());
     std::string name = ctx->IDENTIFIER()->getText();
-    auto mask = any_cast<std::string>(visit(ctx->mask()));
+    auto mask = ctx->MASK()->getText();
 
     Field *field;
 
@@ -110,7 +110,7 @@ std::any DataDivisionVisitor::visitField(BabyCobolParser::FieldContext *ctx) {
 
 std::any DataDivisionVisitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
 
-    const int level = stoi(ctx->level()->getText());
+    const int level = stoi(ctx->LEVEL()->getText());
     string name = ctx->IDENTIFIER()->getText();
 
     auto record = new Record(name, level);
@@ -135,13 +135,4 @@ std::any DataDivisionVisitor::visitRecord(BabyCobolParser::RecordContext *ctx) {
     current_record = record;
 
     return nullptr;
-}
-
-std::any DataDivisionVisitor::visitMask(BabyCobolParser::MaskContext *ctx) {
-
-    if (ctx->INT() != nullptr) {
-        return ctx->INT()->getText();
-    }
-
-    return ctx->IDENTIFIER()->getText();
 }

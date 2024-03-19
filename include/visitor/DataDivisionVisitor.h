@@ -29,8 +29,6 @@ public:
 
     std::any visitRecord(BabyCobolParser::RecordContext *ctx) override;
 
-    std::any visitMask(BabyCobolParser::MaskContext *ctx) override;
-
 };
 
 #endif //CROSSOVER_DATADIVISIONVISITOR_H

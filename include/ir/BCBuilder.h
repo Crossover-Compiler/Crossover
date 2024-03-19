@@ -163,6 +163,8 @@ public:
 
     void CreateAssignPictureToPicture(llvm::Value* picture_ptr, llvm::Value* value_ptr);
 
+    llvm::Value *CreatePow(llvm::Value *base, llvm::Value *exponent);
+
     llvm::Function* CreateProcedure(llvm::FunctionType*, llvm::GlobalValue::LinkageTypes, std::string&);
 
     int LiteralCount = 0;
